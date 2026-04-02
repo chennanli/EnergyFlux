@@ -1,5 +1,9 @@
 # EnergyFlux · 能流
 
+<p align="center">
+  <img src="logo.svg" width="500"/>
+</p>
+
 **Physics-informed AI for industrial energy systems — from generation to consumption.**
 
 > *Conservation · Balance · Intelligence*
@@ -20,8 +24,6 @@ Forecasting         Voltage / loading   EV charger
                   NVIDIA NIM Agent
             (Root cause across all layers)
 ```
-
-The circle in the logo is a **control volume** — the closed boundary across which energy flows. What goes in must equal what comes out.
 
 ---
 
@@ -44,14 +46,10 @@ Physics-based BESS model (SOC, charge/discharge efficiency) + Pyomo LP dispatch.
 
 ### Stage 3 — Industrial Consumption Side *(Planned)*
 
-- Chemical plant process energy consumption (TEP-based)
+- Chemical plant process energy consumption
 - Boiler system
 - EV charger thermal anomaly detection
 - Data center cooling load estimation
-
-### Stage 4 — Publication *(Planned)*
-
-Medium article series + public GitHub repo + full documentation.
 
 ---
 
@@ -99,11 +97,9 @@ EnergyFlux/
 ```bash
 git clone https://github.com/chennanli/EnergyFlux.git
 cd EnergyFlux
-
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
 cp .env.example .env
 # Add NVIDIA_API_KEY to .env
 ```
@@ -114,9 +110,7 @@ cp .env.example .env
 
 Created by **Chennan Li**
 
-| Name | Role |
-|---|---|
-| Chennan Li | Project lead |
+Contributor: Chennan Li
 
 ---
 

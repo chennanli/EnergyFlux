@@ -1,0 +1,56 @@
+<svg width="600" height="300" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wave-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#EF9F27"/>
+      <stop offset="50%"  stop-color="#85B7EB"/>
+      <stop offset="100%" stop-color="#185FA5"/>
+    </linearGradient>
+    <linearGradient id="ring-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#378ADD"/>
+      <stop offset="100%" stop-color="#185FA5"/>
+    </linearGradient>
+    <clipPath id="circle-clip">
+      <circle cx="150" cy="150" r="105"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="600" height="300" fill="#1a1a2e"/>
+
+  <!-- Outer ring -->
+  <circle cx="150" cy="150" r="115" fill="none" stroke="url(#ring-grad)" stroke-width="10"/>
+
+  <!-- Inner fill -->
+  <circle cx="150" cy="150" r="105" fill="#1f2a3a" opacity="0.8"/>
+
+  <!-- Main wave clipped to circle -->
+  <g clip-path="url(#circle-clip)">
+    <path d="M46 150 C73 88, 100 88, 127 150 C154 212, 181 212, 208 150 C235 88, 248 88, 257 150"
+          fill="none" stroke="url(#wave-grad)" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Center node (⊕) -->
+  <circle cx="150" cy="150" r="7"   fill="none" stroke="#378ADD" stroke-width="1.5"/>
+  <line x1="150" y1="144" x2="150" y2="156" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="144" y1="150" x2="156" y2="150" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Side dots -->
+  <circle cx="88"  cy="150" r="3" fill="#EF9F27" opacity="0.7"/>
+  <circle cx="213" cy="150" r="3" fill="#185FA5" opacity="0.7"/>
+
+  <!-- Text: Energy -->
+  <text x="295" y="128" font-family="Arial, sans-serif" font-size="52" font-weight="600"
+        fill="#378ADD" letter-spacing="-1">Energy</text>
+
+  <!-- Text: Flux -->
+  <text x="295" y="186" font-family="Arial, sans-serif" font-size="52" font-weight="400"
+        fill="#5BA3E0" letter-spacing="-1">Flux</text>
+
+  <!-- Chinese: 能流 -->
+  <text x="296" y="218" font-family="Arial, sans-serif" font-size="16" font-weight="400"
+        fill="#888888" letter-spacing="6">能流</text>
+
+  <!-- Tagline -->
+  <text x="296" y="242" font-family="Arial, sans-serif" font-size="11" font-weight="400"
+        fill="#555577" letter-spacing="0.5">Physics-informed Industrial Energy AI</text>
+</svg>
