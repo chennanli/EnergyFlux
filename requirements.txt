@@ -1,0 +1,35 @@
+# core
+numpy
+pandas
+scipy
+
+# forecasting
+neuralforecast
+
+# pv generation
+pvlib
+
+# power flow
+pandapower
+
+# agent + llm
+langchain
+langchain-community
+faiss-cpu
+openai  # NVIDIA NIM uses OpenAI-compatible endpoint
+
+# api
+fastapi
+uvicorn
+
+# optimization (stage 2)
+pyomo
+
+# viz
+matplotlib
+seaborn
+
+# utils
+python-dotenv
+requests
+pyyaml
