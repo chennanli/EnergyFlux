@@ -1,0 +1,35 @@
+[project]
+name = "energyflux"
+version = "0.1.0"
+description = "Physics-informed AI for industrial energy systems"
+requires-python = ">=3.10"
+
+dependencies = [
+    "requests",
+    "pandas",
+    "pvlib",
+    "pandapower",
+    "neuralforecast",
+    "langchain",
+    "langchain-community",
+    "faiss-cpu",
+    "openai",
+    "fastapi",
+    "uvicorn",
+    "pyomo",
+    "matplotlib",
+    "seaborn",
+    "python-dotenv",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = [
+    "jupyter",
+    "ipykernel",
+    "pytest",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = []
