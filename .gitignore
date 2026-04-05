@@ -13,3 +13,13 @@ data/processed/
 *.h5
 *.onnx
 .DS_Store
+
+# Claude Code internal files — do not commit
+.claude/
+CLAUDE.md
+
+# Lightning logs from NeuralForecast training
+lightning_logs/
+
+# Jupyter notebooks with output
+*.ipynb
