@@ -28,7 +28,7 @@ def run_mode_2_3(gcr, location, weather, modules_db, inverters_db):
     """Run Mode 2 (no backtrack) and Mode 3 (backtrack) at a given GCR."""
     solpos = location.get_solarposition(weather.index)
     temp_params = pvlib.temperature.TEMPERATURE_MODEL_PARAMETERS["sapm"]["open_rack_glass_glass"]
-    module   = modules_db["Canadian_Solar_Inc__CS6U_330M"].copy()
+    module   = modules_db["Hanwha_Q_Cells_Q_PEAK_DUO_L_G5_2_390"].copy()
     inverter = find_inverter(inverters_db, AC_KW)
 
     results = {}

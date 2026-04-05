@@ -54,7 +54,7 @@ MODULE_WP           = 390
 
 TOTAL_STRINGS = NUM_TRACKERS * STRINGS_PER_TRACKER    # 30
 TOTAL_MODULES = TOTAL_STRINGS * MODULES_PER_STRING    # 480
-DC_KWP        = TOTAL_MODULES * MODULE_WP / 1000      # 158.4 kWp
+DC_KWP        = TOTAL_MODULES * MODULE_WP / 1000      # 187.2 kWp
 ILR           = 1.2
 AC_KW         = DC_KWP / ILR                          # 132 kW
 

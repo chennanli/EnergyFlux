@@ -11,12 +11,12 @@ Network topology:
   External Grid (110kV) → Trafo 2MVA → 10kV MV Busbar
     ├── PV Plant (187 kWp)
     ├── BESS (100 kW / 400 kWh)
-    ├── Data Center (500 kW constant)
-    ├── Chemical Plant (300 kW variable)
-    ├── EV Charging (200 kW evening peak)
-    ├── Office Building (150 kW daytime)
-    ├── Warehouse (80 kW)
-    └── Manufacturing (250 kW)
+    ├── Data Center (60 kW constant)
+    ├── Chemical Plant (60 kW variable)
+    ├── EV Charging (60 kW evening peak)
+    ├── Office Building (30 kW daytime)
+    ├── Warehouse (15 kW)
+    └── Manufacturing (50 kW)
 
 Output:
   stage1_solar_grid/data/processed/powerflow_results.csv
