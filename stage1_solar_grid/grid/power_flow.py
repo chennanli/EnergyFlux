@@ -6,13 +6,14 @@ small commercial block with behind-the-meter PV + BESS.
 
 Network topology:
   Utility Grid (10kV) → Trafo 400kVA (10kV/0.4kV) → LV Busbar
-    ├── PV Plant (187 kWp / 156 kW AC)
+    ├── PV Plant (187 kWp / 135 kW AC peak)
     ├── BESS (100 kW / 400 kWh)
-    ├── Biotech Lab (50 kW base 24/7, +10 kW daytime)
-    └── Office Building (25 kW weekday daytime)
+    ├── Biotech Lab (50 kW base 24/7, +15 kW daytime)
+    ├── Office Building (30 kW weekday daytime)
+    └── EV Charging (5 kW idle, 50 kW weekday daytime — employees charge at work)
 
-Total peak ~85 kW, off-peak ~52 kW
-PV peak 135 kW >> load → significant surplus for BESS + overvoltage dynamics
+Weekday daytime ~145 kW (all loads + EV), weekend night ~55 kW (biotech only)
+PV peak 135 kW → surplus on weekends and midday → BESS charging + overvoltage
 
 Output:
   stage1_solar_grid/data/processed/powerflow_results.csv
@@ -65,6 +66,7 @@ def create_industrial_park():
     bus_bess = pp.create_bus(net, vn_kv=0.4, name="BESS")
     bus_bio  = pp.create_bus(net, vn_kv=0.4, name="Biotech Lab")
     bus_off  = pp.create_bus(net, vn_kv=0.4, name="Office Building")
+    bus_ev   = pp.create_bus(net, vn_kv=0.4, name="EV Charging")
 
     # External grid (MV side)
     pp.create_ext_grid(net, bus=bus_mv, vm_pu=1.02, name="Utility Grid")
@@ -79,16 +81,17 @@ def create_industrial_park():
     pp.create_line(net, bus_lv, bus_bess, length_km=0.05, std_type=lv_line, name="Line BESS")
     pp.create_line(net, bus_lv, bus_bio,  length_km=0.20, std_type=lv_line, name="Line Biotech")
     pp.create_line(net, bus_lv, bus_off,  length_km=0.15, std_type=lv_line, name="Line Office")
+    pp.create_line(net, bus_lv, bus_ev,   length_km=0.25, std_type=lv_line, name="Line EV")
 
     # Static generators (PV and BESS — power updated each timestep)
     pp.create_sgen(net, bus=bus_pv,   p_mw=0, q_mvar=0, name="PV Plant")
     pp.create_sgen(net, bus=bus_bess, p_mw=0, q_mvar=0, name="BESS")
 
-    # Loads — Fremont CA small commercial site
-    # Total peak ~80 kW, off-peak ~45 kW
-    # PV peak 135 kW >> load → clear surplus for BESS + overvoltage dynamics
+    # Loads — Fremont CA light-industrial park
+    # Weekday peak ~100 kW, weekend night ~55 kW, evening EV peak ~105 kW
     pp.create_load(net, bus=bus_bio, p_mw=0.050, q_mvar=0.010, name="Biotech Lab")
-    pp.create_load(net, bus=bus_off, p_mw=0.025, q_mvar=0.004, name="Office Building")
+    pp.create_load(net, bus=bus_off, p_mw=0.030, q_mvar=0.005, name="Office Building")
+    pp.create_load(net, bus=bus_ev,  p_mw=0.005, q_mvar=0.001, name="EV Charging")
 
     print(f"Network created: {len(net.bus)} buses, {len(net.line)} lines, "
           f"{len(net.load)} loads, {len(net.sgen)} generators")
@@ -98,9 +101,13 @@ def create_industrial_park():
 # ── Load profiles (synthetic daily patterns) ─────────────────────────────────
 def generate_load_profiles(index):
     """
-    Generate hourly load profiles (MW) for a small commercial site.
-    Biotech Lab (~50 kW 24/7) + Office (~25 kW daytime).
-    Total peak ~80 kW. PV peak 135 kW → clear surplus for BESS charging.
+    Generate hourly load profiles (MW) for a Fremont CA light-industrial park.
+    Biotech Lab (50-65 kW, 24/7) + Office (30 kW daytime) + EV Charging (evening peak 50 kW).
+
+    Weekday morning: ~145 kW (biotech + office + EV peak — employees charging)
+    Weekday evening: ~55 kW  (biotech only, everyone gone home)
+    Weekend:         ~55 kW  (biotech only, 24/7 lab equipment)
+    PV peak:         135 kW  → surplus on weekends and weekday midday → BESS + overvoltage
     """
     hours = index.hour + index.minute / 60
     dow   = index.dayofweek
@@ -108,14 +115,22 @@ def generate_load_profiles(index):
 
     profiles = {}
 
-    # Biotech Lab: 50 kW base 24/7 (lab equipment, cleanroom HVAC)
-    # +10 kW daytime when staff present
+    # Biotech Lab: 50 kW base 24/7, +15 kW weekday daytime (staff + extra equipment)
     profiles["Biotech Lab"] = 0.050 + np.where(
-        is_weekday & (hours >= 8) & (hours < 18), 0.010, 0.0)
+        is_weekday & (hours >= 8) & (hours < 18), 0.015, 0.0)
 
-    # Office Building: 25 kW weekdays 8am-7pm, near zero otherwise
+    # Office Building: 30 kW weekdays 8am-7pm, near zero otherwise
     profiles["Office Building"] = np.where(
-        is_weekday & (hours >= 8) & (hours < 19), 0.025, 0.002)
+        is_weekday & (hours >= 8) & (hours < 19), 0.030, 0.002)
+
+    # EV Charging: employees plug in when arriving at work, charge during daytime
+    # Peak ~50 kW mid-morning (everyone plugged in), tapers off as cars finish
+    ev_base = 0.005
+    ev_peak = 0.050
+    profiles["EV Charging"] = ev_base + np.where(
+        is_weekday & (hours >= 8) & (hours < 17),
+        (ev_peak - ev_base) * np.exp(-0.5 * ((hours - 10) / 2.0) ** 2),
+        0.0)
 
     return pd.DataFrame(profiles, index=index)
 
