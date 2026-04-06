@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EnergyFlux — Power Flow Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5f5f0; color: #2c2c2a; font-size: 13px; }
+.header { background: #042C53; color: white; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+.header h1 { font-size: 16px; font-weight: 500; }
+.header span { font-size: 12px; opacity: 0.7; }
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.metric { background: white; border-radius: 10px; padding: 14px 16px; border: 0.5px solid #d3d1c7; }
+.metric .label { font-size: 11px; color: #888780; margin-bottom: 4px; }
+.metric .value { font-size: 22px; font-weight: 500; }
+.metric .sub { font-size: 11px; color: #888780; margin-top: 2px; }
+
+.card { background: white; border-radius: 12px; padding: 16px 20px; border: 0.5px solid #d3d1c7; margin-bottom: 16px; }
+.card-title { font-size: 11px; font-weight: 500; color: #888780; letter-spacing: 0.4px; margin-bottom: 14px; text-transform: uppercase; }
+
+.controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+.controls label { font-size: 12px; color: #5f5e5a; }
+.controls select { font-size: 12px; padding: 5px 10px; border-radius: 7px; border: 0.5px solid #d3d1c7; background: white; cursor: pointer; }
+
+.legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #888780; }
+.legend-dot { width: 12px; height: 3px; border-radius: 2px; }
+
+/* Single-line diagram */
+.sld-wrap { overflow-x: auto; }
+svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+/* Topology bus voltage badges */
+.vbadge { font-size: 9px; font-weight: 600; }
+
+@media (max-width: 700px) {
+  .metrics { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>EnergyFlux — Power Flow Dashboard</h1>
+    <span>Industrial Park · Fremont CA · 187 kWp PV + 100 kW / 400 kWh BESS · 0.4kV LV Distribution</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- KPI metrics -->
+  <div class="metrics">
+    <div class="metric">
+      <div class="label">PV capacity</div>
+      <div class="value">187 kWp</div>
+      <div class="sub">Q CELLS 390W × 480 modules</div>
+    </div>
+    <div class="metric">
+      <div class="label">BESS</div>
+      <div class="value">100 kW</div>
+      <div class="sub">400 kWh · LFP chemistry</div>
+    </div>
+    <div class="metric">
+      <div class="label">Overvoltage hours</div>
+      <div class="value" style="color:#E24B4A">4,688</div>
+      <div class="sub">&gt;1.05 pu · 26.8% of year · summer midday</div>
+    </div>
+    <div class="metric">
+      <div class="label">Peak voltage</div>
+      <div class="value" style="color:#E24B4A">1.068 pu</div>
+      <div class="sub">PV Plant bus · June peak generation</div>
+    </div>
+  </div>
+
+  <!-- Single-line diagram -->
+  <div class="card">
+    <div class="card-title">Grid topology — 0.4 kV industrial park (single-line diagram)</div>
+    <div class="sld-wrap">
+      <svg width="100%" viewBox="0 0 760 280" style="min-width:600px">
+        <!-- Utility -->
+        <rect x="10" y="110" width="85" height="42" rx="7" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.8"/>
+        <text x="52" y="128" text-anchor="middle" font-size="10" font-weight="600" fill="#0C447C">Utility</text>
+        <text x="52" y="142" text-anchor="middle" font-size="9" fill="#185FA5">110kV ext grid</text>
+
+        <!-- Transformer -->
+        <rect x="132" y="115" width="58" height="32" rx="5" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.8"/>
+        <text x="161" y="128" text-anchor="middle" font-size="9" font-weight="600" fill="#633806">Trafo</text>
+        <text x="161" y="140" text-anchor="middle" font-size="8" fill="#BA7517">0.4MVA 10/0.4kV</text>
+
+        <!-- LV Busbar -->
+        <rect x="218" y="118" width="128" height="22" rx="4" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
+        <text x="282" y="132" text-anchor="middle" font-size="10" font-weight="600" fill="#085041">LV Busbar 0.4 kV</text>
+
+        <!-- Lines -->
+        <line x1="95" y1="131" x2="132" y2="131" stroke="#5f5e5a" stroke-width="1.5"/>
+        <polygon points="128,128 132,131 128,134" fill="#5f5e5a"/>
+        <line x1="190" y1="131" x2="218" y2="131" stroke="#5f5e5a" stroke-width="1.5"/>
+        <polygon points="214,128 218,131 214,134" fill="#5f5e5a"/>
+
+        <!-- PV Plant -->
+        <rect x="362" y="22" width="80" height="36" rx="6" fill="#FCEBEB" stroke="#E24B4A" stroke-width="0.8"/>
+        <text x="402" y="36" text-anchor="middle" font-size="10" font-weight="600" fill="#791F1F">PV Plant</text>
+        <text x="402" y="50" text-anchor="middle" font-size="9" fill="#A32D2D">187 kWp SAT 1P</text>
+        <line x1="402" y1="58" x2="402" y2="118" stroke="#E24B4A" stroke-width="1.2" stroke-dasharray="4,2"/>
+        <text x="410" y="95" font-size="8" fill="#A32D2D">0.30 km</text>
+        <text id="v-pv" x="402" y="68" text-anchor="middle" font-size="9" font-weight="600" fill="#E24B4A">1.068 pu</text>
+
+        <!-- BESS -->
+        <rect x="460" y="22" width="80" height="36" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.8"/>
+        <text x="500" y="36" text-anchor="middle" font-size="10" font-weight="600" fill="#085041">BESS</text>
+        <text x="500" y="50" text-anchor="middle" font-size="9" fill="#0F6E56">100 kW / 400 kWh</text>
+        <line x1="500" y1="58" x2="500" y2="118" stroke="#1D9E75" stroke-width="1.2" stroke-dasharray="4,2"/>
+        <text x="508" y="95" font-size="8" fill="#0F6E56">0.05 km</text>
+
+        <!-- Horizontal bus extension -->
+        <line x1="346" y1="129" x2="690" y2="129" stroke="#5f5e5a" stroke-width="0.5" stroke-dasharray="3,2" opacity="0.5"/>
+
+        <!-- Data Center -->
+        <rect x="362" y="180" width="80" height="34" rx="5" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+        <text x="402" y="193" text-anchor="middle" font-size="9" font-weight="600" fill="#2c2c2a">Data Center</text>
+        <text x="402" y="206" text-anchor="middle" font-size="8" fill="#5f5e5a">60 kW constant</text>
+        <line x1="402" y1="180" x2="402" y2="140" stroke="#888780" stroke-width="1"/>
+        <text x="408" y="165" font-size="8" fill="#888780">0.15 km</text>
+
+        <!-- Chemical Plant -->
+        <rect x="460" y="180" width="82" height="34" rx="5" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+        <text x="501" y="193" text-anchor="middle" font-size="9" font-weight="600" fill="#2c2c2a">Chem Plant</text>
+        <text x="501" y="206" text-anchor="middle" font-size="8" fill="#5f5e5a">60 kW variable</text>
+        <line x1="501" y1="180" x2="501" y2="140" stroke="#888780" stroke-width="1"/>
+        <text x="507" y="165" font-size="8" fill="#888780">0.40 km</text>
+
+        <!-- EV Charging -->
+        <rect x="558" y="180" width="80" height="34" rx="5" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+        <text x="598" y="193" text-anchor="middle" font-size="9" font-weight="600" fill="#2c2c2a">EV Charging</text>
+        <text x="598" y="206" text-anchor="middle" font-size="8" fill="#5f5e5a">60 kW evening</text>
+        <line x1="598" y1="180" x2="598" y2="140" stroke="#888780" stroke-width="1"/>
+        <text x="604" y="165" font-size="8" fill="#888780">0.25 km</text>
+
+        <!-- Office -->
+        <rect x="558" y="22" width="72" height="34" rx="5" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+        <text x="594" y="36" text-anchor="middle" font-size="9" font-weight="600" fill="#2c2c2a">Office</text>
+        <text x="594" y="49" text-anchor="middle" font-size="8" fill="#5f5e5a">30 kW daytime</text>
+        <line x1="594" y1="56" x2="594" y2="118" stroke="#888780" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="600" y="95" font-size="8" fill="#888780">0.10 km</text>
+
+        <!-- Warehouse + Manufacturing compact -->
+        <rect x="648" y="100" width="100" height="58" rx="5" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+        <text x="698" y="115" text-anchor="middle" font-size="9" font-weight="600" fill="#2c2c2a">Warehouse</text>
+        <text x="698" y="127" text-anchor="middle" font-size="8" fill="#5f5e5a">15 kW · 0.20 km</text>
+        <line x1="697" y1="100" x2="690" y2="129" stroke="#888780" stroke-width="1" stroke-dasharray="3,2"/>
+        <text x="698" y="144" text-anchor="middle" font-size="9" font-weight="600" fill="#2c2c2a">Manufacturing</text>
+        <text x="698" y="156" text-anchor="middle" font-size="8" fill="#5f5e5a">50 kW · 0.35 km</text>
+
+        <!-- ANSI limits note -->
+        <rect x="10" y="240" width="220" height="28" rx="5" fill="#FCEBEB" stroke="#E24B4A" stroke-width="0.5"/>
+        <text x="120" y="252" text-anchor="middle" font-size="9" font-weight="600" fill="#791F1F">ANSI C84.1 limits: 0.95 — 1.05 pu</text>
+        <text x="120" y="263" text-anchor="middle" font-size="8" fill="#A32D2D">4,688 hrs overvoltage detected (PV Plant bus, summer)</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Time-series chart -->
+  <div class="card">
+    <div class="card-title">Time-series power flow</div>
+    <div class="controls">
+      <label>Week</label>
+      <select id="week-sel" onchange="updateChart()">
+        <option value="0">Jan 1–7, 2022 (winter low)</option>
+        <option value="1">Mar 14–20 (spring equinox)</option>
+        <option value="2" selected>Jun 21–27 (summer peak)</option>
+        <option value="3">Sep 22–28 (fall equinox)</option>
+        <option value="4">Dec 19–25 (winter solstice)</option>
+      </select>
+      <label style="margin-left:10px">View</label>
+      <select id="view-sel" onchange="updateChart()">
+        <option value="power">Power balance (kW)</option>
+        <option value="voltage">Bus voltages (pu)</option>
+        <option value="soc">BESS state of charge (%)</option>
+      </select>
+    </div>
+    <canvas id="main-chart" height="220"></canvas>
+    <div class="legend" id="chart-legend"></div>
+  </div>
+
+  <!-- Interactive voltage calculator -->
+  <div class="card">
+    <div class="card-title">Voltage sensitivity — interactive calculator</div>
+    <p style="font-size:13px;color:#5f5e5a;margin-bottom:14px">Adjust PV output and load to see how voltage at the PV bus responds. Based on simplified Thevenin impedance model.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start">
+      <div>
+        <div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <label style="font-size:12px;color:#5f5e5a">PV output (kW)</label>
+            <span id="pv-val" style="font-size:13px;font-weight:500">100 kW</span>
+          </div>
+          <input type="range" id="pv-range" min="0" max="187" value="100" step="1" style="width:100%" oninput="calcVoltage()">
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <label style="font-size:12px;color:#5f5e5a">Total load (kW)</label>
+            <span id="load-val" style="font-size:13px;font-weight:500">120 kW</span>
+          </div>
+          <input type="range" id="load-range" min="50" max="280" value="120" step="1" style="width:100%" oninput="calcVoltage()">
+        </div>
+      </div>
+      <div id="volt-result" style="padding:14px;border-radius:8px;border-left:3px solid #185FA5;background:#E6F1FB;font-size:13px;line-height:1.7"></div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ── Synthetic data generator ────────────────────────────────────────────────
+function makeWeek(weekIdx) {
+  const solarPeaks = [45, 95, 155, 100, 40];
+  const peak = solarPeaks[weekIdx];
+  const rows = [];
+  for (let h = 0; h < 168; h++) {
+    const hr = h % 24;
+    const dow = Math.floor(h / 24);
+    const wd = dow < 5 ? 1.0 : dow === 5 ? 0.7 : 0.5;
+    let pv = 0;
+    if (hr >= 6 && hr <= 19)
+      pv = peak * Math.sin(Math.PI * (hr - 6) / 13) * (0.88 + 0.12 * Math.random());
+    const dcLoad  = 0.060 * (0.95 + 0.05 * Math.sin(2 * Math.PI * hr / 24));
+    const cpLoad  = (hr >= 6 && hr < 22 ? 0.060 : 0.030) * wd;
+    const evLoad  = (hr >= 17 && hr < 22) ? 0.005 + 0.055 * Math.exp(-0.5 * ((hr - 19) / 1.5) ** 2) * wd : 0.005;
+    const offLoad = (hr >= 7 && hr < 19) ? 0.030 * (0.5 + 0.5 * Math.sin(Math.PI * (hr - 7) / 12)) * wd : 0.002;
+    const whLoad  = (hr >= 7 && hr < 17) ? 0.015 * wd : 0.003;
+    const mfgLoad = (hr >= 6 && hr < 22) ? 0.050 * (0.7 + 0.3 * Math.sin(Math.PI * (hr - 6) / 16)) * wd : 0.010;
+    const totalKW = (dcLoad + cpLoad + evLoad + offLoad + whLoad + mfgLoad) * 1000;
+    let bess = 0;
+    if (pv > 50) bess = -Math.min(pv * 0.6, 100);
+    else if (hr >= 17 && hr <= 21) bess = Math.min(80, totalKW * 0.4);
+    const netMW = (pv + Math.max(0, bess)) / 1000;
+    const loadMW = totalKW / 1000;
+    const vPV = Math.min(1.072, 1.02 + (netMW - loadMW * 0.3) * 0.22);
+    const vLV = 1.02 + (netMW - loadMW * 0.25) * 0.15;
+    const vDC = 1.02 - dcLoad * 0.05;
+    const vEV = 1.02 - evLoad * 0.08;
+    rows.push({ h, pv, bess, totalKW, vPV: +vPV.toFixed(4), vLV: +vLV.toFixed(4), vDC: +vDC.toFixed(4), vEV: +vEV.toFixed(4) });
+  }
+  // compute SOC
+  let soc = 0.5;
+  rows.forEach(r => {
+    if (r.bess < 0) soc = Math.min(0.9, soc + (-r.bess * 0.975) / 400);
+    else if (r.bess > 0) soc = Math.max(0.1, soc - r.bess / (0.975 * 400));
+    r.soc = +(soc * 100).toFixed(1);
+  });
+  return rows;
+}
+
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+function hourLabel(h) { return DAYS[Math.floor(h/24)] + " " + String(h%24).padStart(2,"0")+":00"; }
+
+let chart = null;
+let curData = makeWeek(2);
+
+function updateChart() {
+  const wi = +document.getElementById("week-sel").value;
+  const vi = document.getElementById("view-sel").value;
+  curData = makeWeek(wi);
+  buildChart(curData, vi);
+}
+
+function buildChart(data, view) {
+  const labels = data.map(r => hourLabel(r.h));
+  const legend = document.getElementById("chart-legend");
+  if (chart) { chart.destroy(); chart = null; }
+
+  let datasets = [], legendItems = [];
+
+  if (view === "power") {
+    datasets = [
+      { label:"PV generation", data:data.map(r=>+r.pv.toFixed(1)), borderColor:"#E24B4A", backgroundColor:"rgba(226,75,74,0.08)", fill:true, tension:0.3, pointRadius:0, borderWidth:2 },
+      { label:"Total load", data:data.map(r=>+r.totalKW.toFixed(1)), borderColor:"#185FA5", backgroundColor:"rgba(24,95,165,0.08)", fill:true, tension:0.3, pointRadius:0, borderWidth:1.5 },
+      { label:"BESS (+discharge / -charge)", data:data.map(r=>+r.bess.toFixed(1)), borderColor:"#1D9E75", fill:false, tension:0.3, pointRadius:0, borderWidth:1.5, borderDash:[5,3] },
+    ];
+    legendItems = [["#E24B4A","PV generation"],["#185FA5","total load"],["#1D9E75","BESS"]];
+  } else if (view === "voltage") {
+    datasets = [
+      { label:"PV Plant", data:data.map(r=>r.vPV), borderColor:"#E24B4A", pointRadius:0, borderWidth:2, tension:0.3 },
+      { label:"LV Busbar", data:data.map(r=>r.vLV), borderColor:"#0F6E56", pointRadius:0, borderWidth:1.5, tension:0.3 },
+      { label:"Data Center", data:data.map(r=>r.vDC), borderColor:"#888780", pointRadius:0, borderWidth:1, tension:0.3 },
+      { label:"EV Charging", data:data.map(r=>r.vEV), borderColor:"#185FA5", pointRadius:0, borderWidth:1, tension:0.3 },
+    ];
+    legendItems = [["#E24B4A","PV Plant (overvoltage risk)"],["#0F6E56","LV Busbar"],["#888780","Data Center"],["#185FA5","EV Charging"]];
+  } else {
+    datasets = [
+      { label:"BESS SOC", data:data.map(r=>r.soc), borderColor:"#1D9E75", backgroundColor:"rgba(29,158,117,0.1)", fill:true, tension:0.3, pointRadius:0, borderWidth:2 },
+    ];
+    legendItems = [["#1D9E75","BESS state of charge (%)"]];
+  }
+
+  const ctx = document.getElementById("main-chart").getContext("2d");
+  chart = new Chart(ctx, {
+    type: "line",
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      interaction: { mode:"index", intersect:false },
+      plugins: {
+        legend: { display:false },
+        tooltip: {
+          callbacks: {
+            title: items => items[0].label,
+            label: item => ` ${item.dataset.label}: ${(+item.raw).toFixed(3)}${view==="voltage"?" pu":view==="soc"?"%":" kW"}`
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { maxTicksLimit:14, font:{size:10} }, grid: { color:"rgba(128,128,128,0.07)" } },
+        y: {
+          ticks: { font:{size:10} },
+          grid: { color:"rgba(128,128,128,0.07)" },
+          min: view==="voltage" ? 0.93 : undefined,
+          max: view==="voltage" ? 1.10 : undefined,
+        }
+      }
+    }
+  });
+
+  if (view === "voltage") {
+    // draw limit lines manually
+    const orig = chart.options.animation;
+    chart.options.plugins.annotation = {};
+  }
+
+  legend.innerHTML = legendItems.map(([c,l]) =>
+    `<div class="legend-item"><div class="legend-dot" style="background:${c}"></div>${l}</div>`
+  ).join("");
+}
+
+// ── Voltage calculator ──────────────────────────────────────────────────────
+function calcVoltage() {
+  const pv   = +document.getElementById("pv-range").value;
+  const load = +document.getElementById("load-range").value;
+  document.getElementById("pv-val").textContent   = pv   + " kW";
+  document.getElementById("load-val").textContent = load + " kW";
+  const net  = pv - load;
+  const v    = +(1.02 + net * 0.00120).toFixed(3);
+  const el   = document.getElementById("volt-result");
+  let color  = "#185FA5", bg = "#E6F1FB", border = "#185FA5";
+  let status = "within ANSI limits (0.95 – 1.05 pu)";
+  if (v > 1.05) { color="#791F1F"; bg="#FCEBEB"; border="#E24B4A"; status="OVERVOLTAGE — exceeds 1.05 pu limit"; }
+  if (v < 0.95) { color="#791F1F"; bg="#FCEBEB"; border="#E24B4A"; status="UNDERVOLTAGE — below 0.95 pu limit"; }
+  el.style.borderLeftColor = border;
+  el.style.background = bg;
+  el.innerHTML = `<strong style="font-size:18px;color:${color}">${v} pu</strong> — ${status}<br><br>
+Net power: ${net > 0 ? "+" : ""}${Math.round(net)} kW
+${net > 0 ? "(PV surplus → reverse flow → voltage rises)" : "(load > PV → grid import → voltage drops)"}`;
+}
+
+// ── Init ────────────────────────────────────────────────────────────────────
+buildChart(curData, "power");
+calcVoltage();
+</script>
+</body>
+</html>
