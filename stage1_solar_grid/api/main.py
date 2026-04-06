@@ -27,6 +27,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -73,6 +74,15 @@ def load_all_data():
 
 
 # ── App ───────────────────────────────────────────────────────────────────────
+DATA = {}
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    global DATA
+    DATA = load_all_data()
+    print(f"Data loaded: {list(DATA.keys())}")
+    yield
+
 app = FastAPI(
     title="EnergyFlux — Stage 1 API",
     description=(
@@ -81,6 +91,7 @@ app = FastAPI(
         "power flow analysis, and AI-powered root cause analysis."
     ),
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -89,15 +100,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Load data on startup
-DATA = {}
-
-@app.on_event("startup")
-async def startup():
-    global DATA
-    DATA = load_all_data()
-    print(f"Data loaded: {list(DATA.keys())}")
 
 
 # ── Models ────────────────────────────────────────────────────────────────────
