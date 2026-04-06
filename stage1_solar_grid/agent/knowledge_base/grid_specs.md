@@ -1,9 +1,9 @@
-# Grid Specifications — Industrial Park Distribution Network
+# Grid Specifications — Commercial Block Distribution Network (Fremont CA)
 
 ## Network Topology
 - Voltage level: 0.4 kV (LV distribution)
 - Transformer: 400 kVA, 10kV/0.4kV
-- 10 buses, 8 lines (NAYY 4x120 SE LV cable)
+- 9 buses, 7 lines (NAYY 4x120 SE LV cable)
 - Radial topology (star from LV busbar)
 
 ## Bus List
@@ -13,12 +13,11 @@
 | 1 | LV Busbar | Distribution | - |
 | 2 | PV Plant | Generation | 187 kWp |
 | 3 | BESS | Storage | 100 kW / 400 kWh |
-| 4 | Data Center | Load | 60 kW (constant) |
-| 5 | Chemical Plant | Load | 60 kW (variable) |
-| 6 | EV Charging | Load | 60 kW (evening peak) |
-| 7 | Office | Load | 30 kW (daytime) |
-| 8 | Warehouse | Load | 15 kW |
-| 9 | Manufacturing | Load | 50 kW |
+| 4 | Biotech Lab | Load | 70 kW (24/7 base + daytime staff) |
+| 5 | Supermarket | Load | 45-65 kW (refrigeration 24/7) |
+| 6 | EV Charging Hub | Load | 5-60 kW (evening commuter peak) |
+| 7 | Medical Clinic | Load | 30 kW (weekday daytime only) |
+| 8 | Office Building | Load | 25 kW (weekday daytime only) |
 
 ## Voltage Limits (ANSI C84.1 Range A)
 - Minimum: 0.95 pu (380 V)
