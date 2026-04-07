@@ -136,45 +136,67 @@ def generate_load_profiles(index):
 
 
 # ── BESS dispatch (simple rule-based) ────────────────────────────────────────
+# ── California TOU electricity rates (PG&E E-19, simplified) ──────────────────
+# Off-peak: 9pm - 8am         $0.10/kWh  → charge from grid (cheap)
+# Mid-peak: 8am - 4pm         $0.20/kWh  → charge from PV surplus (free)
+# On-peak:  4pm - 9pm         $0.35/kWh  → discharge to avoid expensive grid import
+TOU_OFFPEAK  = 0.10   # $/kWh
+TOU_MIDPEAK  = 0.20
+TOU_ONPEAK   = 0.35
+
+
 def dispatch_bess(pv_kw, total_load_kw):
     """
-    BESS dispatch strategy:
-      - Charge when PV > load (absorb excess to prevent overvoltage)
-      - Discharge during evening peak 5-9pm (reduce grid import)
-      - Also discharge if PV is zero and load is high
+    BESS dispatch with TOU-aware strategy:
+      Priority 1: Charge from PV surplus (free solar, midday)
+      Priority 2: Charge from grid during off-peak (cheap, 9pm-8am)
+      Priority 3: Discharge during on-peak (expensive, 4pm-9pm)
 
-    Returns: bess_kw (positive = discharging/injecting, negative = charging)
+    This is a rule-based approximation of TOU arbitrage.
+    Stage 2 replaces this with Pyomo LP for true optimal dispatch.
+
+    Returns: bess_kw (positive = discharging, negative = charging)
              soc timeseries
     """
     n = len(pv_kw)
     bess_kw = np.zeros(n)
     soc = np.zeros(n)
-    soc[0] = 0.50  # start at 50%
-    eff = np.sqrt(BESS_EFF)  # one-way efficiency
+    soc[0] = 0.50
+    eff = np.sqrt(BESS_EFF)
     hours = pv_kw.index.hour
 
     for i in range(n):
         pv = pv_kw.iloc[i]
+        load = total_load_kw.iloc[i]
         h = hours[i]
-
-        net_surplus = pv - total_load_kw.iloc[i]  # positive = PV exceeds load
+        net_surplus = pv - load
 
         if net_surplus > 0 and soc[i] < BESS_SOC_MAX:
-            # Net surplus → charge battery (absorb excess to prevent overvoltage)
+            # Priority 1: PV surplus → charge (free solar energy)
             charge = min(net_surplus, BESS_KW)
-            max_charge = (BESS_SOC_MAX - soc[i]) * BESS_KWH
-            charge = min(charge, max_charge)
-            bess_kw[i] = -charge  # negative = charging
+            charge = min(charge, (BESS_SOC_MAX - soc[i]) * BESS_KWH)
+            bess_kw[i] = -charge
             if i + 1 < n:
                 soc[i + 1] = soc[i] + (charge * eff) / BESS_KWH
-        elif 17 <= h <= 21 and soc[i] > BESS_SOC_MIN + 0.05:
-            # Evening peak → discharge to supply load
-            discharge = min(BESS_KW, total_load_kw.iloc[i] * 0.4)
-            max_discharge = (soc[i] - BESS_SOC_MIN) * BESS_KWH
-            discharge = min(discharge, max_discharge)
+
+        elif (21 <= h or h < 8) and soc[i] < 0.80:
+            # Priority 2: Off-peak night → charge from grid (cheap $0.10/kWh)
+            # Target SOC 80% so there's room for PV surplus next morning
+            charge = min(BESS_KW * 0.5, (0.80 - soc[i]) * BESS_KWH)
+            charge = max(charge, 0)
+            bess_kw[i] = -charge
+            if i + 1 < n:
+                soc[i + 1] = soc[i] + (charge * eff) / BESS_KWH
+
+        elif 16 <= h < 21 and soc[i] > BESS_SOC_MIN + 0.05:
+            # Priority 3: On-peak → discharge (avoid buying $0.35/kWh)
+            # Discharge to cover load, up to BESS power limit
+            discharge = min(load * 0.6, BESS_KW)
+            discharge = min(discharge, (soc[i] - BESS_SOC_MIN) * BESS_KWH)
             bess_kw[i] = discharge
             if i + 1 < n:
                 soc[i + 1] = soc[i] - (discharge / eff) / BESS_KWH
+
         else:
             bess_kw[i] = 0
             if i + 1 < n:
