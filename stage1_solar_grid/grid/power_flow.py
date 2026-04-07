@@ -365,9 +365,9 @@ if __name__ == "__main__":
     # Load PV output from Sprint 3 (Mode 3: backtracking)
     pv_df = pd.read_csv(PV_CSV, index_col=0)
     pv_df.index = pd.to_datetime(pv_df.index, utc=True).tz_convert("America/Los_Angeles")
-    pv_col = "1P tracker + backtrack"
+    pv_col = "Bifacial + backtrack"
     if pv_col not in pv_df.columns:
-        pv_col = pv_df.columns[2]  # fallback to Mode 3 column
+        pv_col = pv_df.columns[-1]  # fallback to last column (Mode 4)
     pv_kw = pv_df[pv_col].fillna(0).clip(lower=0)
     print(f"PV data loaded: {len(pv_kw)} hours, peak={pv_kw.max():.0f} kW")
 

@@ -13,8 +13,8 @@ to correctly calculate row-to-row shading and bifacial rear irradiance.
 Install: uv pip install solarfactors
 
 Location : Fremont, CA (37.5485 N, 121.9886 W)
-Array    : 10 trackers x 3 strings x 16 modules, Hanwha Q CELLS Q.PEAK DUO L-G5.2 390W
-           DC = 187.2 kWp, ILR = 1.2, AC = 156 kW
+Array    : 10 trackers x 3 strings x 16 modules, LONGi LR6-72HBD-385M (385W, bifacial)
+           DC = 184.8 kWp, ILR = 1.2, AC = 154 kW, GCR = 0.45 (urban dense)
 
 Input :  stage1_solar_grid/data/raw/weather_fremont.csv
 Output:  stage1_solar_grid/data/processed/pv_comparison.csv
@@ -50,15 +50,15 @@ TIMEZONE = "America/Los_Angeles"
 NUM_TRACKERS        = 10
 STRINGS_PER_TRACKER = 3
 MODULES_PER_STRING  = 16
-MODULE_WP           = 390
+MODULE_WP           = 385
 
 TOTAL_STRINGS = NUM_TRACKERS * STRINGS_PER_TRACKER    # 30
 TOTAL_MODULES = TOTAL_STRINGS * MODULES_PER_STRING    # 480
-DC_KWP        = TOTAL_MODULES * MODULE_WP / 1000      # 187.2 kWp
+DC_KWP        = TOTAL_MODULES * MODULE_WP / 1000      # 184.8 kWp
 ILR           = 1.2
 AC_KW         = DC_KWP / ILR                          # 132 kW
 
-# ── Physical dimensions of CS6U-330M ─────────────────────────────────────────
+# ── Physical dimensions of LONGi LR6-72HBD-385M ─────────────────────────────
 PVROW_WIDTH  = 2.015   # module long edge (portrait), meters
 PVROW_HEIGHT = 1.5     # center height above ground, meters
 
@@ -66,7 +66,7 @@ PVROW_HEIGHT = 1.5     # center height above ground, meters
 FIXED_TILT   = 20
 AXIS_AZIMUTH = 180
 MAX_ANGLE    = 60
-GCR          = 0.35
+GCR          = 0.45    # urban/constrained site — denser array to maximize land use
 
 # ── Bifacial parameters (mode 4 only) ─────────────────────────────────────────
 BIFACIALITY  = 0.70
@@ -120,7 +120,7 @@ def run_modelchain(mode, modules_db, inverters_db, location, weather):
             gcr          = GCR,
         )
 
-    module   = modules_db["Hanwha_Q_Cells_Q_PEAK_DUO_L_G5_2_390"].copy()
+    module   = modules_db["LONGi_Green_Energy_Technology_Co___Ltd__LR6_72HBD_385M"].copy()
     inverter = find_inverter(inverters_db, AC_KW)
 
     system = PVSystem(
@@ -243,7 +243,7 @@ def run_pvfactors(mode, location, weather, modules_db, inverters_db):
         backtrack    = (mode == 4),
         gcr          = GCR,
     )
-    module   = modules_db["Hanwha_Q_Cells_Q_PEAK_DUO_L_G5_2_390"].copy()
+    module   = modules_db["LONGi_Green_Energy_Technology_Co___Ltd__LR6_72HBD_385M"].copy()
     inverter = find_inverter(inverters_db, AC_KW)
 
     system = PVSystem(
