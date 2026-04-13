@@ -28,6 +28,8 @@ pyomo
 # viz
 matplotlib
 seaborn
+plotly
+streamlit
 
 # utils
 python-dotenv

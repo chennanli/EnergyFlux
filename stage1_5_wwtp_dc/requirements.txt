@@ -1,0 +1,11 @@
+pvlib
+pandapower
+scipy
+numpy
+pandas
+streamlit
+plotly
+bsm2-python
+openai
+pyyaml
+python-dotenv

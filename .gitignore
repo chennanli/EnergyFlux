@@ -18,6 +18,9 @@ data/processed/
 .claude/
 CLAUDE.md
 
+# Planning documents — keep local only
+prd/
+
 # Lightning logs from NeuralForecast training
 lightning_logs/
 
