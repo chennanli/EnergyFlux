@@ -21,6 +21,24 @@ CLAUDE.md
 # Planning documents — keep local only
 prd/
 
+# Internal review / handoff docs (not public-facing)
+stage1_5_wwtp_dc/CC_TASKS_APRIL_2026.md
+stage1_5_wwtp_dc/CLAUDE_HANDOFF_EnergyFlux_Dispatch.md
+stage1_5_wwtp_dc/CODEX_REVIEW.md
+stage1_5_wwtp_dc/PRD_WWTP_LIVE_DCS_SIMULATOR.md
+stage1_5_wwtp_dc/PROJECT_OVERVIEW.md
+stage1_5_wwtp_dc/README_DRAFT.md
+BLOG_SERIES_DRAFT.md
+BLOG_SERIES_DRAFT_v2.md
+
+# Generated simulation outputs (regenerated via run_demo.py)
+stage1_5_wwtp_dc/data/*.csv
+!stage1_5_wwtp_dc/data/.gitkeep
+
+# Environment / lockfiles
+uv.lock
+requirements.frozen.txt
+
 # Lightning logs from NeuralForecast training
 lightning_logs/
 

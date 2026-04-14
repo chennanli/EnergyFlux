@@ -1,3 +1,9 @@
+# STUB — INTENTIONAL FUTURE WORK. NOT IMPLEMENTED.
+# This file defines a Pyomo LP/MIP optimizer to eventually replace the
+# rule-based state machine in bess_dispatch.py. It is not called anywhere
+# in the current codebase. Do not import this file.
+# See README "What Is Implemented vs Future Work" for context.
+
 """Stage 1.5 — Pyomo LP dispatch optimizer (STUB — do not implement yet).
 
 This stub defines the optimization model structure for replacing the

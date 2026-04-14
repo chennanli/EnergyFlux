@@ -60,16 +60,18 @@ EnergyFlux Stage 1.5 is a **physics-informed feasibility simulation** of a 30 MG
                               local / API routing
 ```
 
-Every component uses real physics equations — not assumptions, not lookup tables:
+The simulation combines real physics models with calibrated heuristics:
 
-| Module | Physics | Verification |
+| Module | Method | Verification |
 |---|---|---|
-| **Solar PV** | pvlib ModelChain, real Fremont weather | Annual yield 10,000–11,500 MWh |
-| **WWTP load** | BSM1 / diurnal ODE with morning+evening peaks | 1,800–3,200 kW dynamic range |
-| **BESS dispatch** | Asymmetric charge/discharge state machine | Energy balance < 0.001 kW error |
-| **DC thermal** | 3-node RC ODE (chip → coolant → ambient) | Conservation error < 100 W |
-| **Power flow** | pandapower 5-bus 10 kV network | Voltages 0.94–1.06 pu |
-| **LLM RCA** | NVIDIA NIM / Claude dispatch agent | Anomaly detection + root cause |
+| **Solar PV** | pvlib ModelChain, real Fremont weather (LONGi 385W bifacial, 1P tracker) | Annual yield 10,000–11,500 MWh |
+| **WWTP load** | BSM1-shaped diurnal lookup with equalization-tank smoothing † | 1,800–3,200 kW dynamic range |
+| **BESS dispatch** | TOU-aware asymmetric state machine (PG&E E-20 rate structure) | Energy balance < 0.001 kW error |
+| **DC thermal** | 3-node RC ODE (chip → coolant → ambient) | Conservation error < 100 W at steady state |
+| **Power flow** | pandapower 5-bus 10 kV (standalone verification, not in main demo loop) | Voltages 0.94–1.06 pu |
+| **LLM RCA** | Rule-based anomaly detection + NVIDIA NIM / Claude root cause | Fires on thermal, overload, SOC, latency events |
+
+† The WWTP load is a parametric diurnal curve calibrated to BSM1 operational characteristics with hydraulic dampening from an equalization tank. It is not a real-time BSM1 ODE solve. See Limitations.
 
 ### Hardware Basis and Data Sources
 
@@ -269,14 +271,14 @@ stage1_5_wwtp_dc/
 ├── requirements.txt
 │
 ├── models/
-│   ├── wwtp_load_generator.py   ← BSM1-based dynamic WWTP load
-│   ├── pv_generator.py          ← pvlib solar (5,700 kWp)
-│   ├── bess_dispatch.py         ← TOU-aware asymmetric dispatch
+│   ├── wwtp_load_generator.py   ← WWTP load (BSM1-shaped diurnal, 1,800-3,200 kW)
+│   ├── pv_generator.py          ← pvlib solar (5,700 kWp, bifacial 1P tracker)
+│   ├── bess_dispatch.py         ← TOU-aware asymmetric dispatch (PG&E E-20)
 │   ├── energy_balance.py        ← Physics conservation verifier
-│   ├── dc_thermal.py            ← RC ODE thermal model
-│   ├── power_flow.py            ← pandapower 5-bus network
-│   ├── inference_load.py        ← GPU inference load curve
-│   └── network_model.py         ← API congestion model
+│   ├── dc_thermal.py            ← 3-node RC ODE thermal model
+│   ├── power_flow.py            ← pandapower 5-bus (standalone verification)
+│   ├── inference_load.py        ← DC load model (flat 2,500 kW for inference)
+│   └── network_model.py         ← API latency / congestion model
 │
 ├── agent/
 │   ├── dispatch_agent.py        ← Rule-based + LLM RCA
@@ -305,17 +307,40 @@ The simulation platform underlying the white paper is this repo.
 
 ---
 
+## What Is Implemented vs Future Work
+
+**Implemented in this repo:**
+- Annual PV + WWTP + BESS + DC energy balance (8,760 hourly simulation)
+- TOU-aware asymmetric BESS dispatch (PG&E E-20 rate structure)
+- 3-node RC ODE data center thermal model with derating logic
+- Network congestion routing model (local vs cloud API)
+- LLM anomaly RCA via NVIDIA NIM (mock mode without API key)
+- Streamlit dashboard (Grid Impact, Full Year, Three Scenarios)
+
+**Not yet implemented (future work):**
+- Operator chat interface (Gemma 4 as plant brain)
+- Field photo analysis for visual anomaly detection
+- PLC code generation for control system modifications
+- Full BSM1 ODE dynamic simulation (current WWTP uses calibrated diurnal lookup)
+- Monte Carlo IRR across price/utilization uncertainty distributions
+- Site screener across EPA NPDES public database (~16,000 US WWTPs)
+
+---
+
 ## Limitations (Being Honest)
 
 This is a feasibility demonstration, not an engineering design package.
 
-- The WWTP load uses a synthetic physics-based diurnal signal (not real SCADA data)
-- GPU costs use 2026 estimated rack pricing — these change rapidly
-- Token revenue at $0.25/M tokens is a mid-market estimate; actual rates vary widely
-- The power flow uses simplified 5-bus topology; real facilities are more complex
+- **WWTP load** is a parametric diurnal curve calibrated to BSM1 characteristics with equalization-tank smoothing — not a real-time ODE solve and not real SCADA data
+- **Token economics** use 5.8M tokens/sec/MW from Tom's Hardware's media analysis of Blackwell GB200 NVL72 at 125 kW/rack — not an official NVIDIA datasheet value
+- **GPU costs** use 2026 estimated rack pricing which changes rapidly
+- **Token revenue** at $0.25/M tokens is a mid-market estimate; actual rates vary widely by workload type
+- **Power flow** uses a simplified 5-bus star topology; real BTM facilities share a single internal AC bus
+- **BESS round-trip efficiency** of 0.95 is at the optimistic end; commercial LFP systems with inverter losses are typically 0.85–0.90
+- **Anomaly thresholds** are heuristic starting points calibrated for demo purposes, not operational tuning
 - No regulatory or environmental review has been performed on any specific site
 
-The physics and the energy balances are real. The economic projections are indicative. A real deployment requires site-specific engineering, utility agreements, and permitting.
+The PV physics, thermal ODE, and energy balance are derived from first principles. The economic projections and WWTP load curve are indicative. A real deployment requires site-specific engineering, utility interconnection agreements, and permitting.
 
 ---
 

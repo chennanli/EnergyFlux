@@ -5,7 +5,9 @@ numpy
 pandas
 streamlit
 plotly
-bsm2-python
+# qsdsan       # optional: enables full BSM1 ODE simulation via QSDsan
+#              # without it, wwtp_load_generator.py uses BSM1-shaped diurnal fallback
+#              # install with: pip install qsdsan
 openai
 pyyaml
 python-dotenv
