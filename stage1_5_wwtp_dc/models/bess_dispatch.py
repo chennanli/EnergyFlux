@@ -116,6 +116,10 @@ def dispatch_step(
         if SOC > SOC_MIN_KWH:
             hours_left = max(1.0, 21.5 - hour)
             target_dis_rate = (SOC - SOC_MIN_KWH) / hours_left * ETA
+            # dc_deficit == grid draw with BESS idle (P_wwtp + P_dc - P_pv - P_biogas).
+            # The +500 kW slack lets evening discharge partially cover WWTP aeration
+            # load in addition to DC, which is the expensive partial-peak use-case.
+            # The min() below ensures target_dis_rate (pacing) is the real binder.
             dc_deficit = max(0.0, P_dc - P_pv - P_BIOGAS + P_wwtp)
             P_bess_dis = min(P_BESS_MAX_DIS, target_dis_rate, dc_deficit + 500)
 
@@ -159,6 +163,11 @@ def dispatch_step(
         SOC_new = SOC + P_bess_chg * ETA - P_bess_dis / ETA
         P_grid = max(0.0, P_wwtp + P_dc + P_bess_chg - P_pv - P_bess_dis - P_BIOGAS - P_curtail)
 
+    # NOTE: In rare clamp-recovery edge cases, P_bess_chg and P_bess_dis may
+    # both be > 0 in the same timestep. This is a modelling artefact — a real
+    # inverter enforces mutual exclusion. The energy balance below still closes
+    # because curtailment absorbs the slack. Future work: add explicit
+    # mutex via binary variable when switching to Pyomo LP (see dispatch_optimizer.py).
     balance_err = abs(
         (P_pv + P_bess_dis + P_grid + P_BIOGAS)
         - (P_wwtp + P_dc + P_bess_chg + P_curtail)
