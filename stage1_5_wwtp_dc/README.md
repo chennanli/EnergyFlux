@@ -71,6 +71,46 @@ Every component uses real physics equations — not assumptions, not lookup tabl
 | **Power flow** | pandapower 5-bus 10 kV network | Voltages 0.94–1.06 pu |
 | **LLM RCA** | NVIDIA NIM / Claude dispatch agent | Anomaly detection + root cause |
 
+### Hardware Basis and Data Sources
+
+Token economics use the **Blackwell GB200 NVL72** as the confirmed baseline.
+
+**Blackwell GB200 NVL72 — confirmed figures:**
+
+| Data point | Value | Source |
+|---|---|---|
+| Rack IT power | 125–135 kW/rack | Supermicro GB200 NVL72 datasheet (supermicro.com) |
+| Token throughput | 5.8M tokens/sec/MW | Tom's Hardware, March 2025 * |
+| Racks in this simulation | 16 × 125 kW = 2,000 kW IT | White paper Stage 1.5 design |
+
+\* Tom's Hardware March 2025 article on Rubin Ultra / Kyber racks:
+tomshardware.com/pc-components/gpus/nvidia-shows-off-rubin-ultra-with-600-000
+-watt-kyber-racks-and-infrastructure-coming-in-2027
+The 5.8M figure is a media-derived calculation using NVIDIA's published
+benchmark data, not a standalone NVIDIA datasheet entry.
+
+**Vera Rubin NVL72 — estimates only (H2 2026):**
+
+| Claim | Value | Source |
+|---|---|---|
+| Inference throughput/watt vs Blackwell | Up to 10× (Kimi K2 benchmark) | NVIDIA GTC 2026 newsroom |
+| Combined NVL72 + LPX vs Blackwell | Up to 35× per megawatt | NVIDIA GTC 2026 newsroom |
+| Rack power (supply chain) | ~190 kW/rack Max Q | Ming-Chi Kuo @mingchikuo, X, Jan 2026 |
+| Official absolute tokens/sec/MW | **Not published** | — |
+
+Key NVIDIA sources:
+- Vera Rubin newsroom (March 16 2026):
+  nvidianews.nvidia.com/news/nvidia-vera-rubin-platform
+- Vera Rubin product page:
+  nvidia.com/en-us/data-center/technologies/rubin/
+- Groq 3 LPX product page:
+  nvidia.com/en-us/data-center/lpx/
+- Inside Groq 3 LPX (tech blog):
+  developer.nvidia.com/blog/inside-nvidia-groq-3-lpx/
+- Token Factory Revenue blog (March 24 2026):
+  developer.nvidia.com/blog/scaling-token-factory-revenue-and-ai-efficiency
+  -by-maximizing-performance-per-watt/
+
 ---
 
 ## Key Numbers
@@ -85,9 +125,27 @@ Every component uses real physics equations — not assumptions, not lookup tabl
 | Grid self-sufficiency from solar | ~24% |
 | Peak grid draw (at night, BESS charging) | ~4,700 kW |
 | Permitting timeline | **4–7 months** (behind-the-meter) |
-| Token throughput at 70% utilization | ~256 trillion tokens/year |
-| Gross revenue potential at $0.25/M tokens | ~$64M/yr |
+| Token throughput — Blackwell baseline, 70% util | ~256 trillion tokens/yr |
+| Gross revenue — Blackwell GB200 @ $0.25/M tokens | ~$64M/yr |
+| Gross revenue — Vera Rubin NVL72 @ $0.25/M tokens (estimated) | ~$200–640M/yr * |
 | Grid electricity cost for DC | ~$1.3M/yr |
+
+> \* **Vera Rubin NVL72 revenue estimate.**
+> NVIDIA GTC 2026 claims up to 10× inference throughput per watt versus
+> Blackwell, benchmarked on Kimi K2 (32K/8K ISL/OSL) — a specific model
+> and sequence-length condition. Conservative estimate ($200M/yr) uses 3×
+> real-world improvement; upper bound ($640M/yr) uses NVIDIA's stated 10×
+> benchmark figure. Same 2 MW IT budget; Vera Rubin racks draw ~190 kW
+> each (supply chain estimate, not NVIDIA official), yielding ~10 racks
+> versus 16 for Blackwell. H2 2026 shipment. No official absolute
+> tokens/sec/MW published by NVIDIA as of April 2026.
+>
+> Sources: NVIDIA Newsroom March 16 2026
+> (nvidianews.nvidia.com/news/nvidia-vera-rubin-platform);
+> NVIDIA Tech Blog March 24 2026
+> (developer.nvidia.com/blog/scaling-token-factory-revenue-and-ai-efficiency
+> -by-maximizing-performance-per-watt/);
+> Ming-Chi Kuo @mingchikuo on X, January 2026 (rack power supply chain).
 
 ---
 

@@ -20,7 +20,7 @@ sys.path.insert(0, str(ROOT))
 from agent.dispatch_agent import DispatchAgent
 from models.bess_dispatch import P_BIOGAS, dispatch_step
 from models.dc_thermal import run_dc_simulation
-from models.inference_load import P_DC_TOTAL_KW, generate_load_factors
+from models.inference_load import P_DC_TOTAL_KW
 from models.network_model import generate_network_scenario
 
 
@@ -84,8 +84,10 @@ def run_case(case_number: int, duration_hours: int = 24) -> pd.DataFrame:
     pv_kw = pv_slice["P_pv_kw"].values
 
     np.random.seed(42)
-    lf_base = generate_load_factors(n, seed=42)
-    lf_scaled = np.clip(lf_base * params["dc_load_scale"] / 0.6, 0.2, 1.0)
+    # Flat DC load at case-specific utilization (physical basis: see
+    # models/inference_load.py — a 24/7 inference Token Plant draws
+    # near-constant power regardless of time of day).
+    lf_scaled = np.full(n, float(params["dc_load_scale"]))
     dc_kw = lf_scaled * P_DC_TOTAL_KW
 
     if params["T_outside"] is not None:
