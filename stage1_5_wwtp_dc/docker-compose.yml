@@ -1,1 +1,13 @@
-# Placeholder — filled in at Step 10 (Streamlit dashboard deployment).
+# docker-compose.yml
+#
+# PLACEHOLDER — not implemented.
+# The intended deployment would containerize:
+#   - run_demo.py (simulation engine)
+#   - app.py (Streamlit dashboard)
+#   - agent/dispatch_agent.py (LLM RCA endpoint)
+# using NVIDIA Container Runtime for GPU access.
+#
+# For now, run directly:
+#   pip install -r requirements.txt
+#   PYTHONPATH=. python run_demo.py --case all
+#   streamlit run app.py

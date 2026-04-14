@@ -1,4 +1,10 @@
 #!/bin/bash
+# ILLUSTRATIVE EXAMPLE — NOT RUNNABLE AS-IS.
+# run_demo.py accepts --case 1|2|3|all, not --scenario-id or --weather-variation.
+# This script shows the intended DGX SuperPOD deployment pattern for a full
+# Monte Carlo sweep. Implementing --scenario-id and --weather-variation in
+# run_demo.py is tracked as future work.
+#
 #SBATCH --job-name=wwtp_scenario_sweep
 #SBATCH --nodes=1
 #SBATCH --gpus-per-node=1

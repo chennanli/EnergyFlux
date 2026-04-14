@@ -31,7 +31,10 @@ def _detect_anomalies(state: dict) -> list[str]:
         anomalies.append("thermal")
     if state["P_wwtp"] > 2800:
         anomalies.append("wwtp_overload")
-    if state["bess_soc"] < 15:
+    if state["bess_soc"] < 12:
+        # Threshold 12% = SOC_MIN (10%) + 2% buffer.
+        # bess_dispatch targets ~10-15% SOC at end of evening discharge — by design.
+        # Do NOT set threshold at 15%; that fires every night as normal operation.
         anomalies.append("bess_low")
     if state["api_latency"] > 300:
         anomalies.append("api_congestion")

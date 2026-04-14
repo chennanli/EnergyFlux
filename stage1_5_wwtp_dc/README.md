@@ -28,6 +28,8 @@ Every US city has a wastewater treatment plant. Every WWTP has:
 | 24/7 operations staff | Security and oversight already on site |
 | Heavy industrial zoning | AI data center permitted as equipment installation |
 
+Other site types have some of these. Closed landfills have land but not power. Rail yards have power but not cooling. Corn silos have neither. Only WWTPs have all five in a single parcel already permitted for heavy industrial use — which is exactly why they are the right starting point for distributed AI infrastructure.
+
 Converting that buffer land to **solar + battery + AI inference** creates a distributed token factory that:
 
 - Gets permitted in **4–7 months** (not 3–7 years)
@@ -221,7 +223,7 @@ Every hour:
   6. Log reasoning string (always non-empty for interpretability)
 ```
 
-The agent connects to NVIDIA NIM for inference. If no API key is set, it runs in mock mode — the full simulation still works.
+The agent uses NVIDIA's NIM inference endpoint (Llama 3.1 8B Instruct, a Meta model served via NVIDIA's NIM platform). If `NVIDIA_API_KEY` is not set in `.env`, it runs in mock mode — the full simulation still works.
 
 ---
 
@@ -232,12 +234,12 @@ The agent connects to NVIDIA NIM for inference. If no API key is set, it runs in
 | 16-rack DC thermal ODE | DGX GB200 NVL72 rack-scale liquid cooling |
 | Thermal derating logic | NVIDIA DCGM power capping + thermal throttle |
 | Asymmetric BESS dispatch | Energy-aware workload scheduling (DSX Flex) |
-| Local NIM inference routing | NVIDIA NIM deployed on-premises |
+| Local NIM inference routing | NVIDIA NIM deployed on-premises (Llama 3.1 8B via NIM endpoint) |
 | API fallback routing | NVIDIA NIM on DGX Cloud |
 | LLM RCA for WWTP anomalies | NeMo Agent Toolkit orchestration |
 | Power flow (pandapower 5-bus) | Facility power management integration |
-| Docker compose services | NVIDIA Container Runtime + microservices |
-| Slurm scenario sweep script | DGX SuperPOD + Slurm workload manager |
+| Docker compose (placeholder) | NVIDIA Container Runtime + microservices |
+| Slurm sweep script (illustrative) | DGX SuperPOD + Slurm workload manager |
 
 ---
 
@@ -334,7 +336,8 @@ This is a feasibility demonstration, not an engineering design package.
 - **WWTP load** is a parametric diurnal curve calibrated to BSM1 characteristics with equalization-tank smoothing — not a real-time ODE solve and not real SCADA data
 - **Token economics** use 5.8M tokens/sec/MW from Tom's Hardware's media analysis of Blackwell GB200 NVL72 at 125 kW/rack — not an official NVIDIA datasheet value
 - **GPU costs** use 2026 estimated rack pricing which changes rapidly
-- **Token revenue** at $0.25/M tokens is a mid-market estimate; actual rates vary widely by workload type
+- **Token revenue** at $0.25/M tokens is a mid-market estimate for open-weight inference. Current market spread is $0.10–$15.00/M depending on model class (commodity open-weight vs premium proprietary). Revenue is highly sensitive to this assumption: at $0.10/M the Blackwell scenario yields ~$26M/yr; at $1.00/M it yields ~$256M/yr. IRR is dominated by token price, not energy cost.
+- **Hardware utilization** (70%) used for revenue calculation reflects average serving efficiency including queue gaps; facility power draw (100%) reflects near-constant DC electrical load regardless of serving utilization. These are different things measured at different layers.
 - **Power flow** uses a simplified 5-bus star topology; real BTM facilities share a single internal AC bus
 - **BESS round-trip efficiency** of 0.95 is at the optimistic end; commercial LFP systems with inverter losses are typically 0.85–0.90
 - **Anomaly thresholds** are heuristic starting points calibrated for demo purposes, not operational tuning

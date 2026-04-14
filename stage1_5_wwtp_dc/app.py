@@ -34,7 +34,12 @@ def load() -> pd.DataFrame | None:
         df = df.merge(pv, on="timestamp", how="left")
     df["hour"] = df["timestamp"].dt.hour
     df["month"] = df["timestamp"].dt.month
-    df["incremental"] = df["P_grid_kw"] - df["P_wwtp_kw"]
+    # Correct baseline: today WWTP grid draw = P_wwtp - P_BIOGAS
+    # Biogas CHP (800 kW constant) already offsets 800 kW of WWTP load.
+    # Without this correction, incremental understates new grid demand by 800 kW.
+    P_BIOGAS_KW = 800.0
+    df["baseline_wwtp_grid"] = (df["P_wwtp_kw"] - P_BIOGAS_KW).clip(lower=0)
+    df["incremental"] = df["P_grid_kw"] - df["baseline_wwtp_grid"]
     return df
 
 @st.cache_data
@@ -53,7 +58,7 @@ tab1, tab2, tab3 = st.tabs(["⚡ Grid Impact", "📅 Full Year", "🔬 Three Sce
 # ══════════════════════════════════════════════════════════════════════════════
 with tab1:
     if ann is None:
-        st.error("Run `uv run python run_demo.py --case all` first.")
+        st.error("Run `python run_demo.py --case all` first.")
         st.stop()
 
     # Compute avg 24h profile
@@ -201,7 +206,7 @@ with tab1:
 # ══════════════════════════════════════════════════════════════════════════════
 with tab2:
     if ann is None:
-        st.error("Run `uv run python run_demo.py --case all` first.")
+        st.error("Run `PYTHONPATH=. python run_demo.py --case all` first.")
         st.stop()
 
     MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
@@ -274,7 +279,7 @@ with tab2:
     pivot = ann.pivot_table(values="SOC_kwh", index="hour", columns="doy", aggfunc="mean")
     fig_h = go.Figure(go.Heatmap(
         z=pivot.values, x=pivot.columns, y=pivot.index,
-        colorscale="RdYlGn", zmin=800, zmax=7200,
+        colorscale="RdYlGn", zmin=800, zmax=7600,
         colorbar=dict(title="SOC (kWh)"),
     ))
     fig_h.update_layout(
