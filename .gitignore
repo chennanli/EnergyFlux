@@ -1,3 +1,4 @@
+# ── Python ─────────────────────────────────────────────────────────────────
 .env
 __pycache__/
 *.py[cod]
@@ -7,40 +8,24 @@ build/
 .venv/
 venv/
 *.ipynb_checkpoints/
-data/raw/
-data/processed/
 *.pkl
 *.h5
 *.onnx
 .DS_Store
+*.ipynb
 
-# Claude Code internal files — do not commit
-.claude/
-CLAUDE.md
-
-# Planning documents — keep local only
-prd/
-
-# Internal review / handoff docs (not public-facing)
-stage1_5_wwtp_dc/CC_TASKS_APRIL_2026.md
-stage1_5_wwtp_dc/CLAUDE_HANDOFF_EnergyFlux_Dispatch.md
-stage1_5_wwtp_dc/CODEX_REVIEW.md
-stage1_5_wwtp_dc/PRD_WWTP_LIVE_DCS_SIMULATOR.md
-stage1_5_wwtp_dc/PROJECT_OVERVIEW.md
-stage1_5_wwtp_dc/README_DRAFT.md
-BLOG_SERIES_DRAFT.md
-BLOG_SERIES_DRAFT_v2.md
-
-# Generated simulation outputs (regenerated via run_demo.py)
-stage1_5_wwtp_dc/data/*.csv
-!stage1_5_wwtp_dc/data/.gitkeep
-
-# Environment / lockfiles
+# ── Lock / frozen files ─────────────────────────────────────────────────────
 uv.lock
 requirements.frozen.txt
 
-# Lightning logs from NeuralForecast training
-lightning_logs/
+# ── Internal / AI handoff docs (keep local, never push) ────────────────────
+# All planning, blog, and AI collaboration files live here
+_internal/
+blog/
 
-# Jupyter notebooks with output
-*.ipynb
+# ── Generated simulation outputs (re-run via run_demo.py) ──────────────────
+stage1_5_wwtp_dc/data/*.csv
+!stage1_5_wwtp_dc/data/.gitkeep
+
+# ── Claude Code internal ────────────────────────────────────────────────────
+.claude/
