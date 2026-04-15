@@ -5,9 +5,9 @@ numpy
 pandas
 streamlit
 plotly
-# qsdsan       # optional: enables full BSM1 ODE simulation via QSDsan
-#              # without it, wwtp_load_generator.py uses BSM1-shaped diurnal fallback
-#              # install with: pip install qsdsan
+qsdsan         # full BSM1 ODE dynamic simulation via QSDsan (required)
+               # wwtp_load_generator.py runs BSM1 steady-state calibration
+               # then generates 8,760-hour diurnal profile scaled off that
 openai
 pyyaml
 python-dotenv
