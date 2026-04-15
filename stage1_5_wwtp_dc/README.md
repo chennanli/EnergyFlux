@@ -1,6 +1,15 @@
-# Can Industrial Mandatory Vacancy Ease the AI Data Center Crisis?
+# EnergyFlux Stage 1.5 — WWTP Case Study
 
-## A case study: wastewater treatment plant buffer zones as behind-the-meter modular AI inference nodes
+> **First flagship case study in the broader EnergyFlux project.**
+> The umbrella thesis covers multiple industrial site classes as behind-the-meter AI infrastructure hosts.
+> See the [root README](../README.md) for the umbrella framing, and [`docs/site_classes.md`](../docs/site_classes.md)
+> for how WWTPs compare to other industrial site classes.
+
+---
+
+## Can Industrial Mandatory Vacancy Ease the AI Data Center Crisis?
+
+A case study: wastewater treatment plant buffer zones as behind-the-meter modular AI inference nodes.
 
 ---
 
