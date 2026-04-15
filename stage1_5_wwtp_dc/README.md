@@ -47,7 +47,7 @@ If the usable portion of a WWTP buffer zone — after subtracting fire access ro
 
 This repo is a physics-informed feasibility study of exactly that idea, using a 30 MGD Bay Area municipal WWTP as the case study.
 
-The question: can approximately 1.5 hectares of WWTP buffer land, covered with 5,700 kWp of bifacial solar panels and paired with an 8 MWh LFP battery, supply enough energy to operate a 2 MW AI inference data center — behind the meter, with no new grid interconnection?
+The question: can approximately 8 hectares (20 acres) of WWTP buffer land, covered with 5,700 kWp of bifacial solar panels and paired with an 8 MWh LFP battery, supply enough energy to operate a 2 MW AI inference data center — behind the meter, with no new grid interconnection?
 
 **The simulation says yes.** 24% of total facility energy comes from solar. Daytime grid draw drops *below* today's WWTP-only baseline. Maximum night-time peak stays within a routine utility service upgrade envelope. Energy balance closes to within 0.001 kW every hour of the year.
 
@@ -147,12 +147,12 @@ Dashboard opens at `http://localhost:8501`. Three tabs:
 | Module | Method | Verification |
 |---|---|---|
 | **Solar PV** | pvlib ModelChain, real Fremont CA weather, LONGi 385W bifacial, 1P tracker | Annual yield 10,000–11,500 MWh |
-| **WWTP load** | BSM1-shaped diurnal with equalization-tank smoothing † | 1,800–3,200 kW dynamic range |
+| **WWTP load** | Hybrid BSM1-calibrated annual load model (QSDsan steady-state → diurnal profile) † | 1,800–3,200 kW dynamic range |
 | **BESS dispatch** | TOU-aware asymmetric state machine, PG&E E-20 rates | Energy balance error < 0.001 kW |
 | **DC thermal** | 3-node RC ODE: chip → coolant → ambient, with derating at 80°C | Conservation error < 100 W steady-state |
 | **LLM RCA** | Rule-based anomaly detection + NVIDIA NIM inference (Llama 3.1 8B) | Fires on thermal, overload, SOC, latency |
 
-† WWTP load is a parametric curve calibrated to BSM1 operational characteristics with hydraulic dampening from an upstream equalization tank. It is not a real-time ODE solve. See Limitations.
+† The WWTP load is a **hybrid BSM1-calibrated annual load model**. A QSDsan BSM1 steady-state simulation calibrates the baseline aeration state (DO, KLa). That BSM1-derived baseline then drives an 8,760-hour diurnal+seasonal profile with equalization-tank hydraulic dampening. DO setpoint changes propagate from the BSM1 solve into the annual curve — a 2.0 → 1.5 mg/L shift gives ~440 kW reduction in mean aeration power. This is more grounded than a hand-drawn curve; it is not the same as a full-year coupled BSM1 ODE run with explicit influent forcing. See Limitations.
 
 Three 24-hour stress tests:
 
@@ -230,6 +230,7 @@ Key sources: [Supermicro GB200 NVL72 datasheet](https://www.supermicro.com); [NV
 
 **In this repo:**
 - 8,760-hour annual energy balance (PV + WWTP + BESS + DC)
+- Hybrid BSM1-calibrated WWTP load model (QSDsan steady-state + annual profile)
 - TOU-aware asymmetric BESS dispatch with PG&E E-20 rate structure
 - RC ODE data center thermal model with automatic derating
 - Network congestion routing model (local GPU vs cloud API fallback)
@@ -240,7 +241,7 @@ Key sources: [Supermicro GB200 NVL72 datasheet](https://www.supermicro.com); [NV
 - Operator chat interface with Gemma 4 as local plant brain
 - Field photo analysis for visual anomaly detection
 - PLC code generation from natural language
-- Full BSM1 ODE dynamic WWTP simulation
+- Full-year hour-by-hour BSM1 ODE integration with explicit influent forcing (current model uses BSM1 to calibrate a baseline, not to solve every hour)
 - Monte Carlo IRR across token price / utilization distributions
 - Site screener across EPA NPDES public database (~16,000 US WWTPs)
 
@@ -255,7 +256,7 @@ stage1_5_wwtp_dc/
 ├── requirements.txt
 ├── models/
 │   ├── pv_generator.py          ← pvlib solar (5,700 kWp, real weather)
-│   ├── wwtp_load_generator.py   ← WWTP load (BSM1-shaped, 1,800–3,200 kW)
+│   ├── wwtp_load_generator.py   ← WWTP load (hybrid BSM1-calibrated, 1,800–3,200 kW)
 │   ├── bess_dispatch.py         ← TOU-aware asymmetric dispatch
 │   ├── dc_thermal.py            ← 3-node RC ODE thermal + derating
 │   ├── inference_load.py        ← flat 2,500 kW DC load (inference is constant)
@@ -272,7 +273,7 @@ stage1_5_wwtp_dc/
 
 ## Limitations
 
-**Modelling scope.** The WWTP load is a parametric diurnal curve calibrated to BSM1 characteristics — not a real-time ODE solve and not real SCADA data from a specific plant. Power flow uses a simplified 5-bus star topology; a real BTM facility shares a single internal AC bus. BESS round-trip efficiency of 0.95 is at the optimistic end; commercial LFP with inverter losses is typically 0.85–0.90. Anomaly thresholds are heuristics calibrated for demo, not operations.
+**Modelling scope.** The WWTP load is a hybrid BSM1-calibrated annual load model: a QSDsan BSM1 steady-state solve sets the baseline aeration state, then an annual diurnal+seasonal profile is scaled from that baseline. This is more grounded than a hand-drawn curve; it is not a full-year coupled BSM1 ODE run with explicit influent forcing (that is listed as future work in `../docs/roadmap.md`). Not real SCADA data from a specific plant. Power flow uses a simplified 5-bus star topology; a real BTM facility shares a single internal AC bus. BESS round-trip efficiency of 0.95 is at the optimistic end; commercial LFP with inverter losses is typically 0.85–0.90. Anomaly thresholds are heuristics calibrated for demo, not operations.
 
 **Economic assumptions.** Token revenue at $0.25/M tokens is one point in a wide distribution — current market spreads from $0.10 (commodity open-weight) to $15.00/M (premium proprietary). Revenue is highly sensitive: at $0.10/M, Blackwell yields ~$26M/yr; at $1.00/M, ~$256M/yr. IRR is dominated by token price, not energy cost. Hardware utilization (70%) for revenue and facility power draw (100%) for electricity cost measure different things at different layers — the gap is real and intentional.
 
