@@ -1,0 +1,13 @@
+pvlib
+pandapower
+scipy
+numpy
+pandas
+streamlit
+plotly
+qsdsan         # full BSM1 ODE dynamic simulation via QSDsan (required)
+               # wwtp_load_generator.py runs BSM1 steady-state calibration
+               # then generates 8,760-hour diurnal profile scaled off that
+openai
+pyyaml
+python-dotenv

@@ -24,8 +24,29 @@ _internal/
 blog/
 
 # ── Generated simulation outputs (re-run via run_demo.py) ──────────────────
+# General rule: most generated CSVs stay local.
 stage1_5_wwtp_dc/data/*.csv
 !stage1_5_wwtp_dc/data/.gitkeep
+# Exception: these 8 are frozen demo fixtures that the Streamlit Cloud app
+# reads at runtime. Regenerate with `python run_demo.py --case all` if the
+# underlying simulation changes; otherwise leave committed.
+!stage1_5_wwtp_dc/data/case1_results.csv
+!stage1_5_wwtp_dc/data/case2_results.csv
+!stage1_5_wwtp_dc/data/case3_results.csv
+!stage1_5_wwtp_dc/data/dispatch_hourly.csv
+!stage1_5_wwtp_dc/data/pv_hourly.csv
+!stage1_5_wwtp_dc/data/powerflow_hourly.csv
+!stage1_5_wwtp_dc/data/wwtp_load_hourly.csv
+!stage1_5_wwtp_dc/data/wwtp_load_shifted_do.csv
+
+# ── Chrome automation scratch scripts ──────────────────────────────────────
+# These are generated per-session by MCP osascript workaround; not committed.
+.*.scpt
+.screen.jpg
+
+# ── Private handoff / session notes (stay local) ───────────────────────────
+HANDOFF_to_next_chat.md
+HANDOFF_*.md
 
 # ── Claude Code internal ────────────────────────────────────────────────────
 .claude/

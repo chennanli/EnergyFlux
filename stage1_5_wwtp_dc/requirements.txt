@@ -1,13 +1,14 @@
-pvlib
-pandapower
-scipy
-numpy
-pandas
-streamlit
-plotly
-qsdsan         # full BSM1 ODE dynamic simulation via QSDsan (required)
-               # wwtp_load_generator.py runs BSM1 steady-state calibration
-               # then generates 8,760-hour diurnal profile scaled off that
-openai
-pyyaml
-python-dotenv
+# Runtime requirements for the Streamlit Cloud deploy.
+# Covers both apps/app.py (Blog 1 dashboard, reads pre-gen CSVs + Plotly)
+# and apps/blog2_genai_app.py (Blog 2 LLM+tools demo).
+#
+# Heavy sim deps (pvlib, qsdsan, pandapower, scipy) are NOT needed at deploy
+# time — they live in requirements-dev.txt for running run_demo.py locally.
+# Keeping this lean means Streamlit Cloud cold starts in ~15 s.
+streamlit>=1.32
+pandas>=2.1
+numpy>=1.26
+plotly>=5.18
+matplotlib>=3.8
+openai>=1.30         # OpenAI-compatible client used against NVIDIA NIM
+python-dotenv>=1.0   # auto-load NVIDIA_API_KEY from repo-root .env
