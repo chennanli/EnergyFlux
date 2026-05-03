@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WWTP 45 MGD archetype (Blog 2 worked case) — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>WWTP 45 MGD archetype (Blog 2 worked case)</h1>
+<div class="page-meta"><div><strong>Host:</strong> WWTP</div><div><strong>Region:</strong> ERCOT, CAISO, MISO, PJM, NYISO, ISO-NE</div><div><strong>Equipment:</strong> LFP_BESS, GB200_NVL72</div><div><strong>Voltage:</strong> distribution, behind_the_meter</div><div><strong>Applies when:</strong> first-pass screening of mid-size U.S. municipal WWTPs (25–150 MGD) for BTM AI inference colocation</div></div>
+<h1>WWTP 45 MGD archetype</h1>
+<p>The worked-case site profile used as the headline example throughout EnergyFlux Blog 2. Represents a typical U.S. mid-size municipal wastewater treatment plant in the 25–150 MGD flow band that has been screened (per EPA CWNS 2022) as a candidate host for behind-the-meter AI inference colocation.</p>
+<h2>Headline parameters</h2>
+<ul>
+<li><strong>Treatment design flow:</strong> 45 MGD (chosen as midpoint of the screened band).</li>
+<li><strong>Existing peak grid load (WWTP itself):</strong> ~3,750 kW (aeration + pumping + ancillaries, typical for 25–60 MGD).</li>
+<li><strong>Existing service transformer:</strong> 4 MVA (sized at ~1.07× WWTP peak — the lean end of utility convention).</li>
+<li><strong>Available buffer-zone land for PV:</strong> ~23 acres post-setback (NFPA / local zoning).</li>
+</ul>
+<h2>Worked-case AI factory build (conservative simultaneity, Blog 2 default)</h2>
+<ul>
+<li><strong>PV nameplate:</strong> 7,474 kWp (single-axis bifacial, 580 W TOPCon modules, 11 × 550 kW central inverters at ILR 1.25).</li>
+<li><strong>BESS:</strong> 10.5 MWh, 4-hour LFP (&lt;a class=&quot;wikilink&quot; href=&quot;../entities/bess_4hr_lfp.html&quot;&gt;bess_4hr_lfp&lt;/a&gt;).</li>
+<li><strong>AI rack count:</strong> 21 racks of &lt;a class=&quot;wikilink&quot; href=&quot;../entities/gb200_nvl72.html&quot;&gt;gb200_nvl72&lt;/a&gt;, 2.62 MW IT load.</li>
+<li><strong>Peak added grid demand (worst-case simultaneity):</strong> 4,578 kW. Existing 4 MVA transformer cannot serve both WWTP baseline and the new added load simultaneously, so the worked case requires a transformer upgrade.</li>
+</ul>
+<h2>Honest scope limits</h2>
+<ul>
+<li><strong>Single-site genericization is fragile.</strong> Real WWTP load varies ±30% with treatment process, climate, and biogas-CHP utilization. The 3,750 kW figure here is a reasonable midpoint, not a guaranteed value.</li>
+<li><strong>The 23 acres buffer assumption</strong> comes from a typical NFPA-compliant setback geometry. Some sites have less available land (urban WWTPs); some have far more (exurban / regional WWTPs).</li>
+<li><strong>The 4 MVA transformer assumption</strong> is deliberately tight (1.07× peak). Many real-world WWTPs are sized at 1.4× WWTP peak (5–6 MVA) — see &lt;a class=&quot;wikilink&quot; href=&quot;../synthesis/syn_btm_siting_cases.html&quot;&gt;syn_btm_siting_cases&lt;/a&gt; for the typical-vs-lean comparison.</li>
+</ul>
+<h2>Open questions for review</h2>
+<ul>
+<li>The &quot;23 acres available after setback&quot; assumption needs validation against a few real plants (DC Water, Oakland EBMUD, Austin Walnut Creek would be diagnostic).</li>
+<li>The 3,750 kW WWTP load is an assumption on Aspen-style heuristics; a survey of EPA EnergyStar Portfolio Manager data could pin the median for 25–60 MGD plants.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../concepts/behind_the_meter_siting.html&quot;&gt;behind_the_meter_siting&lt;/a&gt; — concept this archetype is an instance of.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/bess_4hr_lfp.html&quot;&gt;bess_4hr_lfp&lt;/a&gt; — the storage configuration.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/gb200_nvl72.html&quot;&gt;gb200_nvl72&lt;/a&gt; — the rack platform.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../synthesis/syn_btm_siting_cases.html&quot;&gt;syn_btm_siting_cases&lt;/a&gt; — comparison across host types and sizing assumptions.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/regulations/wwtp_buffer_setback.md&#x27;: None, &#x27;- blog/blog2_v2.html&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../entities/bess_4hr_lfp.html">4-hour LFP BESS (industry default)</a></li><li><a class="wikilink" href="../graphs/ai_candidate_graph.html">AI candidate graph</a></li><li><a class="wikilink" href="../concepts/behind_the_meter_siting.html">Behind-the-meter (BTM) siting for AI inference</a></li><li><a class="wikilink" href="../blocks/wwtp_load.html">Block: WWTP load</a></li><li><a class="wikilink" href="../sources/src_legacy_wwtp_buffer_setback.html">Legacy note: WWTP buffer zones — setback rules</a></li><li><a class="wikilink" href="../entities/gb200_nvl72.html">NVIDIA Blackwell GB200 NVL72</a></li><li><a class="wikilink" href="../graphs/reviewed_engineering_graph.html">Reviewed engineering graph</a></li><li><a class="wikilink" href="../synthesis/syn_btm_siting_cases.html">Synthesis: BTM siting host types compared</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/entities/wwtp_45mgd_archetype.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

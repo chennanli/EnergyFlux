@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legacy note: WWTP buffer zones — setback rules — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge legacy">Legacy</span>Legacy note: WWTP buffer zones — setback rules</h1>
+<div class="page-meta"><div><strong>Host:</strong> WWTP</div><div><strong>Region:</strong> CAISO, ERCOT, PJM, NYISO, ISO-NE, any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> distribution, behind_the_meter</div><div><strong>Applies when:</strong> PV-array siting and access planning inside a municipal WWTP buffer zone</div></div>
+<h1>Legacy note — WWTP buffer zones / setback rules</h1>
+<h2>Source Summary</h2>
+<p>Internal regulatory brief imported from <code>raw/wiki_legacy/regulations/wwtp_buffer_setback.md</code>. Captures the federal baseline (40 CFR §503), state-specific operational setbacks, and the practical constraints on PV array siting inside the buffer zone of a US municipal WWTP.</p>
+<h2>Key Claims</h2>
+<ul>
+<li>Federal baseline (40 CFR §503): biosolids surface-disposal setbacks; does not impose a general operational buffer for treatment tanks. Operational buffers come from state health/environmental departments.</li>
+<li>State requirements (typical):</li>
+<li><strong>California (Title 22)</strong>: 100 ft from any treatment unit to property boundary; 500 ft from aerated ponds to habitable buildings.</li>
+<li><strong>Texas (TCEQ Chapter 217)</strong>: 150 ft from digesters + aeration basins to property line; PV arrays within the buffer interpreted as permissible.</li>
+<li><strong>Florida (FDEP)</strong>: 100 ft to residential; 50 ft to commercial.</li>
+<li><strong>New York (6 NYCRR 750)</strong>: 100 ft to offsite property; 200 ft to residential.</li>
+<li>Practical PV-siting constraints:</li>
+<li>Modules at least 50 ft from aeration basins (H₂S corrosion, microbial aerosols).</li>
+<li>Racking must not interfere with sludge-hauling access roads.</li>
+<li>Arrays must not block lighting / CCTV sightlines required by operator security.</li>
+<li>Heuristic: of ~20 acres buffer at a 30 MGD plant, 17–18 acres are PV-viable (~0.90 land fraction, the constant in <code>sizing.py</code>).</li>
+<li>Project killers: H₂S corrosion zone (30 m exclusion around primary aeration); FEMA flood-zone (BFE+2 ft restriction on substation equipment); EJ census tract enhanced notification (~90–180 days).</li>
+</ul>
+<h2>Engineering Use</h2>
+<ul>
+<li>Land fraction (0.90) for converting buffer-zone acres → PV-viable acres in early-stage sizing.</li>
+<li>State-by-state setback rule lookup for any specific WWTP siting decision.</li>
+<li>H₂S corrosion exclusion zone (30 m) as a hard constraint on PV layout.</li>
+<li>FEMA flood-zone elevation rule for substation siting.</li>
+<li>EJ schedule risk: 90–180 days additional permitting for sites in EJ census tracts.</li>
+</ul>
+<h2>Limitations</h2>
+<ul>
+<li>The &quot;5 state&quot; sample (CA / TX / FL / NY plus federal) is illustrative, not exhaustive — every state has its own rules. Promotion to reviewed requires checking the specific state for any specific project.</li>
+<li>TCEQ Chapter 217&#x27;s interpretation that &quot;PV arrays within the buffer are permissible&quot; is the source&#x27;s reading; for a real Texas project this should be confirmed in writing with TCEQ.</li>
+<li>The 0.90 land-fraction heuristic is a planning estimate, not a measured value at any specific site. Some sites have higher fractions (sparse infrastructure); some have lower (dense access roads, CHP equipment, biosolids handling).</li>
+<li>Federal EJ guidance has shifted under different administrations; the 90–180 day estimate is from Aug 2024 EPA guidance and is volatile.</li>
+<li>This note paraphrases 40 CFR §503, state codes, and WEF MOP 8 (a design manual). Promotion to reviewed requires either direct CFR/state-code verification or an attorney letter.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/wwtp_load.html&quot;&gt;wwtp_load&lt;/a&gt; — flowsheet block where the WWTP itself is modeled.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/pv_array.html&quot;&gt;pv_array&lt;/a&gt; — flowsheet block whose siting is constrained by these setbacks.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/wwtp_45mgd_archetype.html&quot;&gt;wwtp_45mgd_archetype&lt;/a&gt; — entity page that uses the 0.90 land-fraction assumption.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../concepts/behind_the_meter_siting.html&quot;&gt;behind_the_meter_siting&lt;/a&gt; — the concept page where buffer-zone availability is one of the three required resources.</li>
+</ul>
+<h2>Informs</h2>
+<ul>
+<li>PV-viable acres calculation: viable_acres = buffer_acres × 0.90 (default).</li>
+<li>H₂S exclusion zone: 30 m around primary aeration.</li>
+<li>FEMA + EJ schedule and elevation constraints in any project plan.</li>
+<li>State-specific setback compliance for the four states explicitly captured.</li>
+</ul>
+<h2>Source citations the legacy note relied on</h2>
+<ul>
+<li>40 CFR §503 (federal biosolids).</li>
+<li>California Title 22, Division 4, Chapter 3, §64435.</li>
+<li>Texas Administrative Code Title 30, Part 1, Chapter 217.</li>
+<li>WEF Manual of Practice No. 8, &quot;Design of Municipal Wastewater Treatment Plants&quot; (6th ed), 2018.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/regulations/wwtp_buffer_setback.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../graphs/ai_candidate_graph.html">AI candidate graph</a></li><li><a class="wikilink" href="../blocks/pv_array.html">Block: PV array</a></li><li><a class="wikilink" href="../blocks/wwtp_load.html">Block: WWTP load</a></li><li><a class="wikilink" href="../graphs/reviewed_engineering_graph.html">Reviewed engineering graph</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/sources/src_legacy_wwtp_buffer_setback.md</code> ·
+    Authority: <span class="badge legacy">Legacy</span>
+  </p>
+</footer>
+</body>
+</html>

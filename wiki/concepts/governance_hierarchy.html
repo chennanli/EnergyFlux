@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Governance hierarchy: Authoritative / Reviewed / Candidate — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge legacy">Legacy</span>Governance hierarchy: Authoritative / Reviewed / Candidate</h1>
+<div class="page-meta"><div><strong>Host:</strong> any</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> any</div><div><strong>Applies when:</strong> every wiki page in this vault, every memory artifact in any future LLM-assisted engineering tool</div></div>
+<h1>Governance hierarchy: Authoritative / Reviewed / Candidate</h1>
+<p>The three-level memory governance pattern adopted for this vault, recorded in <code>.auto-memory/governed_engineering_memory.md</code> after Codex round-3 discussion on 2026-05-01.</p>
+<h2>The levels</h2>
+<ul>
+<li><strong>Authoritative</strong> — external or official source: regulations, vendor official documentation, ISO/IEEE/NERC/NEC standards, peer-reviewed papers, government datasets. The wiki page is a faithful summary; departures from the source are flagged. The LLM may use this auto-citing.</li>
+<li><strong>Reviewed</strong> — a human-approved synthesis, lesson learned, or design rule. Approved by Chennan or an external engineer he trusts. The wiki page records the approval (<code>approved_by</code>, <code>approved_date</code>). The LLM may use this auto-citing.</li>
+<li><strong>Candidate</strong> — a draft or auto-generated synthesis the LLM has produced but Chennan has not yet reviewed. The LLM may surface this in answers but must label it as Candidate; cannot be cited as a primary basis for engineering decisions.</li>
+<li><strong>Legacy</strong> — content imported from earlier work that has not yet been re-validated under this schema. Treat as Candidate-equivalent until promoted.</li>
+</ul>
+<p>The killer rule: <strong>the LLM may auto-use Authoritative and Reviewed; Candidate must be surfaced for human review before influencing decisions.</strong></p>
+<h2>Why this maps to industrial regulatory frameworks</h2>
+<p>The pattern borrows the governance logic industrial teams already know from PSM, GMP, NERC/CIP, and environmental review — source, scope, approval, effective date, revision history. None of those frameworks accept &quot;an AI agent learned from a session and changed the design rule&quot; as a valid management-of-change. They all require explicit human review and an audit trail. This vault&#x27;s hierarchy is the AI-tool equivalent.</p>
+<p>This page does not claim that the vault is PSM-compliant or GMP-validated; it claims that the <em>governance logic</em> is borrowed from those frameworks. Compliance against any specific regulatory framework would require formal validation that has not been done.</p>
+<h2>Scope as a first-class field</h2>
+<p>Authority level is necessary but not sufficient. <strong>Scope</strong> — host type, region, equipment, voltage level, and conditions — is what prevents an Authoritative entry from being mis-applied. An ERCOT BTM interconnection lesson is Authoritative in ERCOT and unsafe to auto-apply in CAISO. An LFP BESS thermal lesson is Authoritative for LFP and unsafe to auto-apply to NMC. Scope mis-application is the most common failure mode in industrial AI tools, more than authority confusion.</p>
+<h2>Promotion workflow (planned for Blog 3 demonstration)</h2>
+<p>The promotion workflow Blog 3 is intended to demonstrate end-to-end:</p>
+<ol>
+<li>Dispatch session generates a raw event log (Candidate level).</li>
+<li>Agent summarizes as a Candidate memory entry with auto-extracted scope tags.</li>
+<li>Engineer reviews; if accepted, the agent rewrites it as a Reviewed entry with full scope metadata, approver, effective date, and source link back to the originating session.</li>
+<li>On a future similar condition, the copilot surfaces the Reviewed memory and applies it automatically, with citation to the review.</li>
+</ol>
+<p>This is structurally different from &quot;AI agent that learns from chat,&quot; because every promotion goes through a human gate.</p>
+<h2>Open questions</h2>
+<ul>
+<li>Whether v2 of this hierarchy needs more granularity (e.g., separating peer-reviewed paper from vendor doc, or separating &quot;approved by Chennan&quot; from &quot;approved by external engineer&quot;). v1 keeps three levels for legibility; v2 expands if real use shows the granularity matters.</li>
+<li>Whether scope fields need additional dimensions (operating regime, climate zone, jurisdiction sub-region). v1 keeps a fixed set.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li><code>.auto-memory/governed_engineering_memory.md</code> — the upstream auto-memory note.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../concepts/behind_the_meter_siting.html&quot;&gt;behind_the_meter_siting&lt;/a&gt; — the substantive thesis where this governance pattern is applied.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- .auto-memory/governed_engineering_memory.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../entities/bess_4hr_lfp.html">4-hour LFP BESS (industry default)</a></li><li><a class="wikilink" href="../graphs/ai_candidate_graph.html">AI candidate graph</a></li><li><a class="wikilink" href="../graphs/reviewed_engineering_graph.html">Reviewed engineering graph</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/concepts/governance_hierarchy.md</code> ·
+    Authority: <span class="badge legacy">Legacy</span>
+  </p>
+</footer>
+</body>
+</html>

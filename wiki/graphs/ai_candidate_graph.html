@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI candidate graph — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>AI candidate graph</h1>
+<div class="page-meta"><div><strong>Host:</strong> any</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> any</div><div><strong>Applies when:</strong> any LLM-assisted ingest pass that proposes new edges between vault pages</div></div>
+<h1>AI candidate graph</h1>
+<h2>What this is</h2>
+<p>The <strong>AI candidate graph</strong> is the set of edges between vault pages that the LLM (Claude, Codex, future agents) has <em>suggested</em> during ingest, query, or synthesis passes — but that <strong>no human has reviewed or approved</strong>. Examples of candidate edges:</p>
+<ul>
+<li>&quot;&lt;a class=&quot;wikilink&quot; href=&quot;../entities/bess_4hr_lfp.html&quot;&gt;bess_4hr_lfp&lt;/a&gt; cites &lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_4h_battery_standard.html&quot;&gt;src_legacy_4h_battery_standard&lt;/a&gt;&quot; — proposed by the LLM that wrote the entity page from the source note.</li>
+<li>&quot;&lt;a class=&quot;wikilink&quot; href=&quot;../entities/wwtp_45mgd_archetype.html&quot;&gt;wwtp_45mgd_archetype&lt;/a&gt; depends on &lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_wwtp_buffer_setback.html&quot;&gt;src_legacy_wwtp_buffer_setback&lt;/a&gt;&quot; — proposed by the LLM extracting the 0.90 land-fraction assumption.</li>
+<li>&quot;&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/pv_array.html&quot;&gt;pv_array&lt;/a&gt; uses default &lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_single_axis_tracker.html&quot;&gt;src_legacy_single_axis_tracker&lt;/a&gt; with &lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_bifacial_gain.html&quot;&gt;src_legacy_bifacial_gain&lt;/a&gt;&quot; — proposed by the LLM building the block page.</li>
+</ul>
+<p>These edges may be correct. They may also be subtly wrong: an LLM can propose an edge that looks structurally right but cites the wrong source, applies a number outside its scope, or introduces a contradiction with a different page.</p>
+<h2>Candidate edges are not facts</h2>
+<p>The killer rule: <strong>candidate edges in this graph cannot be cited as fact.</strong> They are proposals waiting for review.</p>
+<p>When the AI assistant retrieves over the vault, candidate edges may inform the answer (the assistant may follow a candidate edge to surface a related page), but every chain that depends on a candidate edge must be tagged &quot;pending review&quot; in the answer.</p>
+<h2>How candidate edges enter the graph</h2>
+<ol>
+<li><strong>Wikilink resolution at ingest.</strong> When the LLM writes a new vault page, every <code>&lt;span class=&quot;wikilink-broken&quot; title=&quot;No vault page named &amp;quot;target&amp;quot;&quot;&gt;target&lt;/span&gt;</code> it includes becomes a candidate edge. The wiki publisher (<code>scripts/build_wiki.py</code>) resolves the link if the target exists, but does not validate that the relationship is correct.</li>
+<li><strong>Frontmatter <code>related:</code> field.</strong> Every page declares related pages in its frontmatter. These are candidate edges by default.</li>
+<li><strong>Synthesis passes.</strong> When the LLM runs a synthesis (e.g., &quot;compare BESS chemistries&quot;), it may propose new edges between previously-unconnected pages. These remain candidate.</li>
+</ol>
+<h2>Promotion workflow (Candidate → Reviewed)</h2>
+<p>A candidate edge is promoted to a &lt;a class=&quot;wikilink&quot; href=&quot;../graphs/reviewed_engineering_graph.html&quot;&gt;reviewed_engineering_graph&lt;/a&gt; edge through one of two paths:</p>
+<ol>
+<li><strong>Page-level review.</strong> A human reviewer reads both ends of the edge, confirms the relationship is correct, and updates the page frontmatter to <code>authority: reviewed</code> with <code>approved_by</code> and <code>approved_date</code>. All edges <em>into</em> and <em>out of</em> the reviewed page that the reviewer explicitly endorsed in the review are promoted.</li>
+<li><strong>Edge-level review.</strong> The reviewer opens a PR that adds an edge to a curated list of reviewed edges (proposed: <code>wiki/graphs/reviewed_edges.yaml</code>, currently not yet implemented), with an explicit &quot;approved by / date / reasoning&quot; record.</li>
+</ol>
+<p>In v0 of the vault (today, 2026-05-02), no edges have been promoted. Every edge in the vault is candidate.</p>
+<h2>Mapping to Blog 3 / 5 / 6</h2>
+<p>The AI candidate graph maps directly onto the <strong>Blog 3–6 cross-cutting governed-memory theme</strong>:</p>
+<ul>
+<li><strong>Blog 3</strong> is intended to demonstrate the promotion workflow end-to-end: a dispatch session generates raw events; the LLM proposes candidate edges from those events to existing vault pages; a senior engineer reviews and promotes a subset.</li>
+<li><strong>Blog 5 / 5.5 / 6</strong> continue the promotion workflow as new evidence accumulates (surrogate model results, real site survey data, vendor RFQs).</li>
+</ul>
+<p>Each post should contribute a fixed number of new candidate edges and a smaller number of edge promotions — the visible measure of &quot;knowledge is compounding.&quot;</p>
+<h2>Relationship to <code>scripts/wiki_graph_manifest.py</code></h2>
+<p>The <code>wiki_graph_manifest.py</code> script (currently associated with Blog 2&#x27;s static knowledge-graph figure) is a hand-curated subset of candidate edges that the author found visually informative for a specific figure. It is <strong>not</strong> a full export of the candidate graph and <strong>not</strong> a list of reviewed edges — it is a presentation artifact.</p>
+<p>A future cleanup should:</p>
+<ul>
+<li>Replace <code>wiki_graph_manifest.py</code> with an automated export from the live vault frontmatter.</li>
+<li>Render two graph layers visually: candidate (faint) and reviewed (bold).</li>
+<li>Allow the figure to refresh as the vault grows.</li>
+</ul>
+<h2>Current candidate edge count</h2>
+<p>(Approximate, derived from current vault frontmatter as of 2026-05-02:)</p>
+<ul>
+<li>15 source-note pages × ~3 outbound edges each ≈ 45 edges</li>
+<li>7 block pages × ~6 outbound edges each ≈ 42 edges</li>
+<li>3 entity pages × ~5 outbound edges each ≈ 15 edges</li>
+<li>2 concept pages + 1 synthesis × ~4 outbound edges each ≈ 12 edges</li>
+<li><strong>Total candidate edges ≈ 110–120; reviewed edges = 0.</strong></li>
+</ul>
+<h2>Open questions for review</h2>
+<ul>
+<li>Should candidate edges have a per-edge confidence score, or is &quot;candidate or not&quot; the only useful signal? v0 keeps it binary.</li>
+<li>Should the LLM be allowed to <em>propose</em> edges but not actually write them into frontmatter without a human nod? v0 lets the LLM write candidate edges directly because the alternative (human-in-the-loop on every edge) is too expensive at vault build-out time.</li>
+<li>How are reviewed edges actually stored — in the reviewed page&#x27;s frontmatter, in a separate <code>reviewed_edges.yaml</code>, or both? v1 will pick one.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../graphs/reviewed_engineering_graph.html&quot;&gt;reviewed_engineering_graph&lt;/a&gt; — the post-promotion view this page is the upstream of.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../concepts/governance_hierarchy.html&quot;&gt;governance_hierarchy&lt;/a&gt; — the underlying authority schema.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../concepts/behind_the_meter_siting.html&quot;&gt;behind_the_meter_siting&lt;/a&gt; — example of a concept page that aggregates candidate edges across the vault.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- scripts/wiki_graph_manifest.py&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../graphs/reviewed_engineering_graph.html">Reviewed engineering graph</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/graphs/ai_candidate_graph.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

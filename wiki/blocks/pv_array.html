@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Block: PV array — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>Block: PV array</h1>
+<div class="page-meta"><div><strong>Host:</strong> WWTP, chemical, substation, campus</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> distribution, behind_the_meter</div><div><strong>Applies when:</strong> PV array sizing inside an industrial-host BTM site</div></div>
+<h1>Block: PV array</h1>
+<h2>What this block represents</h2>
+<p>The on-site PV array that converts buffer-zone or rooftop sunlight into DC power for the colocated AI factory. In the EnergyFlux flowsheet this is the upstream-most generation block; everything else (inverter, BESS, DC bus, racks) sits downstream of its DC output.</p>
+<p>For WWTP buffer sites the default configuration is <strong>single-axis tracking + bifacial TOPCon modules</strong> at GCR 0.35 — the industry-default trade between yield gain, land density, and CAPEX.</p>
+<h2>Key sizing variables</h2>
+<ul>
+<li><strong>DC nameplate (kWp)</strong> — set by <code>pv_kwp = pv_viable_acres × land_density_kwp_per_acre</code>. Default land density 325 kWp/acre at GCR 0.35 (&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_single_axis_tracker.html&quot;&gt;src_legacy_single_axis_tracker&lt;/a&gt;).</li>
+<li><strong>Tracking modality</strong> — single-axis (default) / fixed-tilt (small or sloped sites) / dual-axis (rare). See &lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_dual_axis.html&quot;&gt;src_legacy_dual_axis&lt;/a&gt; for why dual rarely wins.</li>
+<li><strong>Bifacial gain</strong> — multiplicative uplift on yield, ~7% on grass-buffer WWTP ground (&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_bifacial_gain.html&quot;&gt;src_legacy_bifacial_gain&lt;/a&gt;).</li>
+<li><strong>Module wattage</strong> — 580 W TOPCon is the Blog 2 default; affects module count but not nameplate.</li>
+<li><strong>Specific yield (kWh/kWp/yr)</strong> — latitude-dependent; ~1,830 at 30°N, ~1,600 at 40°N (&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_single_axis_tracker.html&quot;&gt;src_legacy_single_axis_tracker&lt;/a&gt;).</li>
+<li><strong>Performance ratio</strong> — derate factor for soiling, mismatch, inverter clipping; default ~0.82 in <code>pv_tools.py</code>.</li>
+<li><strong>Inverter loading ratio (ILR)</strong> — DC nameplate divided by AC inverter capacity; default 1.25.</li>
+</ul>
+<h2>Upstream dependencies</h2>
+<ul>
+<li>Available <strong>buffer-zone acres</strong> (&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_wwtp_buffer_setback.html&quot;&gt;src_legacy_wwtp_buffer_setback&lt;/a&gt;). For a WWTP buffer this is <code>total_buffer_acres × 0.90</code> after setbacks and access roads.</li>
+<li>Site latitude (drives specific yield).</li>
+<li>Albedo of the surface under the array (drives bifacial gain).</li>
+</ul>
+<h2>Downstream dependencies</h2>
+<ul>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/inverter.html&quot;&gt;inverter&lt;/a&gt;</strong> block: receives the DC string output and converts to AC. Inverter sizing is set by ILR against PV nameplate.</li>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/dc_bus.html&quot;&gt;dc_bus&lt;/a&gt;</strong> block: a DC-coupled architecture would route PV directly to the DC bus (skipping AC) — out of scope for this Blog 2 archetype but flagged as a future option.</li>
+<li>Grid-export limit: in non-export configurations (&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_tx_ercot_interconnect.html&quot;&gt;src_legacy_tx_ercot_interconnect&lt;/a&gt;) the inverter must curtail PV before pushing to grid.</li>
+</ul>
+<h2>Source notes that inform this block</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_single_axis_tracker.html&quot;&gt;src_legacy_single_axis_tracker&lt;/a&gt; — default tracking modality; +18% over fixed-tilt.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_bifacial_gain.html&quot;&gt;src_legacy_bifacial_gain&lt;/a&gt; — default bifacial uplift; ~7% on grass.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_fixed_tilt.html&quot;&gt;src_legacy_fixed_tilt&lt;/a&gt; — alternative configuration; the conservative-floor case.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_dual_axis.html&quot;&gt;src_legacy_dual_axis&lt;/a&gt; — niche alternative; almost never picked in continental US.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_pv_lazard_lcoe_2024.html&quot;&gt;src_legacy_pv_lazard_lcoe_2024&lt;/a&gt; — CAPEX/LCOE numbers per configuration.</li>
+</ul>
+<h2>Candidate assumptions pending review</h2>
+<p>The following are working assumptions in the current vault. None has been promoted to <strong>reviewed</strong> yet:</p>
+<ul>
+<li><strong>Land density 325 kWp/acre at GCR 0.35</strong> — needs to be cross-checked against at least one real WWTP PV layout (e.g., Oakland EBMUD, Austin Walnut Creek, DC Water).</li>
+<li><strong>Bifacial gain 7% on grass</strong> — needs site-measured albedo data, not a planning-stage heuristic, before promotion.</li>
+<li><strong>Performance ratio 0.82</strong> — module + inverter + soiling + mismatch derate stack; needs validation against PVsyst run for at least one Blog 2 archetype site.</li>
+<li><strong>Inverter loading ratio 1.25</strong> — industry-typical, but the right ILR depends on tariff structure (ITC vs PTC, capacity-credit rules); needs ground-truth against either.</li>
+<li><strong>Yield numbers (1,830 kWh/kWp/yr at 30°N, 1,600 at 40°N)</strong> — TMY3 averages; would benefit from explicit TMY3 weather-file run for at least the Blog 2 worked case.</li>
+</ul>
+<h2>What would make this block authoritative / reviewed</h2>
+<ul>
+<li><strong>Reviewed</strong>: the source notes are re-grounded against their primary sources (NREL ATB worksheet directly, Lazard LCOE+ report directly, vendor datasheet directly), AND a senior PE has signed off on the sizing rules used here. Each assumption above gets either a citation or a &quot;rule of thumb pending validation&quot; tag.</li>
+<li><strong>Authoritative</strong>: not currently feasible at the block level — Authoritative status is reserved for primary external sources (NREL, NVIDIA, etc.), not for synthesis pages. The path is: promote individual source notes to authoritative; promote this block page to reviewed once it cites them.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/pv/single_axis_tracker.md&#x27;: None, &#x27;- raw/wiki_legacy/pv/bifacial_gain.md&#x27;: None, &#x27;- raw/wiki_legacy/pv/fixed_tilt.md&#x27;: None, &#x27;- raw/wiki_legacy/pv/dual_axis.md&#x27;: None, &#x27;- raw/wiki_legacy/capex/pv_lazard_lcoe_2024.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../graphs/ai_candidate_graph.html">AI candidate graph</a></li><li><a class="wikilink" href="../blocks/bess.html">Block: BESS</a></li><li><a class="wikilink" href="../blocks/dc_bus.html">Block: DC bus</a></li><li><a class="wikilink" href="../blocks/inverter.html">Block: Inverter</a></li><li><a class="wikilink" href="../sources/src_legacy_bifacial_gain.html">Legacy note: Bifacial modules — yield gain</a></li><li><a class="wikilink" href="../sources/src_legacy_dual_axis.html">Legacy note: Dual-axis tracking PV</a></li><li><a class="wikilink" href="../sources/src_legacy_fixed_tilt.html">Legacy note: Fixed-tilt ground-mount PV</a></li><li><a class="wikilink" href="../sources/src_legacy_pv_lazard_lcoe_2024.html">Legacy note: PV CAPEX — Lazard LCOE+ 2024 reference</a></li><li><a class="wikilink" href="../sources/src_legacy_single_axis_tracker.html">Legacy note: Single-axis tracking PV</a></li><li><a class="wikilink" href="../sources/src_legacy_wwtp_buffer_setback.html">Legacy note: WWTP buffer zones — setback rules</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/blocks/pv_array.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

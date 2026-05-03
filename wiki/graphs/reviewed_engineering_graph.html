@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reviewed engineering graph — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>Reviewed engineering graph</h1>
+<div class="page-meta"><div><strong>Host:</strong> any</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> any</div><div><strong>Applies when:</strong> any engineering decision drawn from the vault that requires citable cross-page support</div></div>
+<h1>Reviewed engineering graph</h1>
+<h2>What this is</h2>
+<p>The <strong>reviewed engineering graph</strong> is the subset of vault edges that a human reviewer has read, evaluated, and explicitly approved. Each reviewed edge has the property that the relationship between the two pages is <strong>correct, scope-appropriate, and free of known contradictions</strong> as of the approval date. Reviewed edges are the only edges the AI assistant may use as a primary basis for engineering recommendations.</p>
+<h2>Reviewed edges <em>can</em> drive engineering conclusions</h2>
+<p>The killer rule: <strong>only reviewed edges can be cited as fact in engineering decisions.</strong> When the AI assistant traces a chain of reasoning that crosses an edge, the chain is only as strong as the weakest edge in it. An answer that depends entirely on reviewed edges can be cited; an answer that crosses any candidate edge must be tagged &quot;pending review.&quot;</p>
+<h2>How edges become reviewed</h2>
+<p>An edge is promoted from &lt;a class=&quot;wikilink&quot; href=&quot;../graphs/ai_candidate_graph.html&quot;&gt;ai_candidate_graph&lt;/a&gt; to this graph through one of two mechanisms:</p>
+<ol>
+<li><strong>Page-level review.</strong> When a vault page is promoted from <code>authority: candidate</code> to <code>authority: reviewed</code>, the human reviewer is responsible for explicitly endorsing the inbound and outbound edges of that page. The reviewed page&#x27;s frontmatter records the approver and date; the edges are inherited from the page&#x27;s review.</li>
+<li><strong>Edge-level review.</strong> A reviewer opens a PR that promotes a specific edge between two pages, even when neither page is yet promoted. This is the path for edges that span pages at different authority levels (e.g., an authoritative source-note page connecting to a candidate block page — the connection itself can be reviewed even if the block isn&#x27;t fully ready).</li>
+</ol>
+<p>In both cases, the review must include:</p>
+<ul>
+<li><strong>Reviewer identity</strong> (name + role).</li>
+<li><strong>Date of review</strong> (absolute date, not relative).</li>
+<li><strong>Reasoning</strong> (why the edge is correct, what scope it applies to, what evidence supports it).</li>
+<li><strong>Effective date</strong> (some reviewed edges are time-bound; e.g., a 2024 NREL ATB number is reviewed-as-of-2024 and may need re-review when 2026 ATB ships).</li>
+</ul>
+<h2>What&#x27;s reviewed today</h2>
+<p>As of 2026-05-02, <strong>zero edges have been promoted to reviewed.</strong> Every edge in the vault is candidate or legacy. The current state is honest: the vault is in early build-out.</p>
+<p>The first batch of likely candidates for promotion (when this work is done):</p>
+<ul>
+<li><code>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/gb200_nvl72.html&quot;&gt;gb200_nvl72&lt;/a&gt;</code> ↔ <code>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_blackwell_gb200_nvl72.html&quot;&gt;src_legacy_blackwell_gb200_nvl72&lt;/a&gt;</code> — the entity page faithfully synthesizes the legacy source.</li>
+<li><code>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/bess_4hr_lfp.html&quot;&gt;bess_4hr_lfp&lt;/a&gt;</code> ↔ <code>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_4h_battery_standard.html&quot;&gt;src_legacy_4h_battery_standard&lt;/a&gt;</code> ↔ <code>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_bess_nrel_atb_2024.html&quot;&gt;src_legacy_bess_nrel_atb_2024&lt;/a&gt;</code> — the duration argument, cross-checked against the CAPEX argument.</li>
+<li><code>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/wwtp_45mgd_archetype.html&quot;&gt;wwtp_45mgd_archetype&lt;/a&gt;</code> ↔ <code>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_wwtp_buffer_setback.html&quot;&gt;src_legacy_wwtp_buffer_setback&lt;/a&gt;</code> — the 0.90 land-fraction assumption, when cross-checked against a real plant survey.</li>
+</ul>
+<p>None of these is in the reviewed graph yet because the cross-checking work has not been done.</p>
+<h2>Promotion workflow (operational steps)</h2>
+<p>The intended workflow, when v1 of the vault is ready to support reviews:</p>
+<ol>
+<li>Reviewer reads the candidate page and its inbound/outbound edges via the rendered wiki (<code>wiki/</code>).</li>
+<li>Reviewer fills in the page&#x27;s <code>approved_by</code> and <code>approved_date</code> frontmatter fields.</li>
+<li>Reviewer opens a PR with the change.</li>
+<li>Branch protection on <code>main</code> requires the reviewer to be in the maintainers list (configured in the GitHub repo settings, not in the vault itself).</li>
+<li>On merge, the page is reviewed; downstream tooling (RAG, wiki publisher) treats the page as primary.</li>
+<li>A <code>log.md</code> entry records the promotion with reviewer, date, and the list of edges promoted.</li>
+</ol>
+<p>In v0 (today), branch protection is not configured and no reviewers are designated. Setting these up is part of the Blog 3 governance demo.</p>
+<h2>Mapping to Blog 3 / 5 / 6</h2>
+<p>This graph is the <strong>payload</strong> of the governed-memory theme that runs through Blog 3–6:</p>
+<ul>
+<li><strong>Blog 3</strong> demonstrates the candidate→reviewed promotion via a worked dispatch session: real events generate candidate edges; a senior engineer reviews; the reviewed graph grows by a documented amount.</li>
+<li><strong>Blog 5 / 5.5</strong> ground specific entity pages by re-checking against primary sources (NREL ATB, IEEE C57.91, FERC Order 2222), promoting them and their inbound edges.</li>
+<li><strong>Blog 6</strong> demonstrates surrogate-model results (the engineering surrogate plus uncertainty quantification flagship) — those results, when validated, become reviewed-edge contributions to the graph.</li>
+</ul>
+<p>Each post should target a specific number of edge promotions. The visible measure of &quot;the project is real&quot; is the growth of the reviewed graph relative to the candidate graph.</p>
+<h2>Relationship to <code>scripts/wiki_graph_manifest.py</code></h2>
+<p><code>wiki_graph_manifest.py</code> is a hand-curated knowledge graph figure used in Blog 2 to show how source notes attach to engineering blocks. The figure does not distinguish candidate from reviewed edges. A future revision should:</p>
+<ul>
+<li>Render reviewed edges in solid bold.</li>
+<li>Render candidate edges in light dashed.</li>
+<li>Auto-export from frontmatter rather than a hand-curated manifest.</li>
+</ul>
+<h2>Open questions for review</h2>
+<ul>
+<li>Granularity of &quot;reviewed&quot;: should the unit of review be the edge, the page, or a coherent cluster? v0 reviews the page (and inherits its edges); v1 may add edge-level review for cross-authority cases.</li>
+<li>Time-bounded reviews: should a reviewed edge automatically downgrade to candidate after some period (e.g., 2 years)? v0 doesn&#x27;t enforce this; v1 may.</li>
+<li>Multi-reviewer requirement: should some edges require ≥2 approvals (especially around safety-critical decisions like fire-code or interconnection)? v0 single-reviewer; v1 may extend.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../graphs/ai_candidate_graph.html&quot;&gt;ai_candidate_graph&lt;/a&gt; — the upstream pool from which reviewed edges are promoted.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../concepts/governance_hierarchy.html&quot;&gt;governance_hierarchy&lt;/a&gt; — the authority schema this graph operationalizes.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../concepts/behind_the_meter_siting.html&quot;&gt;behind_the_meter_siting&lt;/a&gt; — the central concept whose reasoning chain this graph eventually supports.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- scripts/wiki_graph_manifest.py&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../graphs/ai_candidate_graph.html">AI candidate graph</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/graphs/reviewed_engineering_graph.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

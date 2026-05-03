@@ -1,0 +1,33 @@
+# EnergyFlux public repo .gitignore
+# This file is the .gitignore that ships in the public mirror. It is
+# intentionally short — the manifest in the internal repo decides what
+# gets exported, so this gitignore mostly catches local dev noise.
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtualenvs
+.venv/
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Streamlit local state
+.streamlit/secrets.toml
+
+# Obsidian per-user state (the vault structure is shipped, the workspace is not)
+knowledge_vault/.obsidian/workspace.json
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/

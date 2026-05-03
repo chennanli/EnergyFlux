@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Block: Service transformer — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>Block: Service transformer</h1>
+<div class="page-meta"><div><strong>Host:</strong> WWTP, chemical, substation, campus</div><div><strong>Region:</strong> ERCOT, CAISO, PJM, MISO, NYISO, ISO-NE, any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> distribution, behind_the_meter</div><div><strong>Applies when:</strong> service-transformer sizing and grid-coupling decisions for a BTM AI factory</div></div>
+<h1>Block: Service transformer</h1>
+<h2>What this block represents</h2>
+<p>The transformer that interfaces the host site to the utility distribution feeder — typically a pad-mounted or pole-mounted unit at 12.47 kV or 25 kV primary stepping down to 480 V three-phase secondary. In a BTM AI factory archetype this is <strong>the dominant schedule risk</strong>: the AI factory does not need a transmission interconnection, but the existing service transformer almost always needs to be upsized, and utility transformer procurement currently runs 6–18 months.</p>
+<p>This block is also where the <strong>non-export</strong> configuration is enforced: PV inverters and BESS PCS are coordinated so the secondary side never pushes power upstream past the transformer.</p>
+<h2>Key sizing variables</h2>
+<ul>
+<li><strong>Existing transformer rating (MVA)</strong> — the historical baseline; sized to the WWTP load with some headroom.</li>
+<li><strong>Headroom multiplier</strong> — existing rating / WWTP peak. Tight (&quot;lean&quot;): 1.07×. Typical: 1.4×. Generous: 1.7×.</li>
+<li><strong>Worst-case-simultaneity peak load</strong> — <code>WWTP_peak + AI_facility_load + BESS_max_charging</code>. This is the conservative sum the transformer must serve at one instant.</li>
+<li><strong>Required upgraded rating (MVA)</strong> — set by worst-case peak ÷ desired transformer load factor (typically 0.8).</li>
+<li><strong>Lead time (months)</strong> — utility-dependent; 6–9 months typical, 12–18 months in capacity-constrained territories.</li>
+<li><strong>Upgrade cost</strong> — $200k–$800k per the &lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_dc_industry_benchmarks.html&quot;&gt;src_legacy_dc_industry_benchmarks&lt;/a&gt; note; varies with utility tariff and territory.</li>
+</ul>
+<h2>Upstream dependencies</h2>
+<ul>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/wwtp_load.html&quot;&gt;wwtp_load&lt;/a&gt;</strong> block: existing WWTP peak sets the baseline.</li>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/ai_racks.html&quot;&gt;ai_racks&lt;/a&gt;</strong> block: AI facility load adds to the peak.</li>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/bess.html&quot;&gt;bess&lt;/a&gt;</strong> block: BESS charging adds to the peak (and BESS discharge can shave it under MPC dispatch).</li>
+<li>Utility tariff and territory (Oncor / PG&amp;E / Con Ed / etc.) — sets rates, lead times, and study requirements.</li>
+</ul>
+<h2>Downstream dependencies</h2>
+<ul>
+<li>Distribution feeder upstream of the transformer (often the limit, not the transformer itself).</li>
+<li>ERCOT / CAISO / PJM interconnection rules (&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_tx_ercot_interconnect.html&quot;&gt;src_legacy_tx_ercot_interconnect&lt;/a&gt;).</li>
+<li>Project schedule: dominant schedule item in BTM colocated AI projects.</li>
+</ul>
+<h2>Source notes that inform this block</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_tx_ercot_interconnect.html&quot;&gt;src_legacy_tx_ercot_interconnect&lt;/a&gt; — ERCOT-specific thresholds for new load and combined export.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_dc_industry_benchmarks.html&quot;&gt;src_legacy_dc_industry_benchmarks&lt;/a&gt; — transformer-upgrade cost line ($200k–$800k).</li>
+</ul>
+<h2>Candidate assumptions pending review</h2>
+<ul>
+<li><strong>Lean 1.07× transformer multiplier as the default for the conservative case</strong> — chosen because it forces a transformer-upgrade conversation; many real WWTPs are at 1.4× already, which would change the worked-case conclusion.</li>
+<li><strong>Worst-case-simultaneity peak as the sizing rule</strong> — all three loads peaking simultaneously at maximum is conservative; a real project may justify diversity factors (peaks not co-incident) and reduce required upgrade size.</li>
+<li><strong>Lead time 6–9 months typical, 12–18 months stressed</strong> — 2024 figures; lead times have been extending and are a moving target.</li>
+<li><strong>Upgrade cost $200k–$800k</strong> — paraphrased from JLL/CBRE; a real project must obtain a utility quote.</li>
+<li><strong>Non-export configuration</strong> — assumed but not designed; requires inverter firmware + EMS logic + utility approval that the block currently treats as a feature flag.</li>
+</ul>
+<h2>What would make this block authoritative / reviewed</h2>
+<ul>
+<li><strong>Reviewed</strong>: at least one utility quote benchmarked against the assumed cost and lead time; senior electrical engineer signs off on the worst-case-simultaneity rule (or proposes a diversity-factor alternative with explicit justification); non-export configuration has an explicit one-line diagram and protection scheme.</li>
+<li><strong>Authoritative</strong>: utility tariff documents cited directly; IEEE C57.91 / C57.96 transformer loading guides cited for the load-factor assumption; ERCOT Protocols / CAISO Tariff cited directly for interconnection thresholds. The path: promote source notes to authoritative; this block then cites them and is promoted to reviewed.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/regulations/tx_ercot_interconnect.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../blocks/ai_racks.html">Block: AI racks</a></li><li><a class="wikilink" href="../blocks/bess.html">Block: BESS</a></li><li><a class="wikilink" href="../blocks/inverter.html">Block: Inverter</a></li><li><a class="wikilink" href="../blocks/wwtp_load.html">Block: WWTP load</a></li><li><a class="wikilink" href="../sources/src_legacy_tx_ercot_interconnect.html">Legacy note: Texas / ERCOT interconnection for a BTM AI factory</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/blocks/service_transformer.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

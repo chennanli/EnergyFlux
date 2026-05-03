@@ -1,0 +1,24 @@
+[project]
+name = "energyflux"
+version = "0.2.0"
+description = "Blog 2 demo: sizing distributed AI inference data centers at industrial sites."
+requires-python = ">=3.10"
+
+dependencies = [
+    "streamlit>=1.32",
+    "pandas>=2.1",
+    "numpy>=1.26",
+    "plotly>=5.18",
+    "matplotlib>=3.8",
+    "openai>=1.30",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["stage1_5_wwtp_dc*"]

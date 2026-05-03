@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4-hour LFP BESS (industry default) — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>4-hour LFP BESS (industry default)</h1>
+<div class="page-meta"><div><strong>Host:</strong> WWTP, any</div><div><strong>Region:</strong> CAISO, ERCOT, any</div><div><strong>Equipment:</strong> LFP_BESS</div><div><strong>Voltage:</strong> distribution, behind_the_meter</div><div><strong>Applies when:</strong> BESS sized for energy arbitrage / TOU shaving / capacity contribution; not for sub-second grid services</div></div>
+<h1>4-hour LFP BESS (industry default)</h1>
+<p>The default BESS configuration for utility-scale and behind-the-meter installations in the U.S. as of 2024–2026: lithium iron phosphate (LFP) chemistry, sized so that nameplate energy capacity equals four hours of nameplate discharge power.</p>
+<h2>Why &quot;4 hours&quot;</h2>
+<p>Three forces converge on this duration (&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_4h_battery_standard.html&quot;&gt;src_legacy_4h_battery_standard&lt;/a&gt;):</p>
+<ol>
+<li><strong>Capacity-credit accreditation.</strong> CAISO and ERCOT both grant ~100% capacity credit to 4-hour batteries; 2-hour gets ~60%. Resource-adequacy revenue is a meaningful fraction of project NPV in those markets, so going below 4h is hard to justify economically.</li>
+<li><strong>TOU evening-peak coverage.</strong> Most CA / TX / AZ TOU tariffs define the on-peak window as 4 PM – 9 PM (5 hours). A 4-hour battery charged to 85% SOC by 4 PM can carry most of that window.</li>
+<li><strong>Fire-code / energy-density envelope.</strong> A 4-hour Li-ion BESS at ~2 MWh fits a standard 20-ft container with NFPA 855-compliant separation. Longer durations either need more footprint or different chemistry.</li>
+</ol>
+<h2>Headline numbers</h2>
+<ul>
+<li>Round-trip efficiency: <strong>~92%</strong> for modern LFP at moderate C-rate.</li>
+<li>Cycle life: <strong>~6,000 cycles</strong> at 80% depth of discharge.</li>
+<li>Installed CAPEX, 2024–2025 utility scale: <strong>$230–320 / kWh</strong> of usable capacity.</li>
+<li>Capacity fade: <strong>~2.5%/yr</strong>; typical augmentation plan refreshes ~20% of cells at year 10 to maintain rated capacity through year 20.</li>
+</ul>
+<h2>When to deviate from the default</h2>
+<ul>
+<li><strong>Fast-cycling grid services</strong> (frequency regulation, voltage support) → 1–2 hour duration is common, because cycle count per day is high and longer duration costs do not pay back.</li>
+<li><strong>Seasonal time-shift</strong> (storing summer for winter or vice versa) → Li-ion is a bad fit; flow batteries (vanadium, iron-air) at 8–12+ hour duration win on $/kWh-throughput at very long cycles.</li>
+<li><strong>Behind-the-meter colocated with constant load</strong> (e.g., a co-located AI factory) → 4 hours remains the right default unless the use case is dispatch-heavy enough to justify a separate optimization.</li>
+</ul>
+<h2>Open questions for review</h2>
+<ul>
+<li>The CAPEX range ($230–320/kWh) is from 2024–2025 contracts; the next NREL ATB update should refresh this.</li>
+<li>Capacity-credit rules in CAISO and ERCOT are under active discussion (FERC Order 2222 and follow-ons); the &quot;100% at 4 hours&quot; assumption should be re-validated annually.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_4h_battery_standard.html&quot;&gt;src_legacy_4h_battery_standard&lt;/a&gt; — the legacy note this page synthesizes.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../concepts/behind_the_meter_siting.html&quot;&gt;behind_the_meter_siting&lt;/a&gt; — where this BESS configuration is the storage default.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/wwtp_45mgd_archetype.html&quot;&gt;wwtp_45mgd_archetype&lt;/a&gt; — the worked Blog 2 case using a 4-hour LFP BESS.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../concepts/governance_hierarchy.html&quot;&gt;governance_hierarchy&lt;/a&gt; — promote this page to <code>reviewed</code> after a citation pass.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/bess/4h_battery_standard.md&#x27;: None, &#x27;- raw/wiki_legacy/bess/tou_arbitrage.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../graphs/ai_candidate_graph.html">AI candidate graph</a></li><li><a class="wikilink" href="../concepts/behind_the_meter_siting.html">Behind-the-meter (BTM) siting for AI inference</a></li><li><a class="wikilink" href="../blocks/bess.html">Block: BESS</a></li><li><a class="wikilink" href="../sources/src_legacy_4h_battery_standard.html">Legacy note: 4-hour battery as industry default (BESS)</a></li><li><a class="wikilink" href="../sources/src_legacy_bess_nrel_atb_2024.html">Legacy note: BESS CAPEX — NREL Annual Technology Baseline 2024</a></li><li><a class="wikilink" href="../sources/src_legacy_tou_arbitrage.html">Legacy note: TOU arbitrage as the BESS revenue mechanic</a></li><li><a class="wikilink" href="../graphs/reviewed_engineering_graph.html">Reviewed engineering graph</a></li><li><a class="wikilink" href="../entities/wwtp_45mgd_archetype.html">WWTP 45 MGD archetype (Blog 2 worked case)</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/entities/bess_4hr_lfp.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

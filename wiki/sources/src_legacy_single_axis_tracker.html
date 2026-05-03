@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legacy note: Single-axis tracking PV — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge legacy">Legacy</span>Legacy note: Single-axis tracking PV</h1>
+<div class="page-meta"><div><strong>Host:</strong> any</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> distribution, behind_the_meter, transmission</div><div><strong>Applies when:</strong> PV configuration choice for utility-scale ground-mount in 25°–45°N latitude band</div></div>
+<h1>Legacy note — Single-axis tracking PV</h1>
+<h2>Source Summary</h2>
+<p>Internal PV note imported from <code>raw/wiki_legacy/pv/single_axis_tracker.md</code>. The default choice for utility-scale ground-mount in the US. Single-axis horizontal trackers rotate modules east-to-west on one axis to follow the sun, producing roughly 15–20% higher annual yield than fixed tilt at modest CAPEX premium.</p>
+<h2>Key Claims</h2>
+<ul>
+<li>Land density: ~325 kWp DC per acre at GCR 0.35.</li>
+<li>Specific yield (AC, after derate): +18% over fixed tilt, zone-dependent. At 30°N ≈ 1,830 kWh/kWp/yr; at 40°N ≈ 1,600 kWh/kWp/yr.</li>
+<li>CAPEX uplift: +$0.05–0.10/W DC vs fixed tilt — about 6–10% premium on total project cost.</li>
+<li>Reliability: modern trackers ship with &gt;99% uptime over 20 years; gear backlash is the main failure mode. Design life 25 years.</li>
+<li>Wins nearly always for sites &gt;1 MW in 25°–45°N band — beats fixed-tilt on LCOE in almost every modern US ground-mount analysis.</li>
+<li>Loses for: severe slopes (&gt;15%), heavy tree shading, narrow irregular parcels, sites north of 50°N.</li>
+<li>Stacks with bifacial: +18% (tracking) + 7% (bifacial) ≈ +25% over fixed-tilt mono-facial. Single-axis bifacial is the industry default.</li>
+</ul>
+<h2>Engineering Use</h2>
+<ul>
+<li>Default PV configuration for any WWTP buffer site in the 25°–45°N band — Blog 2&#x27;s worked-case archetype assumption.</li>
+<li>Land density (325 kWp/acre at GCR 0.35) is the planning heuristic for parcel-fit calculations.</li>
+<li>The +18% (tracking) + 7% (bifacial) ≈ +25% formula is the headline yield-vs-fixed-tilt math.</li>
+</ul>
+<h2>Limitations</h2>
+<ul>
+<li>The &quot;+18% over fixed tilt&quot; specific-yield gain is zone-dependent; at higher latitudes the gain shrinks. North of 50°N the tracking gain is small enough that fixed-tilt is competitive.</li>
+<li>1,830 kWh/kWp/yr at 30°N and 1,600 kWh/kWp/yr at 40°N are typical-meteorological-year averages; real years vary ±10% with cloud cover, soiling, and inverter degradation.</li>
+<li>Tracker reliability claim (&gt;99% uptime) is a manufacturer statement; field-measured performance after 10+ years can be lower depending on O&amp;M practice.</li>
+<li>CAPEX uplift of $0.05–0.10/W DC vs fixed-tilt is from 2024 numbers; the gap is shrinking as tracker manufacturing scales.</li>
+<li>This note paraphrases NREL ATB, Lazard LCOE+, and tracker-vendor datasheets. Promotion to reviewed requires either NREL ATB re-grounding or vendor RFQ.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/pv_array.html&quot;&gt;pv_array&lt;/a&gt; — flowsheet block where this is the default configuration.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_bifacial_gain.html&quot;&gt;src_legacy_bifacial_gain&lt;/a&gt; — the gain that stacks multiplicatively with tracking.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_fixed_tilt.html&quot;&gt;src_legacy_fixed_tilt&lt;/a&gt; — the alternative configuration this beats on LCOE.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_dual_axis.html&quot;&gt;src_legacy_dual_axis&lt;/a&gt; — niche alternative.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_pv_lazard_lcoe_2024.html&quot;&gt;src_legacy_pv_lazard_lcoe_2024&lt;/a&gt; — CAPEX/LCOE context.</li>
+</ul>
+<h2>Informs</h2>
+<ul>
+<li>Default PV configuration in Blog 2 worked case: single-axis bifacial.</li>
+<li>Land density planning heuristic: 325 kWp/acre at GCR 0.35 for the parcel-fit math.</li>
+<li>Annual energy estimate: kWp × specific_yield × (1 + bifacial_gain).</li>
+<li>LCOE comparison vs fixed-tilt: usually +6–10% CAPEX, +18% energy = significantly better LCOE.</li>
+</ul>
+<h2>Source citations the legacy note relied on</h2>
+<ul>
+<li>NREL Annual Technology Baseline 2024 (PV chapter).</li>
+<li>Lazard&#x27;s Levelized Cost of Energy+ 2024, utility-scale ground-mount section.</li>
+<li>Array Technologies and NEXTracker datasheets, 2024.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/pv/single_axis_tracker.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../graphs/ai_candidate_graph.html">AI candidate graph</a></li><li><a class="wikilink" href="../blocks/inverter.html">Block: Inverter</a></li><li><a class="wikilink" href="../blocks/pv_array.html">Block: PV array</a></li><li><a class="wikilink" href="../sources/src_legacy_bifacial_gain.html">Legacy note: Bifacial modules — yield gain</a></li><li><a class="wikilink" href="../sources/src_legacy_dual_axis.html">Legacy note: Dual-axis tracking PV</a></li><li><a class="wikilink" href="../sources/src_legacy_fixed_tilt.html">Legacy note: Fixed-tilt ground-mount PV</a></li><li><a class="wikilink" href="../sources/src_legacy_pv_lazard_lcoe_2024.html">Legacy note: PV CAPEX — Lazard LCOE+ 2024 reference</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/sources/src_legacy_single_axis_tracker.md</code> ·
+    Authority: <span class="badge legacy">Legacy</span>
+  </p>
+</footer>
+</body>
+</html>

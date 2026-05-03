@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NVIDIA Blackwell GB200 NVL72 — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>NVIDIA Blackwell GB200 NVL72</h1>
+<div class="page-meta"><div><strong>Host:</strong> any</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> GB200_NVL72</div><div><strong>Voltage:</strong> behind_the_meter, distribution</div><div><strong>Applies when:</strong> AI rack hardware selection at design or sizing stage, 2024–2027 timeframe</div></div>
+<h1>NVIDIA Blackwell GB200 NVL72</h1>
+<p>The first NVIDIA rack-scale Blackwell platform to ship in volume (Q3 2025). 72 B200 GPUs, NVLink switch fabric, liquid-cooled. Used as the default AI rack platform in EnergyFlux Blog 2 worked-case sizing.</p>
+<h2>Headline numbers</h2>
+<ul>
+<li><strong>Per-rack facility draw:</strong> ~125 kW (NVIDIA spec: 120 kW typical, 132 kW peak; design to 125 kW as rated facility load).</li>
+<li><strong>Per-rack FP8 compute:</strong> ~1.4 EFLOPS sustained.</li>
+<li><strong>Inference throughput:</strong> ~5.8 × 10⁶ tokens/s per MW for 70B-parameter dense models, batch 32, FP8.</li>
+<li><strong>Cooling:</strong> liquid (rear-door HX or direct-to-chip). Facility PUE 1.15–1.25.</li>
+<li><strong>Memory:</strong> 192 GB HBM3e per GPU → 13.8 TB HBM per rack — sufficient to keep a 670B-class MoE model resident.</li>
+</ul>
+<h2>Why this is the default for design-stage sizing</h2>
+<p>The platform has been shipping in volume long enough that operator data is available. Per-kW thermal curves, networking constraints, and at-scale inference throughput are all observable. Design-stage estimates carry roughly &lt;5% uncertainty.</p>
+<p>For the Blog 2 worked case (&lt;a class=&quot;wikilink&quot; href=&quot;../entities/wwtp_45mgd_archetype.html&quot;&gt;wwtp_45mgd_archetype&lt;/a&gt;, 45 MGD, 2.62 MW DC), the rack count is straightforward: <strong>2,620 kW / 125 kW per rack ≈ 21 racks</strong>. The earlier stage 1.5 simulation framed the same calculation around a 30 MGD / 2 MW DC point and arrived at <strong>16 racks</strong>; that earlier number is preserved in &lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_blackwell_gb200_nvl72.html&quot;&gt;src_legacy_blackwell_gb200_nvl72&lt;/a&gt; for traceability and is <em>not</em> the headline figure for the published Blog 2 worked case.</p>
+<h2>When to choose something else</h2>
+<ul>
+<li><strong>Vera Rubin NVL144</strong> (production for H2 2026): advertised 3× tokens/s-per-kW. Reconsider after 2027 when field data exists; for now, GB200 is the lower-risk specification.</li>
+<li><strong>AMD MI300X</strong> (or successors): plausible alternative at the chip level but rack-scale equivalents to NVL72 are not yet shipping with comparable interconnect.</li>
+<li><strong>Cerebras WSE-3 / wafer-scale</strong>: niche when the workload is steady-state inference on a fixed transformer architecture; not a general-purpose substitute.</li>
+</ul>
+<h2>Open questions for review</h2>
+<ul>
+<li>The 5.8 × 10⁶ tokens/s/MW inference number is for a specific model class and batch size; per-watt throughput on MoE models or longer-context workloads will differ.</li>
+<li>Facility PUE 1.15–1.25 assumes liquid cooling and a benign ambient regime. Hot-climate WWTP sites in TX / AZ may push PUE higher.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_blackwell_gb200_nvl72.html&quot;&gt;src_legacy_blackwell_gb200_nvl72&lt;/a&gt; — the legacy note this page synthesizes.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../concepts/behind_the_meter_siting.html&quot;&gt;behind_the_meter_siting&lt;/a&gt; — context where rack platform choice meets BTM siting.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/wwtp_45mgd_archetype.html&quot;&gt;wwtp_45mgd_archetype&lt;/a&gt; — the worked Blog 2 case using GB200 NVL72.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/hardware/blackwell_gb200_nvl72.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../concepts/behind_the_meter_siting.html">Behind-the-meter (BTM) siting for AI inference</a></li><li><a class="wikilink" href="../blocks/ai_racks.html">Block: AI racks</a></li><li><a class="wikilink" href="../sources/src_legacy_dc_industry_benchmarks.html">Legacy note: Data center facility CAPEX benchmarks 2024</a></li><li><a class="wikilink" href="../sources/src_legacy_blackwell_gb200_nvl72.html">Legacy note: NVIDIA Blackwell GB200 NVL72</a></li><li><a class="wikilink" href="../graphs/reviewed_engineering_graph.html">Reviewed engineering graph</a></li><li><a class="wikilink" href="../entities/wwtp_45mgd_archetype.html">WWTP 45 MGD archetype (Blog 2 worked case)</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/entities/gb200_nvl72.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

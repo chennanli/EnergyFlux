@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Block: Inverter — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>Block: Inverter</h1>
+<div class="page-meta"><div><strong>Host:</strong> WWTP, chemical, substation, campus</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> distribution, behind_the_meter</div><div><strong>Applies when:</strong> PV inverter + BESS PCS sizing inside a BTM colocated AI inference site</div></div>
+<h1>Block: Inverter</h1>
+<h2>What this block represents</h2>
+<p>The power-electronics interface between the PV array (DC) and the AC bus. In Blog 2&#x27;s architecture this is a <strong>central inverter</strong> topology — typically several 500–1,500 kW units, each serving a sub-array — chosen for cost-per-watt over string inverters at utility scale.</p>
+<p>A separate but related concept is the <strong>BESS PCS</strong> (power conversion system), which is the BESS-side inverter. This block page covers PV inverters; the BESS PCS is described in &lt;a class=&quot;wikilink&quot; href=&quot;../blocks/bess.html&quot;&gt;bess&lt;/a&gt;.</p>
+<h2>Key sizing variables</h2>
+<ul>
+<li><strong>Inverter nameplate AC kW per unit</strong> — Blog 2 default 550 kW central.</li>
+<li><strong>Inverter count</strong> — <code>pv_kwp_dc / (per_unit_kw × ILR)</code>. For 7,474 kWp DC and ILR 1.25: 7,474 / (550 × 1.25) ≈ 11 units.</li>
+<li><strong>Inverter loading ratio (ILR)</strong> — DC nameplate / AC capacity, default 1.25. Higher ILR (1.3–1.4) increases clipping loss but reduces inverter CAPEX per kW.</li>
+<li><strong>Inverter efficiency</strong> — modern central units run ~98–99% peak.</li>
+<li><strong>Output voltage</strong> — 480 V AC three-phase typical for central inverters; transformer steps up to medium voltage.</li>
+</ul>
+<h2>Upstream dependencies</h2>
+<ul>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/pv_array.html&quot;&gt;pv_array&lt;/a&gt;</strong> block: provides DC input. Inverter count and ILR are derived from PV nameplate.</li>
+<li>DC string voltage and current ranges (set by module wattage, modules-per-string, strings-per-inverter — these are inverter-side product spec details, not site decisions).</li>
+</ul>
+<h2>Downstream dependencies</h2>
+<ul>
+<li>The site <strong>AC collection bus</strong> (typically 480 V → step-up transformer → 12.47 kV or 25 kV primary distribution).</li>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/service_transformer.html&quot;&gt;service_transformer&lt;/a&gt;</strong> block: the inverter&#x27;s AC output joins WWTP load and BESS at the transformer secondary.</li>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/dc_bus.html&quot;&gt;dc_bus&lt;/a&gt;</strong> block: in a DC-coupled architecture (out of scope for Blog 2&#x27;s AC-coupled default), inverter would be skipped on the PV side and a DC-DC stage would replace it.</li>
+</ul>
+<h2>Source notes that inform this block</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_pv_lazard_lcoe_2024.html&quot;&gt;src_legacy_pv_lazard_lcoe_2024&lt;/a&gt; — inverter is part of the per-W PV CAPEX number.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_single_axis_tracker.html&quot;&gt;src_legacy_single_axis_tracker&lt;/a&gt; — single-axis tracker layout drives inverter pad placement and string topology.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_bess_nrel_atb_2024.html&quot;&gt;src_legacy_bess_nrel_atb_2024&lt;/a&gt; — BESS PCS sizing and CAPEX is a separate but related inverter element.</li>
+</ul>
+<h2>Downstream dependencies (continued)</h2>
+<ul>
+<li>Anti-islanding / non-export logic in the inverter firmware: required for &lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_tx_ercot_interconnect.html&quot;&gt;src_legacy_tx_ercot_interconnect&lt;/a&gt;&#x27;s &quot;non-export PV&quot; configuration to actually be enforced.</li>
+</ul>
+<h2>Candidate assumptions pending review</h2>
+<ul>
+<li><strong>Central inverter, 550 kW</strong> — chosen as the round-number Blog 2 default. Real projects pick from a vendor catalog (SMA, Sungrow, Power Electronics, etc.); 540 / 600 / 1,500 kW are also common.</li>
+<li><strong>ILR 1.25</strong> — industry default, but tariff-dependent. Sites optimizing for ITC capacity vs PTC energy will pick differently.</li>
+<li><strong>Inverter efficiency ~98%</strong> — peak; real annual-average is 1–2 percentage points lower depending on load profile.</li>
+<li><strong>Anti-islanding / non-export logic</strong> — a real design must specify the inverter firmware mode and verify with the utility; this block currently treats it as a feature flag, not a designed control loop.</li>
+</ul>
+<h2>What would make this block authoritative / reviewed</h2>
+<ul>
+<li><strong>Reviewed</strong>: at least one vendor RFQ benchmarked against the assumed efficiency, ILR, and CAPEX numbers; a senior electrical engineer has reviewed the central-vs-string topology decision for a representative Blog 2 archetype site.</li>
+<li><strong>Authoritative</strong>: inverter datasheets directly cited as authoritative source pages (SMA, Sungrow, Power Electronics, etc.). The path: promote one or two vendor datasheets to authoritative source pages; this block then cites them and is promoted to reviewed.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/pv/single_axis_tracker.md&#x27;: None, &#x27;- raw/wiki_legacy/capex/pv_lazard_lcoe_2024.md&#x27;: None, &#x27;- raw/wiki_legacy/capex/bess_nrel_atb_2024.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../blocks/dc_bus.html">Block: DC bus</a></li><li><a class="wikilink" href="../blocks/pv_array.html">Block: PV array</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/blocks/inverter.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

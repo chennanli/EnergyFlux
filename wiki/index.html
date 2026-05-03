@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="index.html">Index</a>
+    <a href="concepts/governance_hierarchy.html">Governance</a>
+    <a href="log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1>EnergyFlux Knowledge Vault</h1>
+<p>A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</p>
+<p style="font-size: 13.5px; color: var(--muted);">
+  This vault is the source material the EnergyFlux blog series'
+  AI assistant retrieves from. Each page declares its
+  <strong>authority level</strong> (Authoritative, Reviewed,
+  Candidate, Legacy) and its <strong>scope</strong> (host type,
+  region, equipment, voltage level). The assistant cites only
+  Authoritative and Reviewed pages as primary; Candidate and Legacy
+  show up in answers only when nothing more reliable exists, and
+  always with a "pending review" warning. See
+  <a href="concepts/governance_hierarchy.html">the governance page</a>
+  for how promotion works.
+</p>
+<div class="stats-bar"><div class="stat"><span class="badge authoritative">Authoritative</span> <strong>0</strong> pages</div><div class="stat"><span class="badge reviewed">Reviewed</span> <strong>0</strong> pages</div><div class="stat"><span class="badge candidate">Candidate</span> <strong>14</strong> pages</div><div class="stat"><span class="badge legacy">Legacy</span> <strong>16</strong> pages</div><div class="stat" style="margin-left:auto;">Total: <strong>30</strong></div></div>
+<div class="section">
+<h2>Sources</h2>
+<div class="blurb">One page summarizing each ingested raw source. Filenames mirror the underlying raw file slug.</div>
+<ul class="page-list"><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_4h_battery_standard.html">Legacy note: 4-hour battery as industry default (BESS)</a> <span class="scope">(WWTP/any · CAISO/ERCOT/any)</span></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_amd_mi300x.html">Legacy note: AMD Instinct MI300X (and MI325X)</a></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_bess_nrel_atb_2024.html">Legacy note: BESS CAPEX — NREL Annual Technology Baseline 2024</a> <span class="scope">(WWTP/any)</span></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_bifacial_gain.html">Legacy note: Bifacial modules — yield gain</a> <span class="scope">(WWTP/any)</span></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_cerebras_wse3.html">Legacy note: Cerebras WSE-3</a></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_dc_industry_benchmarks.html">Legacy note: Data center facility CAPEX benchmarks 2024</a> <span class="scope">(WWTP/any)</span></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_dual_axis.html">Legacy note: Dual-axis tracking PV</a></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_fixed_tilt.html">Legacy note: Fixed-tilt ground-mount PV</a></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_blackwell_gb200_nvl72.html">Legacy note: NVIDIA Blackwell GB200 NVL72</a> <span class="scope">(WWTP/any)</span></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_vera_rubin_nvl144.html">Legacy note: NVIDIA Vera Rubin NVL144</a></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_pv_lazard_lcoe_2024.html">Legacy note: PV CAPEX — Lazard LCOE+ 2024 reference</a> <span class="scope">(WWTP/any)</span></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_single_axis_tracker.html">Legacy note: Single-axis tracking PV</a></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_tx_ercot_interconnect.html">Legacy note: Texas / ERCOT interconnection for a BTM AI factory</a> <span class="scope">(WWTP/chemical/substation · ERCOT)</span></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_tou_arbitrage.html">Legacy note: TOU arbitrage as the BESS revenue mechanic</a> <span class="scope">(WWTP/any · CAISO/ERCOT/any)</span></li><li><span class="badge legacy">Legacy</span><a class="title" href="sources/src_legacy_wwtp_buffer_setback.html">Legacy note: WWTP buffer zones — setback rules</a> <span class="scope">(WWTP · CAISO/ERCOT/PJM)</span></li></ul>
+</div><div class="section">
+<h2>Blocks</h2>
+<div class="blurb">Engineering-block role pages — what each flowsheet block represents, key sizing variables, upstream / downstream dependencies, and the source notes that inform it.</div>
+<ul class="page-list"><li><span class="badge candidate">Candidate</span><a class="title" href="blocks/ai_racks.html">Block: AI racks</a> <span class="scope">(WWTP/chemical/substation)</span></li><li><span class="badge candidate">Candidate</span><a class="title" href="blocks/bess.html">Block: BESS</a> <span class="scope">(WWTP/chemical/substation · CAISO/ERCOT/any)</span></li><li><span class="badge candidate">Candidate</span><a class="title" href="blocks/dc_bus.html">Block: DC bus</a> <span class="scope">(WWTP/chemical/substation)</span></li><li><span class="badge candidate">Candidate</span><a class="title" href="blocks/inverter.html">Block: Inverter</a> <span class="scope">(WWTP/chemical/substation)</span></li><li><span class="badge candidate">Candidate</span><a class="title" href="blocks/pv_array.html">Block: PV array</a> <span class="scope">(WWTP/chemical/substation)</span></li><li><span class="badge candidate">Candidate</span><a class="title" href="blocks/service_transformer.html">Block: Service transformer</a> <span class="scope">(WWTP/chemical/substation · ERCOT/CAISO/PJM)</span></li><li><span class="badge candidate">Candidate</span><a class="title" href="blocks/wwtp_load.html">Block: WWTP load</a> <span class="scope">(WWTP)</span></li></ul>
+</div><div class="section">
+<h2>Graphs</h2>
+<div class="blurb">Pages describing the vault's edge structure — what edges are AI-suggested candidates vs human-reviewed facts, and the promotion workflow between them.</div>
+<ul class="page-list"><li><span class="badge candidate">Candidate</span><a class="title" href="graphs/ai_candidate_graph.html">AI candidate graph</a></li><li><span class="badge candidate">Candidate</span><a class="title" href="graphs/reviewed_engineering_graph.html">Reviewed engineering graph</a></li></ul>
+</div><div class="section">
+<h2>Concepts</h2>
+<div class="blurb">Domain ideas — framings, decisions, or design rules that span multiple entities. Behind-the-meter siting, surrogate models, governance hierarchy.</div>
+<ul class="page-list"><li><span class="badge candidate">Candidate</span><a class="title" href="concepts/behind_the_meter_siting.html">Behind-the-meter (BTM) siting for AI inference</a> <span class="scope">(WWTP/chemical/substation)</span></li><li><span class="badge legacy">Legacy</span><a class="title" href="concepts/governance_hierarchy.html">Governance hierarchy: Authoritative / Reviewed / Candidate</a></li></ul>
+</div><div class="section">
+<h2>Entities</h2>
+<div class="blurb">Discrete things in the EnergyFlux problem space — specific GPU racks, BESS configurations, transformer classes, WWTP archetypes, regulatory documents.</div>
+<ul class="page-list"><li><span class="badge candidate">Candidate</span><a class="title" href="entities/bess_4hr_lfp.html">4-hour LFP BESS (industry default)</a> <span class="scope">(WWTP/any · CAISO/ERCOT/any)</span></li><li><span class="badge candidate">Candidate</span><a class="title" href="entities/gb200_nvl72.html">NVIDIA Blackwell GB200 NVL72</a></li><li><span class="badge candidate">Candidate</span><a class="title" href="entities/wwtp_45mgd_archetype.html">WWTP 45 MGD archetype (Blog 2 worked case)</a> <span class="scope">(WWTP · ERCOT/CAISO/MISO)</span></li></ul>
+</div><div class="section">
+<h2>Synthesis</h2>
+<div class="blurb">Cross-cutting analyses, comparisons, decision tables. Often filed back from query answers.</div>
+<ul class="page-list"><li><span class="badge candidate">Candidate</span><a class="title" href="synthesis/syn_btm_siting_cases.html">Synthesis: BTM siting host types compared</a> <span class="scope">(WWTP/chemical/substation)</span></li></ul>
+</div>
+</body>
+</html>

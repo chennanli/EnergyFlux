@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legacy note: PV CAPEX — Lazard LCOE+ 2024 reference — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge legacy">Legacy</span>Legacy note: PV CAPEX — Lazard LCOE+ 2024 reference</h1>
+<div class="page-meta"><div><strong>Host:</strong> WWTP, any</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> distribution, behind_the_meter, transmission</div><div><strong>Applies when:</strong> early-stage utility-scale or BTM PV CAPEX and LCOE modeling, 2024 vintage</div></div>
+<h1>Legacy note — PV CAPEX (Lazard LCOE+ 2024)</h1>
+<h2>Source Summary</h2>
+<p>Internal cost brief imported from <code>raw/wiki_legacy/capex/pv_lazard_lcoe_2024.md</code>. Summarizes Lazard LCOE+ 2024 numbers for utility-scale ground-mount PV, turnkey installed cost (modules + inverters + trackers + BoS + engineering + land prep). Excludes land acquisition, interconnection studies, and financing.</p>
+<h2>Key Claims</h2>
+<ul>
+<li>Installed CAPEX, 2024 USD (DC nameplate):</li>
+<li>Fixed-tilt mono-facial: $0.80–0.95/W</li>
+<li>Single-axis tracker: $0.90–1.05/W</li>
+<li>Single-axis bifacial: $0.95–1.10/W</li>
+<li>LCOE (unsubsidized):</li>
+<li>Fixed-tilt mono-facial: $28–38/MWh</li>
+<li>Single-axis tracker: $26–36/MWh</li>
+<li>Single-axis bifacial: $24–34/MWh</li>
+<li>For a 5–10 MW BTM project, the upper end of each range applies (small-project + inflation adder).</li>
+<li>Includes: modules, inverters, trackers, racking, foundations, DC + AC wiring, SCADA, transformers up to metering, EPC labor, commissioning, permits.</li>
+<li>Excludes: land acquisition (typically $0 for a WWTP buffer in-kind lease), utility interconnection study + upgrade ($50k–$300k), environmental review ($20k–$100k), project financing.</li>
+<li>Blog 2 default (5.7 MWp single-axis bifacial): CAPEX midpoint $6.0M; LCOE midpoint $29/MWh unsubsidized.</li>
+</ul>
+<h2>Engineering Use</h2>
+<ul>
+<li>Provides the CAPEX/W and LCOE numbers for any PV pro-forma at design stage.</li>
+<li>Anchors the &lt;a class=&quot;wikilink&quot; href=&quot;../blocks/pv_array.html&quot;&gt;pv_array&lt;/a&gt; flowsheet block and informs tracker / bifacial selection economics.</li>
+<li>Confirms why single-axis bifacial is the default for utility-scale: best LCOE in the table at 25°–45°N latitude.</li>
+</ul>
+<h2>Limitations</h2>
+<ul>
+<li>2024 USD; PV CAPEX is moving (downward overall, but with tariff and supply-chain disruption in some quarters). Promotion to reviewed requires year-current numbers.</li>
+<li>LCOE depends on assumed financing structure (Lazard uses a specific WACC); for a BTM colocated case the right LCOE may be higher or lower depending on project finance.</li>
+<li>Lazard explicitly excludes dual-axis from utility-scale tables on cost grounds — meaning the dual-axis comparison number used elsewhere is from a different source.</li>
+<li>This note is paraphrased; promotion to reviewed requires re-grounding against the Lazard report directly and comparing to NREL ATB for the same year.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/pv_array.html&quot;&gt;pv_array&lt;/a&gt; — flowsheet block for the PV array.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_single_axis_tracker.html&quot;&gt;src_legacy_single_axis_tracker&lt;/a&gt; — sibling source on the default tracker choice.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_bifacial_gain.html&quot;&gt;src_legacy_bifacial_gain&lt;/a&gt; — sibling source on the bifacial yield gain.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_fixed_tilt.html&quot;&gt;src_legacy_fixed_tilt&lt;/a&gt; — sibling source on the conservative-floor PV configuration.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_dual_axis.html&quot;&gt;src_legacy_dual_axis&lt;/a&gt; — sibling source on the niche dual-axis option.</li>
+</ul>
+<h2>Informs</h2>
+<ul>
+<li>PV CAPEX line in any sizing pro-forma.</li>
+<li>LCOE comparison when evaluating PV against grid-only or PV+BESS options.</li>
+<li>Tracker-vs-fixed-tilt sensitivity analysis.</li>
+</ul>
+<h2>Source citations the legacy note relied on</h2>
+<ul>
+<li>Lazard&#x27;s Levelized Cost of Energy+ 2024 Report (lazard.com/perspective/lcoeplus-june-2024).</li>
+<li>NREL Annual Technology Baseline 2024, utility-scale PV tab.</li>
+<li>SEIA / Wood Mackenzie US Solar Market Insight, Q4 2024.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/capex/pv_lazard_lcoe_2024.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../blocks/inverter.html">Block: Inverter</a></li><li><a class="wikilink" href="../blocks/pv_array.html">Block: PV array</a></li><li><a class="wikilink" href="../sources/src_legacy_bifacial_gain.html">Legacy note: Bifacial modules — yield gain</a></li><li><a class="wikilink" href="../sources/src_legacy_dual_axis.html">Legacy note: Dual-axis tracking PV</a></li><li><a class="wikilink" href="../sources/src_legacy_fixed_tilt.html">Legacy note: Fixed-tilt ground-mount PV</a></li><li><a class="wikilink" href="../sources/src_legacy_single_axis_tracker.html">Legacy note: Single-axis tracking PV</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/sources/src_legacy_pv_lazard_lcoe_2024.md</code> ·
+    Authority: <span class="badge legacy">Legacy</span>
+  </p>
+</footer>
+</body>
+</html>

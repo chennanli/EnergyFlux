@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legacy note: NVIDIA Vera Rubin NVL144 — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge legacy">Legacy</span>Legacy note: NVIDIA Vera Rubin NVL144</h1>
+<div class="page-meta"><div><strong>Host:</strong> any</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> behind_the_meter, distribution</div><div><strong>Applies when:</strong> AI rack hardware selection for sites being designed for late-2026 / 2027 commissioning</div></div>
+<h1>Legacy note — NVIDIA Vera Rubin NVL144</h1>
+<h2>Source Summary</h2>
+<p>Internal hardware brief imported from <code>raw/wiki_legacy/hardware/vera_rubin_nvl144.md</code>. NVIDIA&#x27;s Vera Rubin NVL144 platform (announced GTC 2024, first systems expected late 2026) as the next-generation NVIDIA platform after Blackwell. The note explicitly flags that all numbers are vendor roadmap estimates with ±30% uncertainty bands and warns against committing site construction to Rubin numbers without a signed delivery contract.</p>
+<h2>Key Claims</h2>
+<ul>
+<li>Per-rack facility draw: <strong>~150–250 kW</strong> estimated; nominal design point ~175 kW. (The &quot;1.4 MW/rack&quot; figure sometimes cited refers to a different, 2028-era SKU — Rubin Ultra NVL576 — and should not be confused with NVL144.)</li>
+<li>Per-rack FP4 compute: ~3.6× Blackwell per NVIDIA&#x27;s published claim, on the order of 5 EFLOPS FP4 per rack.</li>
+<li>Inference throughput target: ~2× tokens/s per kW vs Blackwell at equivalent workload, equivalent per-MW target ~1.0–1.2 × 10⁷ tokens/s/MW.</li>
+<li>Memory: HBM4, ~288 GB per GPU; 288 × 144 ≈ 41 TB HBM per rack.</li>
+<li>Sizing implication: same 2 MW DC on Rubin NVL144 ≈ 11 racks instead of 16 for Blackwell. Same site can host ~2× the inference throughput.</li>
+<li>The argument for &quot;Rubin-ready&quot; power + cooling design (150 kW/rack busway, liquid-cooled) on sites being commissioned on Blackwell today.</li>
+</ul>
+<h2>Engineering Use</h2>
+<ul>
+<li>Justifies designing service-transformer + busway + cooling capacity for Rubin (175 kW/rack design point) even when commissioning on Blackwell — avoids a forklift upgrade in 2028.</li>
+<li>Provides the &quot;design-for-future&quot; rack count target when the project pencils on Rubin&#x27;s 2× throughput-per-kW.</li>
+<li>Anchors the conversation about &quot;what&#x27;s possible if NVIDIA delivery hits roadmap&quot; vs &quot;what&#x27;s deliverable today.&quot;</li>
+</ul>
+<h2>Limitations</h2>
+<ul>
+<li><strong>Every quantity here is a roadmap estimate, not a measured outcome.</strong> ±30% bands are appropriate. Field-commissioned units do not yet exist.</li>
+<li>&quot;Late 2026&quot; first-systems date is NVIDIA&#x27;s announced target; large-program commits should not assume this date.</li>
+<li>The &quot;2× tokens/s per kW vs Blackwell&quot; claim is workload-specific; real workloads may show smaller or larger gains depending on model class, batch size, precision.</li>
+<li>Memory + interconnect numbers are roadmap; HBM4 supply chain is constrained.</li>
+<li>Confusion risk with Rubin Ultra NVL576 (different SKU, 2028-era, different power envelope) is acknowledged but easy to repeat.</li>
+<li>This note is paraphrased; promotion to reviewed requires either NVIDIA primary briefing under NDA, or first field-commissioning data once it exists.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/ai_racks.html&quot;&gt;ai_racks&lt;/a&gt; — flowsheet block where this is the &quot;design for the future&quot; lever.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_blackwell_gb200_nvl72.html&quot;&gt;src_legacy_blackwell_gb200_nvl72&lt;/a&gt; — current-generation platform; the baseline for any &quot;deploy today&quot; site.</li>
+</ul>
+<h2>Informs</h2>
+<ul>
+<li>Service-transformer and busway sizing: design to Rubin-ready (175 kW/rack) rather than Blackwell-only (125 kW/rack), to avoid a forklift upgrade.</li>
+<li>Cooling design: liquid only, capable of 175 kW/rack heat rejection.</li>
+<li>Pro-forma sensitivity: &quot;what if Rubin delivers on time&quot; is a key sensitivity in any 2027-commissioning-onwards site model.</li>
+</ul>
+<h2>Source citations the legacy note relied on</h2>
+<ul>
+<li>NVIDIA Rubin roadmap, Jensen Huang keynote, GTC 2024 (March).</li>
+<li>SemiAnalysis &quot;Vera Rubin NVL144: Scaling Blackwell Architecture&quot;, 2025-03.</li>
+<li>ExplorTech / SDxCentral coverage of Rubin Ultra power envelope, 2025-05.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/hardware/vera_rubin_nvl144.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../blocks/ai_racks.html">Block: AI racks</a></li><li><a class="wikilink" href="../sources/src_legacy_amd_mi300x.html">Legacy note: AMD Instinct MI300X (and MI325X)</a></li><li><a class="wikilink" href="../sources/src_legacy_blackwell_gb200_nvl72.html">Legacy note: NVIDIA Blackwell GB200 NVL72</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/sources/src_legacy_vera_rubin_nvl144.md</code> ·
+    Authority: <span class="badge legacy">Legacy</span>
+  </p>
+</footer>
+</body>
+</html>

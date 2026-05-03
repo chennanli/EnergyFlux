@@ -1,0 +1,7 @@
+bin_label,bin_low_mgd,bin_high_mgd,plant_count,share_of_plants_pct,cumulative_flow_share_pct,notes
+<1 MGD,0.0,1.0,8500,57.6,2.9,"Mostly rural/suburban facilities. Too small for colocated DC: insufficient load and buffer."
+1-10 MGD,1.0,10.0,5000,33.9,22.8,"Typical small-city plants (50-300k population). Buffer often <10 acres."
+10-25 MGD,10.0,25.0,900,6.1,45.7,"Marginal AI-DC band. Buffer 7-15 acres; 1-2 MW colocated DC feasible."
+25-75 MGD,25.0,75.0,270,1.8,73.4,"AI-inference sweet spot. 15-30 acres buffer; 2-6 MW DC amortizes cleanly."
+75-150 MGD,75.0,150.0,65,0.4,87.0,"Large urban plants. 40+ acres; 6-15 MW DC feasible. Interconnection already medium-voltage."
+>=150 MGD,150.0,500.0,15,0.1,100.0,"Metro-tier (Houston, Chicago, LA, NYC). Can host AI campus tier (>15 MW). Higher scrutiny."

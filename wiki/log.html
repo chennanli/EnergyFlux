@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="index.html">Index</a>
+    <a href="concepts/governance_hierarchy.html">Governance</a>
+    <a href="log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1>Vault log</h1>
+<p style="font-size: 13.5px; color: var(--muted);">
+  Append-only chronological record of vault operations: setup,
+  ingest, query, lint, supersede.
+</p>
+<h1>Vault log</h1>
+<p>Append-only chronological record of vault operations. Each entry starts with <code>## [YYYY-MM-DD HH:MM] &lt;op&gt; | &lt;subject&gt;</code> so it parses with <code>grep &#x27;^## \[&#x27;</code>.</p>
+<p>Operations: <code>ingest</code>, <code>query</code>, <code>lint</code>, <code>promote</code>, <code>supersede</code>, <code>setup</code>.</p>
+<hr>
+<h2>[2026-05-02 10:30] setup | Vault scaffolded</h2>
+<p>Initial scaffolding: <code>CLAUDE.md</code> schema, <code>README.md</code>, <code>index.md</code>, <code>log.md</code>, raw/wiki/templates directory tree. Bootstrap content seeded with three example entity pages (<code>bess_4hr_lfp</code>, <code>gb200_nvl72</code>, <code>wwtp_45mgd_archetype</code>), two concept pages (<code>behind_the_meter_siting</code>, <code>governance_hierarchy</code>), and one synthesis page (<code>syn_btm_siting_cases</code>). All seeded pages are at <code>authority: candidate</code> or <code>authority: legacy</code> pending Chennan&#x27;s review.</p>
+<p>The legacy <code>stage1_5_wwtp_dc/design_wiki/</code> 15 markdown files are imported into <code>raw/wiki_legacy/</code> as immutable raw sources, not as wiki pages. They will be re-ingested into the wiki/ layer over time, on demand.</p>
+<p>This vault runs in parallel to the simplified RAG that powers the published Blog 2 copilot. Migration of the copilot to retrieve from this vault is not on the immediate roadmap; this vault is for ongoing engineering work and growth.</p>
+<hr>
+<h2>[2026-05-02 11:15] ingest | Source pages from legacy raw</h2>
+<p>Created two source-level pages summarizing the most-cited legacy raws so they have a citable wiki location:</p>
+<ul>
+<li><code>wiki/sources/src_legacy_4h_battery_standard.md</code> — points back to <code>raw/wiki_legacy/4_hour_battery_standard.md</code>. Authority <code>legacy</code> because the underlying file was promoted to &quot;design standard&quot; in the legacy folder without an external citation; needs re-grounding to NREL ATB or vendor spec before promotion to <code>reviewed</code>.</li>
+<li><code>wiki/sources/src_legacy_blackwell_gb200_nvl72.md</code> — points back to <code>raw/wiki_legacy/blackwell_gb200_nvl72.md</code>. Authority <code>legacy</code> for the same reason; needs cross-check against NVIDIA datasheets.</li>
+</ul>
+<p>Index updated. No entity or concept page changed.</p>
+<hr>
+<h2>[2026-05-02 11:25] setup | Templates added</h2>
+<p>Created <code>templates/entity_template.md</code>, <code>templates/source_template.md</code>, <code>templates/concept_template.md</code>, <code>templates/synthesis_template.md</code>. These match the four <code>wiki/</code> subdirectories. The LLM maintainer should copy a template when adding a new page rather than writing the YAML frontmatter from memory.</p>
+<hr>
+<h2>[2026-05-02 11:40] query | Demo: &quot;Why did the 45 MGD WWTP archetype land on 21 racks of GB200?&quot;</h2>
+<p><strong>Question.</strong> Walk me through, from this vault, why the worked Blog 2 WWTP archetype lands on 21 racks of GB200 NVL72 and a 4 MVA → upgraded transformer.</p>
+<p><strong>Answer (composed by reading the vault):</strong></p>
+<p>The 21-rack number falls out of the per-rack facility draw and the chosen DC budget. From [[gb200_nvl72]]: each rack is rated at <strong>~125 kW</strong> facility load (NVIDIA spec: 120 kW typical, 132 kW peak; design to 125 kW). The Blog 2 worked case sets the AI factory&#x27;s nameplate at <strong>2.62 MW DC</strong> for the 45 MGD archetype. 2,620 kW ÷ 125 kW per rack ≈ <strong>21 racks</strong>. (Source: [[wwtp_45mgd_archetype]], headline parameters block; cross-checked against [[src_legacy_blackwell_gb200_nvl72]] which cites the 125 kW figure to NVIDIA GB200 NVL72 product brief, Feb 2024.)</p>
+<p>The 4 MVA transformer reasoning is structural, not arbitrary. The WWTP itself peaks at ~3,750 kW (aeration + pumping + ancillaries for a 25–60 MGD plant). U.S. utility convention sizes the service transformer at roughly 1.07× to 1.4× peak; the lean end is 1.07× → 4 MVA. (Source: [[wwtp_45mgd_archetype]] honest-scope-limits block.) The new AI factory load (4,578 kW worst-case-simultaneity) plus the WWTP baseline exceeds 4 MVA, so the worked case requires a transformer upgrade. (Source: same page.)</p>
+<p><strong>Authority profile of the answer:</strong></p>
+<ul>
+<li>Per-rack draw → cited from a <code>legacy</code> source page that traces to NVIDIA&#x27;s primary doc — treat as authoritative for the magnitude, candidate for the specific 125 kW design-point.</li>
+<li>Transformer sizing convention (1.07–1.4× peak) → currently <code>candidate</code> in [[wwtp_45mgd_archetype]]; needs grounding to IEEE C57.92 or equivalent before promotion to <code>reviewed</code>.</li>
+<li>21-rack count → arithmetic, not a citable claim.</li>
+</ul>
+<p><strong>Scope check.</strong> The question is in scope for <code>host_type: WWTP, voltage_level: distribution / behind_the_meter, applies_when: 25–150 MGD mid-size</code>. No scope mis-application.</p>
+<p><strong>What this query did not find.</strong> No primary-source IEEE/ANSI citation for the transformer sizing convention exists in this vault yet. That is a known gap and is in the open-questions list on [[wwtp_45mgd_archetype]].</p>
+<hr>
+<h2>[2026-05-02 11:55] lint | First-pass lint of vault as of 11 pages</h2>
+<p>Ran a manual lint pass over the 11 wiki pages and 21 raw files. Findings:</p>
+<p><strong>L-1 (real contradiction, severity: medium).</strong> [[gb200_nvl72]] §&quot;Why this is the default&quot; says: <em>&quot;For a 2 MW DC budget at the worked-case 30 MGD WWTP archetype, the rack count is straightforward: 2 MW / 125 kW per rack ≈ 16 racks (the headline number used throughout the EnergyFlux stage 1.5 simulation). Scaling to 45 MGD and 2.62 MW DC gives 21 racks.&quot;</em> This refers to a &quot;30 MGD worked case&quot; that no longer exists — the archetype was renamed to 45 MGD ([[wwtp_45mgd_archetype]]). The 30 MGD framing is residual from the stage 1.5 simulation and the legacy source page [[src_legacy_blackwell_gb200_nvl72]] which still cites the 30 MGD number. <strong>Resolution:</strong> the 30 MGD reference in [[gb200_nvl72]] should be moved to a &quot;history note&quot; subsection or replaced with the 45 MGD framing directly. Logged for next ingest pass; not auto-fixing because the wording choice is editorial.</p>
+<p><strong>L-2 (orphan, severity: low).</strong> No PV entity page exists yet, but [[wwtp_45mgd_archetype]] references PV via <code>informs: [pv]</code> and includes a PV nameplate of 7,474 kWp. <strong>Resolution:</strong> create <code>wiki/entities/pv_single_axis_bifacial.md</code> from <code>raw/wiki_legacy/pv/single_axis_tracker.md</code> and <code>bifacial_gain.md</code> to give the PV reference a target. Deferred — known gap.</p>
+<p><strong>L-3 (incomplete approval metadata, severity: low).</strong> All <code>legacy</code> pages have <code>approved_by: null</code> and <code>approved_date: null</code>, which is correct <em>as legacy</em> but means none of them can be cited as <code>reviewed</code> until they go through the promotion workflow. This is by design (see [[governance_hierarchy]]); the lint surfaces it so the count is visible: <strong>5 pages in legacy/candidate state, 0 in reviewed, 0 in authoritative</strong>. Tracking metric.</p>
+<p><strong>L-4 (informs-block underspecified, severity: low).</strong> [[behind_the_meter_siting]] declares <code>informs: [grid, wwtp, rack, bess, pv]</code> — five blocks. The current vault has entity pages for three (<code>bess_4hr_lfp</code>, <code>gb200_nvl72</code>, <code>wwtp_45mgd_archetype</code>) plus the BTM concept itself. PV and grid blocks have no entity pages yet. Not a contradiction; a gap. Captured for future ingest.</p>
+<p><strong>L-5 (no contradictions found between primary and synthesized layers).</strong> Spot-checked: the 4-hour BESS standard claim, the 125 kW per-rack draw claim, and the 23-acre buffer assumption are all consistent between the source page and the entity page that synthesizes from it.</p>
+<p><strong>L-6 (no broken wikilinks).</strong> Every <code>[[...]]</code> reference points to a file that exists in <code>wiki/</code>.</p>
+<p><strong>Summary.</strong> One real contradiction (L-1, residual 30 MGD framing in gb200_nvl72), four gaps (L-2, L-3, L-4, plus more lint passes needed when the vault grows), no broken links. The vault is clean enough to be useful but has the shape of an early-stage project — most pages are <code>candidate</code> or <code>legacy</code> and need promotion work before they can be auto-cited.</p>
+<hr>
+<h2>[2026-05-02 12:00] supersede | L-1 fix in [[gb200_nvl72]]</h2>
+<p>Resolved L-1 from the 11:55 lint pass. Edited [[gb200_nvl72]] §&quot;Why this is the default for design-stage sizing&quot; to use the 45 MGD archetype as the worked case directly, with the historic 30 MGD / 16-rack number explicitly framed as preserved-for-traceability via [[src_legacy_blackwell_gb200_nvl72]]. Frontmatter <code>last_lint_fix</code> field added.</p>
+<p>This is a <code>supersede</code> operation in the sense that it replaces wording inside an existing page, not the page itself. No <code>supersedes:</code> link was set because the page identity is unchanged.</p>
+<hr>
+<h2>[2026-05-02 14:30] hardening | Vault hardening pass v0.1</h2>
+<p>Per user instruction (governed-knowledge-vault hardening pass), this session expanded the vault from 8 thin pages to 30 structured pages with strict template compliance, governance documentation, and an honest authority audit.</p>
+<p><strong>What was added:</strong></p>
+<ul>
+<li>13 new source notes under <code>wiki/sources/</code> — one per legacy md not previously synthesized: <code>src_legacy_amd_mi300x</code>, <code>src_legacy_bess_nrel_atb_2024</code>, <code>src_legacy_bifacial_gain</code>, <code>src_legacy_cerebras_wse3</code>, <code>src_legacy_dc_industry_benchmarks</code>, <code>src_legacy_dual_axis</code>, <code>src_legacy_fixed_tilt</code>, <code>src_legacy_pv_lazard_lcoe_2024</code>, <code>src_legacy_single_axis_tracker</code>, <code>src_legacy_tou_arbitrage</code>, <code>src_legacy_tx_ercot_interconnect</code>, <code>src_legacy_vera_rubin_nvl144</code>, <code>src_legacy_wwtp_buffer_setback</code>. Total source notes now 15 (3 existing + 12 new — <code>src_legacy_tou_arbitrage</code> was started earlier this session and rewritten under the new template).</li>
+<li>7 block pages under new <code>wiki/blocks/</code> directory: <code>pv_array</code>, <code>inverter</code>, <code>bess</code>, <code>dc_bus</code>, <code>ai_racks</code>, <code>wwtp_load</code>, <code>service_transformer</code>. Each follows the strict 7-question structure: what the block represents, key sizing variables, upstream dependencies, downstream dependencies, source notes that inform it, candidate assumptions pending review, what would make it authoritative/reviewed.</li>
+<li>2 graph concept pages under new <code>wiki/graphs/</code> directory: <code>ai_candidate_graph</code> (LLM-proposed edges, not facts) and <code>reviewed_engineering_graph</code> (human-approved edges, the only edges the AI assistant may cite as fact). Promotion workflow documented.</li>
+<li><code>AGENTS.md</code> at vault root: 8 governance rules for any AI agent operating on the vault. Distinct from <code>CLAUDE.md</code> (schema/operating manual).</li>
+</ul>
+<p><strong>What was rewritten:</strong></p>
+<ul>
+<li>3 existing source notes (<code>src_legacy_4h_battery_standard</code>, <code>src_legacy_blackwell_gb200_nvl72</code>, <code>src_legacy_tou_arbitrage</code>) reformatted to the strict 6-section template: Source Summary, Key Claims, Engineering Use, Limitations, Related, Informs.</li>
+<li><code>index.md</code> rewritten with six sections (Sources / Blocks / Graphs / Concepts / Entities / Synthesis), each entry showing authority level. Honest top-line stats (0 reviewed, 0 authoritative, 13 candidate, 14 legacy).</li>
+</ul>
+<p><strong>What was NOT done (deliberately):</strong></p>
+<ul>
+<li><strong>No page was promoted from candidate or legacy to reviewed or authoritative.</strong> This was an explicit constraint. Promotion requires human approval, which has not happened. Every page in the vault is at candidate or legacy authority level.</li>
+<li><strong>No edges were promoted from the candidate graph to the reviewed graph.</strong> Same reason.</li>
+<li><strong><code>stage1_5_wwtp_dc/design_wiki/</code> was not deleted.</strong> The 15 legacy markdown files remain in place. Only <code>design_wiki/README.md</code> was added (in a prior session) pointing to the vault. The legacy v1 retriever (<code>design/rag.py</code>) and v1 Streamlit app (<code>apps/blog2_genai_app.py</code>) continue to function unchanged.</li>
+</ul>
+<p><strong>Authority audit (post-hardening):</strong></p>
+<ul>
+<li>Authoritative: 0</li>
+<li>Reviewed: 0</li>
+<li>Candidate: 14 (3 entities, 7 blocks, 2 graphs, 1 synthesis, 1 concept — was 5 before this pass)</li>
+<li>Legacy: 16 (15 source notes + 1 governance-hierarchy concept page)</li>
+<li>Total wiki pages: <strong>30</strong></li>
+</ul>
+<p>The vault is now structurally complete enough that a reader who clicks through it can understand: what each block does, where its assumptions come from, what&#x27;s still pending review, and how the candidate→reviewed promotion is supposed to work. None of that yet means anything is <strong>reviewed</strong> — that is the next stage of work, requiring senior-engineer time per page, not a one-shot agent pass.</p>
+<hr>
+<p><em>Future entries appended below by the LLM maintainer.</em></p>
+</body>
+</html>

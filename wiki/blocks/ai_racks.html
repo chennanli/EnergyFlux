@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Block: AI racks — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>Block: AI racks</h1>
+<div class="page-meta"><div><strong>Host:</strong> WWTP, chemical, substation, campus</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> GB200_NVL72, any</div><div><strong>Voltage:</strong> behind_the_meter, distribution</div><div><strong>Applies when:</strong> AI inference rack platform selection and rack-count sizing</div></div>
+<h1>Block: AI racks</h1>
+<h2>What this block represents</h2>
+<p>The fleet of AI inference racks colocated at the BTM site. Blog 2 default is <strong>NVIDIA GB200 NVL72</strong> at 21 racks for the 45 MGD archetype, but the block is platform-agnostic and supports vendor swaps to AMD MI300X, Cerebras WSE-3, or future Vera Rubin NVL144.</p>
+<p>This block handles the IT-load side of the site; the cooling, distribution, and grid coupling sit downstream in &lt;a class=&quot;wikilink&quot; href=&quot;../blocks/dc_bus.html&quot;&gt;dc_bus&lt;/a&gt; and &lt;a class=&quot;wikilink&quot; href=&quot;../blocks/service_transformer.html&quot;&gt;service_transformer&lt;/a&gt;.</p>
+<h2>Key sizing variables</h2>
+<ul>
+<li><strong>Per-rack facility draw (kW)</strong> — vendor-dependent. GB200: 125 kW. Vera Rubin (estimated): 175 kW. AMD MI300X: 60–80 kW. Cerebras: 40–50 kW.</li>
+<li><strong>Rack count</strong> — <code>rack_count = total_DC_IT_load / per_rack_facility_kW</code>.</li>
+<li><strong>Total DC IT load (MW)</strong> — set by site DC budget after PUE and cooling auxiliaries.</li>
+<li><strong>Inference throughput (tokens/s/MW)</strong> — model- and batch-dependent; ~5.8 × 10⁶ for Blackwell on 70B-dense FP8 batch 32.</li>
+<li><strong>Memory per rack</strong> — drives serving-architecture choice (single-rack vs tensor-parallel).</li>
+<li><strong>Cooling modality</strong> — liquid mandatory for Blackwell+; rack-level rear-door HX or direct-to-chip.</li>
+</ul>
+<h2>Upstream dependencies</h2>
+<ul>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/dc_bus.html&quot;&gt;dc_bus&lt;/a&gt;</strong> block: provides DC power. Total DC budget determines rack count.</li>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/service_transformer.html&quot;&gt;service_transformer&lt;/a&gt;</strong> block: capacity must accommodate AI rack peak + WWTP load + BESS charging.</li>
+</ul>
+<h2>Downstream dependencies</h2>
+<ul>
+<li>Facility cooling load (CDU pumps, chillers, rear-door HX fans) — sized to total IT load × (PUE − 1).</li>
+<li>Token-revenue side of the pro-forma — driven by tokens/s/MW × utilization × price/token.</li>
+<li>Network and storage infrastructure (out of scope at this block; assumed sufficient).</li>
+</ul>
+<h2>Source notes that inform this block</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_blackwell_gb200_nvl72.html&quot;&gt;src_legacy_blackwell_gb200_nvl72&lt;/a&gt; — current default platform.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_vera_rubin_nvl144.html&quot;&gt;src_legacy_vera_rubin_nvl144&lt;/a&gt; — next-gen NVIDIA platform; design-for-future sizing.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_amd_mi300x.html&quot;&gt;src_legacy_amd_mi300x&lt;/a&gt; — primary GPU-level alternative; capex-per-token argument.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_cerebras_wse3.html&quot;&gt;src_legacy_cerebras_wse3&lt;/a&gt; — wafer-scale niche for latency-bound inference.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_dc_industry_benchmarks.html&quot;&gt;src_legacy_dc_industry_benchmarks&lt;/a&gt; — facility CAPEX context.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/gb200_nvl72.html&quot;&gt;gb200_nvl72&lt;/a&gt; — entity-level synthesis on the default platform.</li>
+</ul>
+<h2>Candidate assumptions pending review</h2>
+<ul>
+<li><strong>GB200 at 125 kW/rack</strong> — NVIDIA spec midpoint; real measured field draw at scale is not yet broadly published.</li>
+<li><strong>Tokens/s/MW = 5.8 × 10⁶</strong> — for one specific model class (70B dense, batch 32, FP8); MoE and longer-context workloads will differ.</li>
+<li><strong>PUE 1.15–1.25</strong> — liquid cooling, benign ambient; not validated for hot-climate sites.</li>
+<li><strong>Vera Rubin numbers</strong> — vendor roadmap, ±30% uncertainty bands per &lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_vera_rubin_nvl144.html&quot;&gt;src_legacy_vera_rubin_nvl144&lt;/a&gt;; not field-verified.</li>
+<li><strong>AMD/Cerebras platform comparisons</strong> — tokens/s percentages are MLPerf-derived estimates, not real-workload measurements at the site sizes Blog 2 considers.</li>
+<li><strong>Rack platform = single-vendor for the whole site</strong> — the block currently models a single platform per site; mixed platforms (some GB200, some MI300X) is plausible but not modeled.</li>
+</ul>
+<h2>What would make this block authoritative / reviewed</h2>
+<ul>
+<li><strong>Reviewed</strong>: source notes promoted; senior engineer signs off on the platform-selection decision rule given the project&#x27;s specific workload, supply situation, and budget. Tokens/s/MW number replaced with a workload-specific number (or banded with explicit uncertainty).</li>
+<li><strong>Authoritative</strong>: NVIDIA GB200 product brief, AMD MI300X datasheet, Cerebras CS-3 product brief, NVIDIA Vera Rubin roadmap all cited as authoritative source pages directly. The path: promote at least the GB200 source to authoritative; this block then cites it as the default reference and is itself promoted to reviewed.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/hardware/blackwell_gb200_nvl72.md&#x27;: None, &#x27;- raw/wiki_legacy/hardware/vera_rubin_nvl144.md&#x27;: None, &#x27;- raw/wiki_legacy/hardware/amd_mi300x.md&#x27;: None, &#x27;- raw/wiki_legacy/hardware/cerebras_wse3.md&#x27;: None, &#x27;- raw/wiki_legacy/capex/dc_industry_benchmarks.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../blocks/bess.html">Block: BESS</a></li><li><a class="wikilink" href="../blocks/dc_bus.html">Block: DC bus</a></li><li><a class="wikilink" href="../blocks/service_transformer.html">Block: Service transformer</a></li><li><a class="wikilink" href="../sources/src_legacy_amd_mi300x.html">Legacy note: AMD Instinct MI300X (and MI325X)</a></li><li><a class="wikilink" href="../sources/src_legacy_cerebras_wse3.html">Legacy note: Cerebras WSE-3</a></li><li><a class="wikilink" href="../sources/src_legacy_dc_industry_benchmarks.html">Legacy note: Data center facility CAPEX benchmarks 2024</a></li><li><a class="wikilink" href="../sources/src_legacy_blackwell_gb200_nvl72.html">Legacy note: NVIDIA Blackwell GB200 NVL72</a></li><li><a class="wikilink" href="../sources/src_legacy_vera_rubin_nvl144.html">Legacy note: NVIDIA Vera Rubin NVL144</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/blocks/ai_racks.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

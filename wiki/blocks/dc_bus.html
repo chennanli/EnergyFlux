@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Block: DC bus — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>Block: DC bus</h1>
+<div class="page-meta"><div><strong>Host:</strong> WWTP, chemical, substation, campus</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> GB200_NVL72, any</div><div><strong>Voltage:</strong> behind_the_meter, distribution</div><div><strong>Applies when:</strong> DC distribution architecture inside a colocated AI inference site</div></div>
+<h1>Block: DC bus</h1>
+<h2>What this block represents</h2>
+<p>The DC distribution between the rectifier output (or DC-coupled PV/BESS) and the AI rack input. In a conventional AC-coupled architecture (the Blog 2 default) this is a short low-voltage DC stage internal to the rack — Blackwell GB200 NVL72 nominally runs an internal 800 V DC bus. In a DC-coupled architecture (forward-looking), the DC bus would extend to PV and BESS, eliminating the inverter stage and reclaiming several percentage points of round-trip efficiency.</p>
+<p>The block is thin in Blog 2&#x27;s default configuration but matters for two future moves: (1) DC-coupled PV/BESS, (2) HVDC distribution at MW-class sites.</p>
+<h2>Key sizing variables</h2>
+<ul>
+<li><strong>Bus voltage</strong> — nominally 400–800 V DC inside the rack; 1,500 V DC for site-level DC-coupling.</li>
+<li><strong>Total DC IT load (MW)</strong> — <code>rack_count × per_rack_facility_kW</code>. For Blog 2 45 MGD: 21 racks × 125 kW = 2.62 MW.</li>
+<li><strong>PUE multiplier</strong> — facility load / IT load ratio; 1.15–1.25 for liquid-cooled Blackwell.</li>
+<li><strong>Headroom for cooling auxiliaries</strong> — chilled-water pumps, CDU, rear-door HX fans count against the DC bus capacity.</li>
+<li><strong>Redundancy tier</strong> — Tier III is the Blog 2 default; Tier IV adds 30–40% on capacity.</li>
+</ul>
+<h2>Upstream dependencies</h2>
+<ul>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/inverter.html&quot;&gt;inverter&lt;/a&gt;</strong> block (AC-coupled architecture): inverter AC output → step-down transformer → rectifier → DC bus.</li>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/pv_array.html&quot;&gt;pv_array&lt;/a&gt;</strong> block (DC-coupled architecture, future): PV directly feeds DC bus through a DC-DC stage.</li>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/bess.html&quot;&gt;bess&lt;/a&gt;</strong> block (DC-coupled architecture, future): BESS directly couples to DC bus.</li>
+</ul>
+<h2>Downstream dependencies</h2>
+<ul>
+<li><strong>&lt;a class=&quot;wikilink&quot; href=&quot;../blocks/ai_racks.html&quot;&gt;ai_racks&lt;/a&gt;</strong> block: receives DC power. Per-rack draw (~125 kW for GB200) drives total DC bus capacity.</li>
+<li>Facility cooling load: CDU pumps, chiller compressors, rear-door HX fans all draw DC for the cooling auxiliaries that keep the racks at temperature.</li>
+</ul>
+<h2>Source notes that inform this block</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_dc_industry_benchmarks.html&quot;&gt;src_legacy_dc_industry_benchmarks&lt;/a&gt; — facility CAPEX numbers including DC distribution.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../sources/src_legacy_blackwell_gb200_nvl72.html&quot;&gt;src_legacy_blackwell_gb200_nvl72&lt;/a&gt; — per-rack DC draw and cooling architecture.</li>
+</ul>
+<h2>Candidate assumptions pending review</h2>
+<ul>
+<li><strong>AC-coupled default</strong> — chosen because it&#x27;s the industry standard and the worked Blog 2 case. DC-coupled is a real future option that this block does not currently model.</li>
+<li><strong>Bus voltage 400–800 V DC inside rack</strong> — Blackwell-specific; future Vera Rubin-class platforms may push higher.</li>
+<li><strong>PUE 1.15–1.25</strong> — for liquid cooling under benign ambient. Hot-climate (TX, AZ) sites may exceed this; the block currently uses a single planning value.</li>
+<li><strong>Tier III redundancy</strong> — Blog 2 default; the choice has CAPEX and reliability implications a real project must justify.</li>
+<li><strong>Cooling-auxiliaries headroom</strong> — currently bundled into the PUE multiplier; a real DC bus design separates IT load and aux load explicitly.</li>
+</ul>
+<h2>What would make this block authoritative / reviewed</h2>
+<ul>
+<li><strong>Reviewed</strong>: sized against at least one realistic site one-line diagram (transformer secondary → rectifier → DC bus → racks); PUE assumption replaced with a measured value or modeled output for the climate zone; redundancy tier choice justified explicitly. DC-coupled vs AC-coupled trade-off documented as a separate decision page if the project is exploring it.</li>
+<li><strong>Authoritative</strong>: NVIDIA reference DC architecture guide cited directly; ASHRAE thermal guidelines cited for the climate-PUE relationship.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- raw/wiki_legacy/capex/dc_industry_benchmarks.md&#x27;: None, &#x27;- raw/wiki_legacy/hardware/blackwell_gb200_nvl72.md&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../blocks/ai_racks.html">Block: AI racks</a></li><li><a class="wikilink" href="../blocks/inverter.html">Block: Inverter</a></li><li><a class="wikilink" href="../blocks/pv_array.html">Block: PV array</a></li><li><a class="wikilink" href="../sources/src_legacy_dc_industry_benchmarks.html">Legacy note: Data center facility CAPEX benchmarks 2024</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/blocks/dc_bus.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Behind-the-meter (BTM) siting for AI inference — EnergyFlux Knowledge Vault</title>
+<style>
+:root {
+  --blue: #1F4E79;
+  --blue-light: #DEEBF7;
+  --blue-border: #9DC3E6;
+  --alt-row: #F4F7FB;
+  --rule: #BFBFBF;
+  --text: #222;
+  --muted: #666;
+  --gold: #E8A33D;
+  --green: #2F855A;
+  --red: #B91C1C;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--text);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  line-height: 1.55;
+  font-size: 15.5px;
+  background: #fff;
+}
+header.site-header {
+  border-bottom: 0.5px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+header.site-header .site-title {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+}
+header.site-header .site-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+header.site-header nav {
+  margin-top: 8px;
+  font-size: 13px;
+}
+header.site-header nav a {
+  color: var(--blue);
+  text-decoration: none;
+  margin-right: 10px;
+  border-bottom: 1px dotted var(--blue-border);
+}
+h1 {
+  color: var(--blue);
+  font-size: 24px;
+  line-height: 1.25;
+  margin: 16px 0 6px;
+}
+h2 {
+  color: var(--blue);
+  font-size: 18px;
+  margin: 26px 0 8px;
+}
+h3 {
+  color: var(--blue);
+  font-size: 15px;
+  margin: 18px 0 6px;
+}
+h4 { font-size: 14px; margin: 14px 0 4px; }
+p { margin: 0 0 10px; }
+ul, ol { margin: 0 0 10px 24px; padding: 0; }
+li { margin: 3px 0; }
+strong { color: var(--blue); }
+a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+a:hover { border-bottom: 1px solid var(--blue); }
+a.wikilink { background: var(--blue-light); padding: 0 2px; border-radius: 2px; }
+a.wikilink:hover { background: #c8dcf2; }
+span.wikilink-broken { color: var(--red); border-bottom: 1px dashed var(--red); }
+code { font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace; font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px; }
+pre { background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); overflow-x: auto; font-size: 13.5px; border-radius: 2px; }
+pre code { background: transparent; padding: 0; }
+blockquote { margin: 10px 0 14px 0; padding: 8px 14px; border-left: 3px solid var(--blue-border); background: var(--alt-row); font-style: italic; color: var(--text); }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); }
+th { background: var(--blue-light); }
+tr:nth-child(even) td { background: var(--alt-row); }
+hr { border: 0; border-top: 0.5px solid var(--rule); margin: 18px 0; }
+
+/* Authority badges */
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-right: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badge.authoritative { background: var(--blue); color: white; }
+.badge.reviewed      { background: var(--green); color: white; }
+.badge.candidate     { background: var(--gold); color: white; }
+.badge.legacy        { background: #888; color: white; }
+
+/* Page metadata strip */
+.page-meta {
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  border-radius: 2px;
+  padding: 8px 12px;
+  margin: 8px 0 18px;
+}
+.page-meta div { margin: 1px 0; }
+.page-meta strong { color: var(--text); }
+
+/* Page footer */
+footer.page-footer {
+  margin-top: 36px;
+  padding-top: 14px;
+  border-top: 0.5px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer.page-footer h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin: 16px 0 4px;
+}
+footer.page-footer ul { margin-left: 18px; }
+
+/* Index page */
+.section { margin-bottom: 26px; }
+.section h2 { margin-bottom: 4px; }
+.section .blurb { font-size: 13.5px; color: var(--muted); margin-bottom: 8px; }
+.page-list { list-style: none; padding: 0; margin: 0; }
+.page-list li { padding: 4px 0; border-bottom: 0.5px dotted var(--rule); }
+.page-list li .title { font-weight: 600; }
+.page-list li .scope { font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.stats-bar {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: var(--alt-row);
+  border: 1px solid var(--blue-border);
+  padding: 8px 12px;
+  margin: 12px 0 20px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.stats-bar .stat strong { color: var(--blue); font-size: 16px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="site-title" href="../index.html">📚 EnergyFlux Knowledge Vault</a>
+  <div class="site-tagline">A governed engineering knowledge base for industrial AI siting, energy systems, and the EnergyFlux blog series.</div>
+  <nav>
+    <a href="../index.html">Index</a>
+    <a href="../concepts/governance_hierarchy.html">Governance</a>
+    <a href="../log.html">Log</a>
+    <a href="https://github.com/chennanli/EnergyFlux">GitHub</a>
+  </nav>
+</header>
+<h1><span class="badge candidate">Candidate</span>Behind-the-meter (BTM) siting for AI inference</h1>
+<div class="page-meta"><div><strong>Host:</strong> WWTP, chemical, substation, campus</div><div><strong>Region:</strong> any</div><div><strong>Equipment:</strong> any</div><div><strong>Voltage:</strong> distribution, behind_the_meter</div><div><strong>Applies when:</strong> siting decisions for new AI inference loads colocated with an existing industrial facility</div></div>
+<h1>Behind-the-meter (BTM) siting for AI inference</h1>
+<p>The thesis underlying the EnergyFlux blog series: some existing industrial facilities in the U.S. already have on-site combinations of permitted industrial land, megawatt-class electrical service, and process water — and could host new behind-the-meter AI inference compute on a distribution-level service-upgrade timeline rather than the multi-year transmission-interconnection-queue timeline a greenfield AI factory would face.</p>
+<h2>Why &quot;behind the meter&quot; is the substantive choice</h2>
+<p>A new AI factory built greenfield typically needs a high-voltage (transmission-class) interconnection. The interconnection queue in most U.S. regions currently runs 3 to 7 years (the figure varies by region and is widely cited but rarely precise). Behind-the-meter colocation puts the new load on the existing site&#x27;s distribution-level service. The work shifts from &quot;transmission queue&quot; to &quot;service-transformer upgrade,&quot; which is a months-scale, distribution-level engineering process — not zero work, but a different category of timeline.</p>
+<h2>Necessary conditions for a BTM-viable site</h2>
+<p>Three resources must already be present on-site:</p>
+<ol>
+<li><strong>Industrially-zoned land</strong> with permitting precedent for high-density compute (or buffer/setback land that can accommodate it).</li>
+<li><strong>A megawatt-class electrical service</strong> with enough headroom — or a service that can be upgraded distribution-side without requiring a new transmission-level interconnection.</li>
+<li><strong>Water for cooling</strong>, ideally process water (treated effluent, cooling-tower blowdown, or similar) to reduce competition with potable supply.</li>
+</ol>
+<p>Different industrial host types satisfy these to different degrees. See &lt;a class=&quot;wikilink&quot; href=&quot;../synthesis/syn_btm_siting_cases.html&quot;&gt;syn_btm_siting_cases&lt;/a&gt; for a per-host-type breakdown.</p>
+<h2>Why WWTPs are the worked case in Blog 2</h2>
+<p>Mid-size municipal WWTPs (25–150 MGD) reliably combine all three resources: industrially-zoned site land at scale, a megawatt-class service designed for aeration peaks, and treated effluent that is suitable (often after light polishing) for cooling-tower makeup. Roughly 350 such plants exist in the United States (EPA CWNS 2022). The &lt;a class=&quot;wikilink&quot; href=&quot;../entities/wwtp_45mgd_archetype.html&quot;&gt;wwtp_45mgd_archetype&lt;/a&gt; page captures the worked example.</p>
+<h2>What BTM siting does <em>not</em> claim</h2>
+<ul>
+<li>It does not eliminate utility coordination. A distribution-level service upgrade still needs the utility&#x27;s blessing and typically a service study.</li>
+<li>It does not eliminate permitting. Local zoning, NFPA fire codes, and possibly NPDES discharge modifications still apply.</li>
+<li>It does not by itself change the project&#x27;s engineering risk profile to &quot;trivial.&quot; It changes a multi-year interconnection bottleneck to a months-scale distribution bottleneck — a meaningful improvement, not a free pass.</li>
+</ul>
+<h2>Open questions</h2>
+<ul>
+<li>For host types other than WWTP (chemical, substation, campus), the pieces of the siting stack present vary; &lt;a class=&quot;wikilink&quot; href=&quot;../synthesis/syn_btm_siting_cases.html&quot;&gt;syn_btm_siting_cases&lt;/a&gt; compares them.</li>
+<li>The &quot;3 to 7 years&quot; greenfield timeline range is widely cited but not pinned to a single canonical source. A future ingest of the FERC interconnection queue annual report would let this page move from <code>candidate</code> to <code>reviewed</code>.</li>
+</ul>
+<h2>Related</h2>
+<ul>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/wwtp_45mgd_archetype.html&quot;&gt;wwtp_45mgd_archetype&lt;/a&gt; — concrete worked-case archetype.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/bess_4hr_lfp.html&quot;&gt;bess_4hr_lfp&lt;/a&gt; — the default storage configuration in BTM.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../entities/gb200_nvl72.html&quot;&gt;gb200_nvl72&lt;/a&gt; — the default AI rack platform in BTM.</li>
+<li>&lt;a class=&quot;wikilink&quot; href=&quot;../synthesis/syn_btm_siting_cases.html&quot;&gt;syn_btm_siting_cases&lt;/a&gt; — comparison across BTM host types.</li>
+</ul>
+<footer class="page-footer">
+  <h3>Cites</h3><ul><li><code>{&#x27;- blog/blog1_v22.html&#x27;: None, &#x27;- blog/blog2_v2.html&#x27;: None}</code></li></ul>
+  
+  <h3>Backlinks</h3><ul><li><a class="wikilink" href="../entities/bess_4hr_lfp.html">4-hour LFP BESS (industry default)</a></li><li><a class="wikilink" href="../graphs/ai_candidate_graph.html">AI candidate graph</a></li><li><a class="wikilink" href="../blocks/wwtp_load.html">Block: WWTP load</a></li><li><a class="wikilink" href="../concepts/governance_hierarchy.html">Governance hierarchy: Authoritative / Reviewed / Candidate</a></li><li><a class="wikilink" href="../sources/src_legacy_tx_ercot_interconnect.html">Legacy note: Texas / ERCOT interconnection for a BTM AI factory</a></li><li><a class="wikilink" href="../sources/src_legacy_wwtp_buffer_setback.html">Legacy note: WWTP buffer zones — setback rules</a></li><li><a class="wikilink" href="../entities/gb200_nvl72.html">NVIDIA Blackwell GB200 NVL72</a></li><li><a class="wikilink" href="../graphs/reviewed_engineering_graph.html">Reviewed engineering graph</a></li><li><a class="wikilink" href="../synthesis/syn_btm_siting_cases.html">Synthesis: BTM siting host types compared</a></li><li><a class="wikilink" href="../entities/wwtp_45mgd_archetype.html">WWTP 45 MGD archetype (Blog 2 worked case)</a></li></ul>
+  <p style="margin-top:14px; font-style:italic;">
+    File: <code>knowledge_vault/wiki/concepts/behind_the_meter_siting.md</code> ·
+    Authority: <span class="badge candidate">Candidate</span>
+  </p>
+</footer>
+</body>
+</html>

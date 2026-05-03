@@ -1,0 +1,15 @@
+# EnergyFlux public requirements — Blog 2 demo only.
+#
+# This file is what users of the public repo see at the top level. It
+# carries the runtime deps for both Streamlit apps in stage1_5_wwtp_dc/
+# (flowsheet UI + GenAI chat) and the wiki publisher under scripts/.
+# The internal repo has a heavier requirements file for simulation work
+# that is not part of this public release.
+
+streamlit>=1.32
+pandas>=2.1
+numpy>=1.26
+plotly>=5.18
+matplotlib>=3.8
+openai>=1.30          # OpenAI-compatible client used against NVIDIA NIM
+python-dotenv>=1.0    # auto-load NVIDIA_API_KEY from repo-root .env
