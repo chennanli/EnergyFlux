@@ -8,7 +8,7 @@ Operations: `ingest`, `query`, `lint`, `promote`, `supersede`, `setup`.
 
 ## [2026-05-02 10:30] setup | Vault scaffolded
 
-Initial scaffolding: `CLAUDE.md` schema, `README.md`, `index.md`, `log.md`, raw/wiki/templates directory tree. Bootstrap content seeded with three example entity pages (`bess_4hr_lfp`, `gb200_nvl72`, `wwtp_45mgd_archetype`), two concept pages (`behind_the_meter_siting`, `governance_hierarchy`), and one synthesis page (`syn_btm_siting_cases`). All seeded pages are at `authority: candidate` or `authority: legacy` pending Chennan's review.
+Initial scaffolding: vault schema doc (internal schema file, not included in the public mirror), `README.md`, `index.md`, `log.md`, raw/wiki/templates directory tree. Bootstrap content seeded with three example entity pages (`bess_4hr_lfp`, `gb200_nvl72`, `wwtp_45mgd_archetype`), two concept pages (`behind_the_meter_siting`, `governance_hierarchy`), and one synthesis page (`syn_btm_siting_cases`). All seeded pages are at `authority: candidate` or `authority: legacy` pending Chennan's review.
 
 The legacy `stage1_5_wwtp_dc/design_wiki/` 15 markdown files are imported into `raw/wiki_legacy/` as immutable raw sources, not as wiki pages. They will be re-ingested into the wiki/ layer over time, on demand.
 
@@ -91,7 +91,7 @@ Per user instruction (governed-knowledge-vault hardening pass), this session exp
 - 13 new source notes under `wiki/sources/` — one per legacy md not previously synthesized: `src_legacy_amd_mi300x`, `src_legacy_bess_nrel_atb_2024`, `src_legacy_bifacial_gain`, `src_legacy_cerebras_wse3`, `src_legacy_dc_industry_benchmarks`, `src_legacy_dual_axis`, `src_legacy_fixed_tilt`, `src_legacy_pv_lazard_lcoe_2024`, `src_legacy_single_axis_tracker`, `src_legacy_tou_arbitrage`, `src_legacy_tx_ercot_interconnect`, `src_legacy_vera_rubin_nvl144`, `src_legacy_wwtp_buffer_setback`. Total source notes now 15 (3 existing + 12 new — `src_legacy_tou_arbitrage` was started earlier this session and rewritten under the new template).
 - 7 block pages under new `wiki/blocks/` directory: `pv_array`, `inverter`, `bess`, `dc_bus`, `ai_racks`, `wwtp_load`, `service_transformer`. Each follows the strict 7-question structure: what the block represents, key sizing variables, upstream dependencies, downstream dependencies, source notes that inform it, candidate assumptions pending review, what would make it authoritative/reviewed.
 - 2 graph concept pages under new `wiki/graphs/` directory: `ai_candidate_graph` (LLM-proposed edges, not facts) and `reviewed_engineering_graph` (human-approved edges, the only edges the AI assistant may cite as fact). Promotion workflow documented.
-- `AGENTS.md` at vault root: 8 governance rules for any AI agent operating on the vault. Distinct from `CLAUDE.md` (schema/operating manual).
+- `AGENTS.md` at vault root: 8 governance rules for any AI agent operating on the vault. Distinct from the vault schema doc (internal schema file, not included in the public mirror).
 
 **What was rewritten:**
 

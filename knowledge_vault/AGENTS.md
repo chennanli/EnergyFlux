@@ -5,9 +5,10 @@ Claude (any version), Codex, future agents, or any other LLM running under
 human direction. It supersedes any conflicting instructions an agent may
 have received elsewhere when those instructions concern this vault.
 
-`CLAUDE.md` (the schema and operating manual for this vault) remains in
-place; this file enumerates the **rules** an agent must follow on top of
-that schema.
+This file describes the **rules** an agent must follow when operating on
+the vault. The schema for each page type — sources, entities, concepts,
+blocks, graphs, synthesis — is documented in `templates/` and visible in
+the rendered wiki at [`../wiki/`](../wiki/).
 
 ---
 
@@ -110,16 +111,3 @@ visible. When a page's authority level changes, the index entry updates.
   strips so reviewers can see governance state at a glance.
 - `apps/blog2_genai_app_v2.py` shows the authority badge on every cited
   hit and tags candidate/legacy citations as "pending review."
-
-## Relationship to `CLAUDE.md`
-
-`CLAUDE.md` is the **schema** — what fields exist, what sections each
-page type has, how the LLM should be invoked.
-
-`AGENTS.md` (this file) is the **rules** — what agents may and may not do
-when operating on the vault.
-
-If the two conflict, `AGENTS.md` wins for any rule about authority,
-promotion, scope, or audit trail; `CLAUDE.md` wins for any rule about
-schema, sections, or tooling invocation. In practice the two are aligned;
-if you find a real conflict, raise it.
