@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sizing distributed AI inference data centers at industrial sites — Part 2: GenAI-assisted behind-the-meter design, grounded in a knowledge base governed by engineers</title>
+<style>
+  :root {
+    --blue: #1F4E79;
+    --blue-light: #DEEBF7;
+    --blue-border: #9DC3E6;
+    --alt-row: #F4F7FB;
+    --rule: #BFBFBF;
+    --text: #222;
+    --muted: #666;
+    --gold: #E8A33D;
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: var(--text);
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+    line-height: 1.55;
+    font-size: 15.5px;
+  }
+  h1 {
+    color: var(--blue);
+    font-size: 28px;
+    line-height: 1.25;
+    margin: 0 0 8px;
+  }
+  .subtitle { font-size: 16px; color: var(--text); margin: 0 0 4px; }
+  .byline { font-size: 13.5px; color: var(--muted); font-style: italic; margin: 0 0 14px; }
+  hr.rule { border: 0; border-top: 0.5px solid var(--rule); margin: 8px 0 18px; }
+  h2 {
+    color: var(--blue);
+    font-size: 19px;
+    margin: 28px 0 10px;
+  }
+  h3 {
+    color: var(--blue);
+    font-size: 15px;
+    margin: 18px 0 6px;
+  }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 12px 20px; padding: 0; }
+  li { margin: 3px 0; }
+  strong { color: var(--blue); }
+  em { font-style: italic; }
+  blockquote {
+    margin: 10px 0 14px 0;
+    padding: 8px 14px;
+    border-left: 3px solid var(--blue-border);
+    background: var(--alt-row);
+    font-style: italic;
+    color: var(--text);
+  }
+  code {
+    font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace;
+    font-size: 13px;
+    background: var(--alt-row);
+    padding: 1px 4px;
+    border-radius: 2px;
+  }
+  a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+  a:hover { border-bottom: 1px solid var(--blue); }
+  .caption {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    margin: 4px 0 14px;
+  }
+  .figure {
+    margin: 18px 0 20px;
+    text-align: center;
+  }
+  .figure img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+  .figure-placeholder {
+    padding: 40px 20px;
+    background: var(--alt-row);
+    border: 1px dashed var(--blue-border);
+    color: var(--muted);
+    font-size: 13px;
+    font-style: italic;
+    border-radius: 2px;
+  }
+  .hero {
+    background: var(--blue-light);
+    border: 1px solid var(--blue-border);
+    padding: 18px 22px;
+    margin: 12px 0 24px;
+    border-radius: 2px;
+    font-size: 14.5px;
+    line-height: 1.55;
+  }
+  .footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 0.5px solid var(--rule);
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<h1>Sizing distributed AI inference data centers at industrial sites</h1>
+<p class="subtitle">Part 2: GenAI-assisted behind-the-meter design, grounded in a knowledge base governed by engineers.</p>
+<p class="byline">By Chennan Li, PhD, PE &nbsp;·&nbsp; EnergyFlux &nbsp;·&nbsp; May 2026</p>
+<hr class="rule">
+
+<div class="hero">
+<strong>In one minute.</strong>
+<ul style="margin-top:6px; margin-bottom:0;">
+<li><strong>Greenfield AI data centers can take 3–7 years to bring online.</strong> Distributed inference sites inside existing industrial facilities may shorten that path by reusing host land, electrical service, and process-water infrastructure, subject to site-specific review.</li>
+<li><strong>Mid-size municipal wastewater plants are a practical host class to screen.</strong> EPA flow data narrows ~14,750 public treatment plants to roughly 350 sites in the 25–150 MGD range — large enough to matter, spread across many cities, and less concentrated than a few hyperscale campuses.</li>
+<li><strong>This post prototypes a GenAI-assisted behind-the-meter sizing workflow.</strong> One WWTP case becomes a live design screen for PV, BESS, GPU rack count, grid headroom, and service-transformer gap — a first-pass feasibility screen for inference colocation, not training-campus design.</li>
+<li><strong>The copilot is governed, not free-form.</strong> It retrieves from an engineer-controlled knowledge base where assumptions carry sources, scope, and approval status, so experienced judgment can be reviewed, updated, and preserved.</li>
+</ul>
+</div>
+
+<h2>2.1 From Blog 1 thesis to a worked sizing case</h2>
+
+<p><a href="https://medium.com/@goldfairy/turning-industrial-safety-buffers-into-ai-inference-sites-245184fab245">Blog 1</a> proposed that some existing industrial sites already carry industrial land, megawatt-class service, and process water on the same parcel, which could shorten the path to distributed AI inference. To test that proposal, this post picks one specific host class, mid-size municipal wastewater plants, and walks one sizing case end to end. The wastewater plant is the worked example here. What carries across to other host classes is the design loop itself — a flowsheet you click on, a sizing engine that recomputes, and a copilot that retrieves from a knowledge base where every cited assumption carries an approval status.</p>
+
+<p>Industrial system-level design has always combined domain solvers with field judgment. Across process plants, wastewater systems, electrical networks, renewable-energy studies, building/data-center energy models, and multidomain controls, the same split shows up: mature solvers on one side, and project judgment around assumptions, constraints, and operating history on the other.</p>
+
+<p><strong>Table 1.</strong> Representative system-level engineering simulation tool families. Illustrative, not exhaustive.</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 14px;">
+  <thead>
+    <tr>
+      <th style="text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); width: 38%;">Domain</th>
+      <th style="text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border);">Representative tools</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border); font-weight: 600;">Process / chemical / refining flowsheets</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">Aspen Plus, Aspen HYSYS, AVEVA Process Simulation, KBC Petro-SIM; IDAES / Pyomo</td>
+    </tr>
+    <tr style="background: var(--alt-row);">
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border); font-weight: 600;">Wastewater / water / hydraulics</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">BioWin, GPS-X, WEST, SWMM, EPANET, WaterCAD, InfoWorks ICM</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border); font-weight: 600;">Electrical power systems</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">ETAP, SKM PowerTools, PSS/E, PSCAD, DIgSILENT PowerFactory</td>
+    </tr>
+    <tr style="background: var(--alt-row);">
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border); font-weight: 600;">Renewable / hybrid energy screening</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">NREL SAM, HOMER, PVsyst; pvlib, windpowerlib</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border); font-weight: 600;">Building / data-center energy and thermal systems</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">EnergyPlus / OpenStudio, IES VE, Trane TRACE, Carrier HAP, Modelica-based tools</td>
+    </tr>
+    <tr style="background: var(--alt-row);">
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border); font-weight: 600;">Multidomain / controls / dynamic systems</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">MATLAB/Simulink, Modelica/Dymola, Simcenter Amesim</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>After looking across these tool families, the design tool I wanted to test is not a free-form chatbot. In system-level engineering, a useful shape could be closer to a live sizing screen with a sidebar copilot: the engineer changes the model, the sizing engine recomputes, and the copilot explains the assumptions behind the result. At different stages of my own career, I would have wanted that copilot to do different things: explain the next design move, retrieve the relevant code or company spec, and preserve the hard-won judgment that usually lives in old calculations, review comments, scattered notes, and people's heads.</p>
+
+<p>This post tests that shape on one worked case. It is not a finished product. It is a prototype for GenAI-assisted design: system simulation on the screen, and a governed knowledge base behind it, where cited assumptions carry sources, scope, and approval status instead of disappearing into a chat transcript. Karpathy's LLM Wiki is useful shorthand for the knowledge-base side, but the point here is the full design loop: engineer edits, solver recomputes, copilot retrieves, and assumptions stay reviewable.</p>
+
+<h2>2.2 Why mid-size WWTPs are worth screening</h2>
+
+<p><a href="https://medium.com/@goldfairy/turning-industrial-safety-buffers-into-ai-inference-sites-245184fab245">Blog 1</a> sketched the siting thesis with one specific 30 MGD wastewater plant, picked because a simulation in my repo was already calibrated to it. After that piece went out, a reader asked the fair followup:</p>
+
+<blockquote>Okay, but is 30 MGD typical? How many of these sites actually exist?</blockquote>
+
+<p>I didn't have a good answer at the time, which is a perfectly fine position if you're writing an essay and a poor one if you're writing anything an engineer might act on. So I went back to the EPA data, and what came back was both a distribution I hadn't expected and a design tool I hadn't initially known how to build. Both are in this post.</p>
+
+<p>EPA publishes the Clean Watersheds Needs Survey; the 2022 edition counted roughly 14,750 public treatment plants in the United States and reported their design flow. Aggregated by size band, the distribution looks like this:</p>
+
+<div class="figure">
+  <img src="_sources/blog2_fig1_wwtp_distribution.png" alt="US WWTP size distribution — power-law, with 25-150 MGD highlighted as the viable band for AI inference data-center colocation">
+  <div class="caption">Figure 1. US public-POTW size distribution, EPA CWNS 2022, aggregated. Note the log-scale y-axis. The gold band (25–150 MGD) marks the viable range for AI inference data-center colocation, roughly 350 plants carrying about 52% of national flow.</div>
+</div>
+
+<p>Two things stood out that I hadn't internalized before. The first is that the distribution is power-law rather than bell-curve: plants under 1 MGD make up 57% of the count but only 3% of the national flow, and these rural and sub-city plants are generally too small to host a colocated data center in any case, because the aeration load can't amortize the capex and the buffer zones tend to be a few acres at best. The second is that the band I had unconsciously been writing about, what I'd loosely called "mid-size municipal," turns out to be more specific than I'd realized. There are roughly 350 plants in the 25–150 MGD range, and together they process about half of the country's wastewater. This band is worth screening because many sites are likely to have some combination of:</p>
+
+<ul>
+  <li>15 to 40 acres of industrially-zoned buffer land (varies by site)</li>
+  <li>Medium-voltage service (15–25 kV) sized for megawatt-class load</li>
+  <li>Treated effluent already suitable for cooling-tower makeup, or close enough that modest on-site polishing gets it there. Major cloud operators have also been expanding recycled-water programs for data centers, though site-level availability varies and each WWTP case still needs water-quality review.</li>
+  <li>A digester-gas stream that's flared at most plants today, but is a candidate on-site fuel source where CHP economics already pencil out</li>
+</ul>
+
+<p>That list isn't a niche. It's roughly the list of American mid-size cities — Austin, Nashville, Columbus, Kansas City, Raleigh, Tampa, Louisville, and a couple hundred more — and it isn't a band that the AI-infrastructure trade press has discussed much. Coverage has been focused on metro-scale builds in Virginia, Phoenix, and Dallas, while the 25–150 MGD band, where a 2-to-10 MW colocated AI inference facility may be worth screening (with the upper end increasingly grid-supported and site-specific) and where most American cities actually are, seems to be largely unwritten about in 2026.</p>
+
+<p>So the question for this post became a practical one: for an engineer looking at any one of those ~350 sites, <strong>how would you size the project this year, using the tools available?</strong></p>
+
+<p>Two pieces of context worth flagging before the tool. The academic pattern — distributed modular generation, storage, and load planned via a MILP across investment, seasonal, and hourly horizons — was formalized at Purdue by Ramanujam, Constante-Flores, and Li for electrified chemical manufacturing (Ramanujam et al., <em>AIChE Journal</em>, 2023). The analogy to AI inference is structural: replace production modules with GPU racks, product throughput with tokens, and dispatch constraints with latency and power. I'm not inventing an architecture here; I'm building a tool on top of a validated academic pattern.</p>
+
+<p>The other piece is timing. Modular containerized data centers are not new — Schneider, Vertiv, and others have shipped them at 20–40 kW per rack for more than a decade, mostly for storage, telco backhaul, and traditional enterprise compute. What changed is agentic inference: a single agent task consumes dozens of times the tokens of a chat turn, which pushes rack power density past what air cooling can handle. Blackwell is shipping now and Vera Rubin is in production for H2 2026, with frontier inference racks moving toward liquid-cooled, rack-scale platforms in the 120–200 kW range. The math pushes new builds toward liquid cooling, which in turn pushes siting toward places with space, water, and power already in place — most of what makes the WWTP case interesting now rather than five years ago.</p>
+
+<h2>2.3 Building the prototype: from chat to flowsheet</h2>
+
+<h3>2.3.1 The wrong first version</h3>
+
+<p>My first version was a chat window. The engineer would type something like "I have a 45 MGD WWTP outside Austin with 23 acres of buffer, what should I build?", the LLM would call a set of physics tools under the hood, and it would return a complete sizing proposal. It was quick to build, it looked impressive in a demo video, and I was briefly pleased with it.</p>
+
+<p>Then I showed it to a senior engineer I trust, and he spent about two minutes with it before saying, more or less:</p>
+
+<blockquote>This is a ChatGPT wrapper. A real engineer needs to click on the inverter block, change the DC/AC ratio, and see what happens. Your tool doesn't let me do that.</blockquote>
+
+<p>He was right, and the feedback was uncomfortable because I'd already written a blog outline around the chat-first version. The reason he was right took a day or two to sink in. The chat paradigm works elegantly when the user doesn't know the domain and needs the model to fill in the gaps, but the user for a tool like this is a professional engineer who already has opinions about half of the parameters. What that kind of user wants from AI isn't an answer so much as a system that handles the tedious math and cites the relevant guideline while leaving them in control of the actual decisions.</p>
+
+<p>That distinction maps cleanly onto the tools engineers already trust. Aspen HYSYS, ETAP, and Simulink all give you a flowsheet you click on, a parameter panel you edit, and a physics engine that recomputes, and the LLM — if it's useful at all in this role — fits into that pattern as a <em>copilot</em> rather than as the driver. So I rewrote the tool around a canvas and a parameter editor, and demoted the LLM into a sidebar.</p>
+
+<h3>2.3.2 The screen I ended up using</h3>
+
+<div class="figure">
+  <img src="_sources/blog2_fig2_flowsheet.png" alt="Flowsheet design tool — blocks for PV, inverters, BESS, DC bus, AI racks, WWTP load, and grid; arrows with live kW values; KPI strip; sidebar copilot">
+  <div class="caption">Figure 2. The tool. Blocks on the canvas for PV, inverters, BESS, DC bus, AI racks, WWTP load, and grid, with arrows carrying live power-flow numbers. Click a block, edit its parameters in the right-hand panel, and every downstream number recomputes. The copilot sits in the sidebar on the left.</div>
+</div>
+
+<p>The final tool is a canvas with seven blocks — PV array, inverters, battery, DC bus, AI racks, WWTP load, and utility grid — with arrows between them showing live power flow in kW. Clicking any block opens a parameter editor on the right, and changing any number recomputes everything downstream in under a second, which is the part an engineer cares about most.</p>
+
+<p>The GenAI part sits in the sidebar. The engineer can ask the copilot questions like "why 11 inverters?", "how is the −578 kW headroom calculated?", or "what changes if I switch to Vera Rubin?", and the copilot answers from the current design state combined with the curated knowledge base. Every non-arithmetic answer names the knowledge-base page it retrieved from, so an engineer who disagrees with the answer can click through and challenge the cited source rather than the model, which is a more productive review loop.</p>
+
+<div class="figure">
+  <img src="_sources/blog2_fig2b_copilot.png" alt="Close-up of the copilot panel answering a design question with a wiki-file citation">
+  <div class="caption">Figure 2b. The copilot answering a real design question, with the knowledge-base page it retrieved from cited at the bottom of the response. This is the GenAI-assisted part: the engineer keeps control of the sizing decisions, while the LLM fetches the rationale and cited source behind them.</div>
+</div>
+
+<p>To make the output concrete, the default design for a 23-acre site at 30°N on a Blackwell NVL72 platform works out to roughly:</p>
+
+<ul>
+  <li><strong>7,474 kWp</strong> of single-axis bifacial PV, 580 W TOPCon modules</li>
+  <li><strong>11 × 550 kW</strong> central inverters, ILR 1.25</li>
+  <li><strong>10.5 MWh</strong> of 4-hour BESS</li>
+  <li><strong>21 racks</strong> of Blackwell GB200 NVL72, 2.62 MW IT load</li>
+  <li>Peak added grid demand of about <strong>4,578 kW</strong>, which means the facility's existing service transformer needs an upgrade</li>
+</ul>
+
+<p>Looking at that output, an engineer will immediately have follow-up questions — why 21 racks and not 20 or 22, how much of the 4,578 kW is BESS charging versus the data center itself, what happens if the hardware switches to Vera Rubin at the same MW but very different rack count, what the CAPEX spread looks like between single-axis and dual-axis tracking. These are the questions the tool was built for, and they get answered by clicking, editing, or asking the copilot, rather than by typing a paragraph into a chatbot and waiting.</p>
+
+<p>These figures are WWTP-specific; the workflow is not. A chemical plant, substation, or campus would swap in different load profiles, setbacks, and transformer conventions, but the design loop stays the same: click a block, edit a parameter, recompute, and ask the copilot for the cited rationale.</p>
+
+<p>One detail worth flagging, because it took me too long to learn: the PV-layout figure inside the PV block isn't decoration. It renders the actual tracker rows with modules, inverter pad locations, setbacks, and a scale bar, and for someone who's never laid out a utility PV farm, seeing that 23 acres holds roughly 61 tracker rows at 6.9 m pitch with 90 modules each makes the abstract nameplate number 7,474 kWp concrete in a way that a metric card on the KPI strip never quite does.</p>
+
+<div class="figure">
+  <img src="_sources/blog2_fig3_pv_tracker_layout.png" alt="PV tracker farm layout on a 23-acre buffer parcel — 61 rows, inverter pads, access road, north arrow, scale bar">
+  <div class="caption">Figure 3. The 23-acre site's PV layout, rendered inside the PV block editor. Single-axis trackers run N–S, 61 rows at 6.9 m pitch, 90 modules per tracker. Orange blocks along the south edge are the 11 central inverters.</div>
+</div>
+
+<p>The tool's archetype selector also lets you walk through 30, 40, 50, and 60 MGD WWTP cases in turn. The headline numbers across all four are summarized below, which is a useful sanity check on how the design scales: PV roughly tracks effluent flow linearly, the BESS hits a floor at the 4-hour design rule, and the GPU rack count climbs in lock-step with available MW.</p>
+
+<div class="figure">
+  <img src="_sources/blog2_fig4_sizing_comparison.png" alt="Sizing across four WWTP archetypes (30, 40, 50, 60 MGD) — PV nameplate, BESS energy, AI facility load, peak grid demand, rack count">
+  <div class="caption">Figure 4. The same flowsheet tool, run across four WWTP size archetypes (30, 40, 50, 60 MGD). PV nameplate and annual generation in panel (a); BESS energy and AI facility load in panel (b); existing WWTP baseline plus new peak grid demand in panel (c); GPU rack count in panel (d). Numbers scale roughly linearly with effluent flow, which is exactly what one would expect when the limiting resource is land area allocated proportional to plant size.</div>
+</div>
+
+<h2>2.4 The sizing physics underneath</h2>
+
+<p>Under the LLM sits a conventional Python sizing engine, written as thin wrappers around <code>pvlib</code> and NREL PVWatts conventions, with some custom code for the parts that don't fit cleanly in open-source libraries (WWTP load estimation from design flow, hardware-specific rack density lookups, BESS sizing rules). The math isn't novel, and what's worth noting is mostly what the engine deliberately doesn't try to do. There's no 8,760-hour dynamic simulation, no time-of-use optimization, and no model-predictive controller, because this is strictly static design — the kind of thing an engineer produces in the first two weeks of a project, before any dynamic validation runs. That distinction matters because the sizing-stage tool is the one that has to be fastest: ten minutes of interaction should produce a plausible first-pass design, while dynamic validation can reasonably take an overnight batch run.</p>
+
+<p>Even within static sizing, though, it helps to see the four sub-systems behaving together over a single day, just to make sure the numbers couple sensibly. The figure below shows an illustrative clear-sky day at 30°N, with a simple cosine PV model and a diurnal WWTP load profile, dispatching the BESS by a basic charge-from-surplus rule. It is not an 8,760-hour optimization — that comes later — but it does show why the BESS sits where it does in the architecture and why the grid still imports power throughout most of the day even when the PV is generating.</p>
+
+<div class="figure">
+  <img src="_sources/blog2_fig5_dispatch.png" alt="Typical-day dispatch profile for the 40 MGD case — PV, WWTP load, AI load, BESS charge/discharge and SOC, and net grid import">
+  <div class="caption">Figure 5. Illustrative single-day dispatch profile for the 40 MGD archetype (clear-sky day, 30°N). Panel (a): PV generation versus the sum of WWTP baseline and AI rack load. Panel (b): BESS charge and discharge power and state-of-charge. Panel (c): net grid power, where positive is import. PV alone covers under half of the daily site energy in this case; BESS smooths the morning hand-off and the early-evening shoulder; the rest is grid import. This is illustrative, not an optimized 8,760-hour run.</div>
+</div>
+
+<h2>2.5 Governed design memory: cited assumptions under review</h2>
+
+<p>The first version of this tool kept a small wiki next to the demo. That was enough for one prototype, but not enough for engineering use: the assumptions need to live in a shared, versioned knowledge base that the copilot can retrieve from and a reader can inspect.</p>
+
+<p>The vault works on a simple rule. Every page declares an <strong>approval status</strong> (Authoritative, Reviewed, Candidate, or Legacy) and a <strong>scope</strong> (host type, region, equipment, voltage level). The assistant cites only Authoritative and Reviewed pages as fact; Candidate and Legacy citations are labeled "pending review" in the answer itself. Promotion from Candidate to Reviewed happens through a Git pull request signed off by a senior engineer, with audit trail. The same checklist (source identification, scope of applicability, approver, effective date) is what PSM, GMP, NERC/CIP, and NEPA reviews already apply to engineering content; the assistant is being asked to follow it too.</p>
+
+<div style="background: var(--alt-row); border: 1px solid var(--blue-border); padding: 14px 16px; margin: 16px 0 18px; font-family: 'SF Mono', Menlo, Monaco, monospace; font-size: 13px; text-align: center; border-radius: 2px; line-height: 1.7;">
+Primary source &nbsp;→&nbsp; Candidate note &nbsp;→&nbsp; Senior-engineer review &nbsp;→&nbsp; Reviewed memory &nbsp;→&nbsp; Assistant citation
+</div>
+
+<div class="figure">
+  <img src="_sources/blog2_fig_vault_page.png" alt="A rendered wiki page from the EnergyFlux knowledge vault — Block: BESS — showing the Candidate authority badge, the scope metadata strip (host type, region, equipment, voltage, applies-when), key sizing variables with citations to source notes, candidate assumptions pending review, and a footer with backlinks">
+  <div class="caption">Figure 6. What a vault page looks like in the rendered wiki. The authority badge (Candidate / Reviewed / Authoritative) sits next to the title; the metadata strip declares scope (host type, region, equipment, voltage, applies-when); body sections cite source notes by wikilink; the footer carries the backlinks. The same template applies to every block, source note, concept, and synthesis page in the vault — so the assistant retrieves only what an engineer can click through and challenge.</div>
+</div>
+
+<p>The seed vault is still early: <strong>0 Authoritative, 0 Reviewed, 14 Candidate, 16 Legacy</strong>. Every current citation is labeled "pending review." That label matters because this is a demo: useful notes can exist before signoff, but the assistant should not present them as reviewed engineering fact.</p>
+
+<h2>2.6 What carries beyond the WWTP case</h2>
+
+<p>WWTP was the worked case because mid-size municipal plants are distributed across U.S. cities, close to users, and often already have some combination of land, electrical service, and process water. The EPA screen narrows ~14,750 public treatment plants to roughly 350 candidates in the 25–150 MGD band, but that is only a screened pool, not a build list. Other industrial hosts may fit the same behind-the-meter colocation logic, but each one needs case-by-case engineering around load, parcels, transformers, water, permits, and utility rules.</p>
+
+<p>The broader point is the workflow. Existing industrial infrastructure may shorten part of the AI-inference siting problem, and GenAI can shorten the early design loop: the engineer edits the model, the sizing engine recomputes, the copilot retrieves cited assumptions, and experienced knowledge stays reviewable. This prototype does not solve deployment. A real industrial version would need site-specific engineering and an approved model path, whether that is NVIDIA NIM, an enterprise endpoint, or a local LLM behind the firewall.</p>
+
+<h2>Appendix A: how the conservative sizing actually computes</h2>
+
+<p>The numbers in this post were deliberately picked to show the most conservative case I can reasonably defend. Two assumptions do most of the work. First, the existing service transformer is sized at 1.07× the WWTP peak load — a tight 4 MVA serving a 3,750 kW peak — which is on the lean end of what U.S. utilities install. Second, the peak grid demand calculation assumes worst-case simultaneity: AI rack at 100% utilization with PUE-included facility load, BESS charging at full power, and WWTP already at peak, all at the same instant.</p>
+
+<p>The math is plain. The new peak demand the inference data center adds on top of the existing WWTP feeder is just the sum of the AI facility load and the BESS maximum charging power:</p>
+
+<pre style="background: var(--alt-row); padding: 10px 14px; border-left: 3px solid var(--blue-border); border-radius: 2px; font-size: 13.5px; overflow-x: auto;"><code>peak_added_kW  =  AI_facility_kW  +  BESS_max_charge_kW
+               (= IT_load_kW × PUE)   (= IT_load_kW × charge/discharge_ratio)</code></pre>
+
+<p>For the 45 MGD default case in this post, that works out to 2,620 kW (AI facility) + 1,308 kW (BESS charging at half the discharge nameplate) ≈ 4,578 kW of new peak demand stacked on top of a 3,750 kW WWTP baseline. The existing 4 MVA transformer can carry the WWTP baseline, but not the WWTP baseline plus the new 4,578 kW on top of it, so the tool flags a transformer upgrade.</p>
+
+<div class="figure">
+  <img src="_sources/blog2_fig7_peak_decomp.png" alt="Peak grid demand decomposition for 30/40/50/60 MGD archetypes — stacked bars of WWTP baseline + AI facility load + BESS charging, with overlay lines for typical service-transformer capacity at 1.07× and 1.4× WWTP-peak sizing">
+  <div class="caption">Figure 7. Total simultaneous feeder load versus total service-transformer capacity, four WWTP archetypes, under worst-case static simultaneity. The stacked bar shows what the existing feeder would have to carry if the existing WWTP baseline, the new AI facility load, and BESS charging at maximum power all peaked together — that is, the post-build total demand on the same transformer, not just the incremental new demand. The dashed lines show two illustrative transformer-sizing anchors used for this sensitivity: a lean 1.07× WWTP peak case and a more generous 1.4× case. The point of the figure is that even at the more generous 1.4× anchor the worst-case stack lands above the line in every archetype, which is the deliberate conservatism the post is calling out — relaxed simultaneity (next paragraph) shrinks the stack substantially.</div>
+</div>
+
+<p>What's worth flagging is that the simultaneity assumption is a sizing convention, not a runtime fact. WWTP load is meaningfully diurnal — aeration peaks in mid-afternoon and falls 25–35% by early-morning hours. PV generation peaks at solar noon. AI inference workloads have at least a 5–10% latency-tier slack between the strict-SLA p50 path and the relaxed-SLA p99 path. Any one of these alone changes the worst-case sum modestly; all three together change it by a lot.</p>
+
+<p>So the same 45 MGD site, looked at three different ways:</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14px;">
+  <thead>
+    <tr style="background: var(--blue-light); border-bottom: 2px solid var(--blue);">
+      <th style="text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border);">&nbsp;</th>
+      <th style="text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); width: 28%;"><strong>Case A.</strong> Conservative<br><span style="font-weight: normal; color: var(--muted); font-size: 12.5px;">(this post's demo default)</span></th>
+      <th style="text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); width: 28%;"><strong>Case B.</strong> Typical real-world<br><span style="font-weight: normal; color: var(--muted); font-size: 12.5px;">(typical 1.4× sizing, static dispatch)</span></th>
+      <th style="text-align: left; padding: 8px 10px; border: 1px solid var(--blue-border); width: 28%;"><strong>Case C.</strong> Smart-dispatch<br><span style="font-weight: normal; color: var(--muted); font-size: 12.5px;">(MPC, BESS time-shift, AI flex)</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="background: var(--alt-row);">
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border); font-weight: 600;">Service transformer</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">4 MVA (1.07× peak — lean)</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">5.5 MVA (1.47× peak — typical)</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">4–5.5 MVA (any of the above)</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border); font-weight: 600;">Dispatch model</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">Static, worst-case simultaneity</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">Static, worst-case simultaneity</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">pyomo MPC + BESS time-shift + latency-tier AI throttle</td>
+    </tr>
+    <tr style="background: var(--alt-row);">
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border); font-weight: 600;">AI rack capacity that fits without a transformer upgrade</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">~2 racks (250 kW IT) — direct from the static sizing math</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">~12 racks (1.5 MW IT) — direct from the static sizing math</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);"><em>Hypothesis</em> — likely several-fold more, pending a real dispatch simulation</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border); font-weight: 600;">Schedule hypothesis (vs greenfield, often cited at 3–7 years)</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">Screening hypothesis: shorter than greenfield, with schedule dominated by service-transformer procurement and distribution-level work — actual schedule depends on AHJ, utility territory, and equipment lead times.</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">Plausibly faster than the conservative case if no major utility work is needed, but only a real site survey and utility study can settle that.</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--blue-border);">Open question. Algorithm development and commissioning add their own schedule cost; the size of the schedule benefit over the middle column is the kind of thing a real dispatch simulation is supposed to answer.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>What this table is meant to do is mark the boundary between what this post actually demonstrates and what it does not. The conservative column is the only one I have walked through here, end to end, against the running tool. The middle and right columns are motivation for the next stages of work — site surveys against real parcels and transformer nameplates may show that some sites can avoid major utility work, and a pyomo MPC dispatch layer paired with AI-workload latency-tier flexibility may push more compute through the same transformer than naive sizing implies. Neither is proven by a static sizing pass. The reason to put the table in the post anyway is to be explicit about which column it is making a claim about, and which columns are open questions rather than claims made by this static sizing pass.</p>
+
+<h2>Appendix B: how the pieces fit together</h2>
+
+<p>The diagram below shows how the demo is wired together. The Streamlit app holds the flowsheet, parameter editors, and sidebar copilot. The sizing engine recomputes the numbers when an engineer edits a block. The copilot uses tool calls for two things: live numbers from the sizing engine and cited rationale from the knowledge vault. The same vault is rendered as a static wiki for readers and indexed by the RAG retriever for the copilot.</p>
+
+<div class="figure">
+  <img src="_sources/blog2_fig_architecture.png" alt="Architecture diagram for Blog 2 — Blog 1 thesis feeds Blog 2 worked case, Streamlit UX drives the Python sizing engine and the GenAI copilot, the copilot makes tool calls into the engine and into the knowledge vault, the vault publishes a static wiki and a RAG retriever, and the engine plus vault together produce figures, tables, and the final Blog 2 output">
+  <div class="caption">Figure 8. How the pieces fit. Engineer edits a block; the sizing engine recomputes; the copilot retrieves live numbers and cited assumptions; the vault is visible as a static wiki and searchable through RAG. The output is a first-pass screen, not a finished design.</div>
+</div>
+
+<hr class="rule">
+
+<p>The Blog 2 demo and engineering knowledge base are open source at <a href="https://github.com/chennanli/EnergyFlux">github.com/chennanli/EnergyFlux</a>: the chat app at <code>stage1_5_wwtp_dc/apps/blog2_genai_app_v2.py</code>, the knowledge base under <code>knowledge_vault/</code>, and the wiki publisher at <code>scripts/build_wiki.py</code>. The repo README has the full file map by blog. If you're working in this space and any of my numbers are wrong, please tell me — I'd rather be corrected than confident.</p>
+
+<div class="footer">
+  Chennan Li is a process engineer (PhD, PE) writing about industrial AI at the intersection of water, power, and inference. <a href="https://medium.com/@goldfairy/turning-industrial-safety-buffers-into-ai-inference-sites-245184fab245">Blog 1</a> · <a href="https://github.com/chennanli/EnergyFlux">GitHub repo</a>.
+</div>
+
+</body>
+</html>
