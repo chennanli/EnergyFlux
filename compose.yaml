@@ -1,0 +1,8 @@
+services:
+  blog2:
+    build: .
+    image: energyflux-blog2:latest
+    ports:
+      - "8501:8501"
+    environment:
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}

@@ -1,0 +1,34 @@
+.git
+.github
+__pycache__
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.DS_Store
+.env
+.venv
+venv
+env
+htmlcov
+*.egg-info
+chroma_db
+mlruns
+mlruns.db
+mlflow_data
+*.sqlite
+*.db
+
+# Private/internal source folders should never be present in the public repo,
+# but keep these here so a local Docker build also fails closed if someone uses
+# the wrong build context.
+_internal
+.claude
+.agents
+blog
+docs
+tmy3_data
+EnergyFlux_public

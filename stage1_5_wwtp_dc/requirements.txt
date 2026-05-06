@@ -2,7 +2,7 @@
 # Covers both apps/app.py (Blog 1 dashboard, reads pre-gen CSVs + Plotly)
 # and apps/blog2_genai_app.py (Blog 2 LLM+tools demo).
 #
-# Heavy sim deps (pvlib, qsdsan, pandapower, scipy) are NOT needed at deploy
+# Heavy sim deps (pvlib, qsdsan, exposan, pandapower, scipy) are NOT needed at deploy
 # time — they live in requirements-dev.txt for running run_demo.py locally.
 # Keeping this lean means Streamlit Cloud cold starts in ~15 s.
 streamlit>=1.32

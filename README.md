@@ -71,6 +71,35 @@ A free NVIDIA NIM key is available at [build.nvidia.com](https://build.nvidia.co
 streamlit run apps/blog2_flowsheet_app.py
 ```
 
+## Run locally with Docker
+
+Docker is optional. It is useful when you want to run the Blog 2 demo without
+managing a local Python environment.
+
+```bash
+docker build -t energyflux-blog2 .
+docker run --rm -p 8501:8501 -e NVIDIA_API_KEY=$NVIDIA_API_KEY energyflux-blog2
+```
+
+Or with Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+Then open:
+
+```text
+http://localhost:8501
+```
+
+If `NVIDIA_API_KEY` is not set, the app still starts in mock / vault-only mode:
+retrieval from the governed knowledge vault runs locally, but the live LLM
+summarization step is skipped. The Docker image is a single Streamlit service;
+it does not run a separate FastAPI backend, vector database, or MLflow server.
+The image runs Streamlit as a non-root user and includes a healthcheck on the
+Streamlit service endpoint.
+
 ---
 
 ## What this is not
@@ -87,6 +116,9 @@ streamlit run apps/blog2_flowsheet_app.py
 ```
 EnergyFlux/
 ├── README.md
+├── Dockerfile                    Optional one-container Streamlit run path
+├── compose.yaml                  Optional Docker Compose wrapper
+├── .dockerignore                 Keeps private/cache files out of Docker builds
 ├── index.html                    GitHub Pages landing page
 ├── stage1_5_wwtp_dc/             Blog 2 demo: apps + design + tests
 ├── knowledge_vault/              Engineer-governed knowledge base
