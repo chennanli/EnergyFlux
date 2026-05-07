@@ -4,7 +4,7 @@
   <img src="logo.svg" width="500"/>
 </p>
 
-A worked first-pass sizing screen for distributed AI inference data centers at industrial host sites, with an engineer-governed knowledge base.
+A worked first-pass sizing screen and working-draft operations screen for distributed AI inference data centers at industrial host sites, with an engineer-governed knowledge base.
 
 ---
 
@@ -15,7 +15,7 @@ A worked first-pass sizing screen for distributed AI inference data centers at i
 - **GenAI-assisted behind-the-meter design.** A Streamlit flowsheet plus a sidebar copilot that retrieves cited assumptions instead of guessing from training-data recall.
 - **Engineer-governed knowledge base.** Every cited page declares an approval status (Authoritative / Reviewed / Candidate / Legacy) and a scope (host type, region, equipment, voltage level). Unreviewed material is labeled "pending review" until a senior engineer signs off.
 
-This is the companion repo to **[Blog 2](https://chennanli.github.io/EnergyFlux/posts/02-sizing-distributed-inference-data-centers/)** of the EnergyFlux series. Blog 1 proposed that some existing industrial sites already carry industrial land, megawatt-class service, and process water on the same parcel, and could shorten the path to distributed AI inference. Blog 2 turns that proposal into one worked sizing case.
+This is the companion repo to **[Blog 2](https://chennanli.github.io/EnergyFlux/posts/02-sizing-distributed-inference-data-centers/)** and the **[Blog 3 working draft](https://chennanli.github.io/EnergyFlux/posts/03-operating-distributed-ai-inference-behind-meter/)** of the EnergyFlux series. Blog 1 proposed that some existing industrial sites already carry industrial land, megawatt-class service, and process water on the same parcel, and could shorten the path to distributed AI inference. Blog 2 turns that proposal into one worked sizing case. Blog 3 turns the same case into a 15-minute operations / dispatch screen, published first as a working draft while supporting code packaging is still under review.
 
 ---
 
@@ -52,7 +52,7 @@ flowchart LR
 
 **Static wiki.** [`wiki/`](wiki/), built from the vault by [`scripts/build_wiki.py`](scripts/build_wiki.py). Pure-Python static site, no Node toolchain, no build server. The same content the copilot retrieves is browsable as HTML.
 
-**Public export.** This public repo is a curated release from the internal EnergyFlux workspace. It includes the Blog 2 demo code, the governed knowledge vault, the rendered wiki, and the scripts needed to rebuild the public artifacts. Drafts, private planning notes, and unfinished Blog 3 operation/dispatch code stay out of the public mirror.
+**Public export.** This public repo is a curated release from the internal EnergyFlux workspace. It includes the Blog 2 demo code, the governed knowledge vault, the rendered wiki, the Blog 2 article, and the Blog 3 working-draft article. Drafts, private planning notes, and the Blog 3 operations code package stay out of the public mirror until they are separately reviewed for release.
 
 ---
 
@@ -107,7 +107,7 @@ Streamlit service endpoint.
 - **Not a final design package.** First-pass sizing only. A site survey, utility coordination study, and permitting work are still required before any specific site can be built.
 - **Not training-campus sizing.** The worked WWTP case sits in the few-MW range. Larger industrial hosts may have different MW envelopes and constraints, so the method transfers but the numbers do not.
 - **Not a reviewed engineering standard yet.** The vault carries 30 pages today: 0 Reviewed, 14 Candidate, 16 Legacy. Every citation the copilot currently produces is labeled "pending review" until a senior engineer signs off.
-- **Not dynamic dispatch or power-flow validation.** No 8,760-hour simulation, no MPC, no microgrid power-flow check. Those are future operations / dispatch / power-flow work, closer to Blog 3.
+- **Blog 3 is a working draft, not a final operations package.** The public article shows a 15-minute dispatch / routing / grid-sanity screen and keeps caveats explicit. The supporting Blog 3 operations code is being prepared for a later public package; it is not yet part of this public mirror.
 
 ---
 
@@ -133,6 +133,7 @@ EnergyFlux/
 
 - **Blog 1** — *[Turning industrial safety buffers into AI inference sites](https://chennanli.github.io/posts/01-ai-inference-buffers/)* (April 2026). Thesis post, no companion code.
 - **Blog 2** — *[Sizing distributed AI inference data centers at industrial sites](https://chennanli.github.io/EnergyFlux/posts/02-sizing-distributed-inference-data-centers/)*.
+- **Blog 3 working draft** — *[Operating distributed AI inference behind the meter](https://chennanli.github.io/EnergyFlux/posts/03-operating-distributed-ai-inference-behind-meter/)*.
 - **Public wiki** — [chennanli.github.io/EnergyFlux/wiki/](https://chennanli.github.io/EnergyFlux/wiki/index.html)
 - **Main app entry points** — [`stage1_5_wwtp_dc/apps/blog2_genai_app_v2.py`](stage1_5_wwtp_dc/apps/blog2_genai_app_v2.py) (chat copilot), [`stage1_5_wwtp_dc/apps/blog2_flowsheet_app.py`](stage1_5_wwtp_dc/apps/blog2_flowsheet_app.py) (flowsheet UI).
 

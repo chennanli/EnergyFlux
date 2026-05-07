@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operating distributed AI inference behind the meter — Part 3: Data-center dispatch, battery storage, and a GenAI explanation copilot at an industrial host</title>
+<style>
+  :root {
+    --blue: #1F4E79;
+    --blue-light: #DEEBF7;
+    --blue-border: #9DC3E6;
+    --alt-row: #F4F7FB;
+    --rule: #BFBFBF;
+    --text: #222;
+    --muted: #666;
+    --gold: #E8A33D;
+    --warn-bg: #FFF5E1;
+    --warn-border: #FDAE61;
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: var(--text);
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+    line-height: 1.55;
+    font-size: 15.5px;
+  }
+  h1 { color: var(--blue); font-size: 28px; line-height: 1.25; margin: 0 0 8px; }
+  .subtitle { font-size: 16px; color: var(--text); margin: 0 0 4px; }
+  .byline { font-size: 13.5px; color: var(--muted); font-style: italic; margin: 0 0 14px; }
+  hr.rule { border: 0; border-top: 0.5px solid var(--rule); margin: 8px 0 18px; }
+  h2 { color: var(--blue); font-size: 19px; margin: 28px 0 10px; }
+  h3 { color: var(--blue); font-size: 15px; margin: 18px 0 6px; }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 12px 20px; padding: 0; }
+  li { margin: 3px 0; }
+  strong { color: var(--blue); }
+  em { font-style: italic; }
+  blockquote {
+    margin: 10px 0 14px 0; padding: 8px 14px;
+    border-left: 3px solid var(--blue-border);
+    background: var(--alt-row); font-style: italic; color: var(--text);
+  }
+  code {
+    font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace;
+    font-size: 13px; background: var(--alt-row); padding: 1px 4px; border-radius: 2px;
+  }
+  pre {
+    font-family: "SF Mono", Menlo, Monaco, "Courier New", monospace;
+    font-size: 12.5px; background: var(--alt-row); padding: 10px 14px;
+    border-radius: 2px; overflow-x: auto;
+    border-left: 3px solid var(--blue-border); line-height: 1.45;
+  }
+  a { color: var(--blue); text-decoration: none; border-bottom: 1px dotted var(--blue-border); }
+  a:hover { border-bottom: 1px solid var(--blue); }
+  .caption { font-size: 13px; color: var(--muted); font-style: italic; margin: 4px 0 14px; }
+  .figure { margin: 18px 0 20px; text-align: center; }
+  .figure img { max-width: 100%; height: auto; border: 1px solid var(--rule); border-radius: 2px; }
+  .hero {
+    background: var(--blue-light); border: 1px solid var(--blue-border);
+    padding: 18px 22px; margin: 12px 0 24px; border-radius: 2px;
+    font-size: 14.5px; line-height: 1.55;
+  }
+  .interim-banner {
+    background: var(--warn-bg); border: 1px solid var(--warn-border);
+    padding: 10px 14px; margin: 14px 0 18px; border-radius: 2px;
+    font-size: 13.5px; color: var(--text);
+  }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 13.5px; }
+  th, td { text-align: left; padding: 7px 9px; border: 1px solid var(--blue-border); vertical-align: top; }
+  th { background: var(--alt-row); font-weight: 600; color: var(--blue); }
+  td code, th code { white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+  .table-wide {
+    width: min(1040px, calc(100vw - 64px));
+    margin-left: 50%;
+    transform: translateX(-50%);
+    table-layout: fixed;
+  }
+  .table-wide th, .table-wide td { font-size: 13px; line-height: 1.45; }
+  .profile-ledger th, .profile-ledger td { padding: 9px 10px; }
+  .table-kicker {
+    display: block;
+    color: var(--blue);
+    font-weight: 600;
+    margin: 0 0 3px;
+  }
+  .artifact-line {
+    display: block;
+    margin-top: 6px;
+    color: var(--muted);
+  }
+  .reader-guide {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 12px 0 18px;
+  }
+  .reader-step {
+    border: 1px solid var(--blue-border);
+    background: #fff;
+    padding: 11px 13px;
+    border-radius: 2px;
+  }
+  .reader-step h4 {
+    color: var(--blue);
+    font-size: 14px;
+    margin: 0 0 5px;
+  }
+  .reader-step p { margin: 0 0 6px; font-size: 13.5px; line-height: 1.45; }
+  .reader-meta {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .reader-meta div {
+    background: var(--alt-row);
+    padding: 7px 8px;
+    font-size: 12.7px;
+    line-height: 1.4;
+  }
+  .reader-meta strong {
+    display: block;
+    margin-bottom: 2px;
+  }
+  @media (max-width: 720px) {
+    .reader-meta { grid-template-columns: 1fr; }
+  }
+  .ledger {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 12px 0 18px;
+  }
+  .ledger-card {
+    border: 1px solid var(--blue-border);
+    background: #fff;
+    padding: 11px 13px;
+    border-radius: 2px;
+  }
+  .ledger-card h4 {
+    color: var(--blue);
+    font-size: 14px;
+    margin: 0 0 6px;
+    line-height: 1.3;
+  }
+  .ledger-card .ledger-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .ledger-card .ledger-meta div {
+    background: var(--alt-row);
+    padding: 7px 8px;
+    font-size: 12.7px;
+    line-height: 1.4;
+  }
+  .ledger-card .ledger-meta strong {
+    display: block;
+    margin-bottom: 2px;
+    color: var(--blue);
+  }
+  @media (max-width: 720px) {
+    .ledger-card .ledger-meta { grid-template-columns: 1fr; }
+  }
+  .footer {
+    margin-top: 40px; padding-top: 16px; border-top: 0.5px solid var(--rule);
+    font-size: 13px; color: var(--muted); font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<h1>Operating distributed AI inference behind the meter</h1>
+<p class="subtitle">Part 3: Data-center dispatch, battery storage, and a GenAI explanation copilot at an industrial host.</p>
+<p class="byline">By Chennan Li, PhD, PE &nbsp;·&nbsp; EnergyFlux &nbsp;·&nbsp; May 2026 &nbsp;·&nbsp; <strong>Working draft — still being revised</strong></p>
+<hr class="rule">
+
+<div class="interim-banner">
+<strong>Working draft.</strong> This post is being published early for portfolio and interview context, and it is still being revised.
+<p style="margin: 8px 0 0;">This draft is the operations-validation follow-up to the GenAI-assisted design workflow in <a href="https://medium.com/@goldfairy/sizing-distributed-ai-inference-data-centers-at-industrial-sites-9c77602260fa">Blog 2</a>. It reuses the same 2 MW AI inference data-center design at a 45 MGD Austin wastewater-treatment-plant host, then adds real Austin solar, a scaled wastewater electric-load profile, public-trace-derived inference demand, battery storage, and cloud routing. The goal is a 15-minute dispatch screen for the designed system — not a plant SCADA record, a final interconnection study, or a controller.</p>
+</div>
+
+<div class="hero">
+<strong>In one minute.</strong>
+<p style="margin: 8px 0 6px;"><a href="https://medium.com/@goldfairy/sizing-distributed-ai-inference-data-centers-at-industrial-sites-9c77602260fa">Blog 2</a> built a GenAI-assisted design screen. But that was still a static design. This post asks the next question: once the 2 MW AI inference site looks plausible, how does it operate through a day?</p>
+<p style="margin: 0 0 6px;">Every 15 minutes, the dispatch model chooses where inference work goes: served locally, routed to a cloud or hyperscaler endpoint, queued, or unserved. It also decides whether the battery energy storage system (BESS) charges or discharges. Solar output, wastewater electric load, transformer headroom, battery state, and cloud-link quality shape those choices.</p>
+<p style="margin: 0 0 6px;">The GenAI layer moves from design copilot to operations copilot. It explains the dispatch with retrieved assumptions and constraints. It does not control the battery, routing, or wastewater plant.</p>
+
+<table style="margin: 8px 0 4px;">
+  <thead>
+    <tr><th>Question</th><th>Blog 2</th><th>Blog 3</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Main question</td><td>Can the AI inference site be sized plausibly?</td><td>Can the designed site operate under changing conditions?</td></tr>
+    <tr><td>GenAI role</td><td>Design copilot: explains sizing assumptions</td><td>Operations copilot: explains dispatch constraints and events</td></tr>
+    <tr><td>AI workload</td><td>Rack count and facility load</td><td>Split inference work into local, cloud-routed, waiting, or unserved</td></tr>
+    <tr><td>Energy system</td><td>Solar, battery, and transformer sizing</td><td>15-minute dispatch with solar, battery, wastewater load, and transformer headroom</td></tr>
+    <tr><td>Boundary</td><td>Feasibility screen, not a construction package</td><td>Operations validation screen, not autopilot or SCADA control</td></tr>
+  </tbody>
+</table>
+<p class="caption" style="margin: 6px 0 0;"><strong>Table 1.</strong> What changed between Blog 2 and Blog 3.</p>
+</div>
+
+<h2>3.1 From sizing to operation</h2>
+
+<p><a href="https://medium.com/@goldfairy/sizing-distributed-ai-inference-data-centers-at-industrial-sites-9c77602260fa">Blog 2</a> turned the siting thesis from <a href="https://medium.com/@goldfairy/turning-industrial-safety-buffers-into-ai-inference-sites-245184fab245">Blog 1</a> into a GenAI-assisted design workflow: a first-pass screen for parcel area, solar nameplate, battery size, GPU rack count, and transformer headroom at one industrial host. Blog 3 starts after that design screen. It asks whether the same design still makes operational sense when solar, wastewater load, inference arrivals, cloud-route quality, and battery state all move through the day. The dispatcher has two things it can change at every step: where each AI inference job runs (locally, routed to cloud, deferred, or unserved) and whether the battery is charging or discharging.</p>
+
+<p>The post is also explicit about which layer it lives at. The GPU-serving stack has its own inner loop — model runtime, continuous batching, the cluster scheduler, and the high-bandwidth fabric that connects accelerators across nodes. Blog 3 sits one layer above that. It asks what happens when a GPU-served workload lands at an industrial edge host where the binding constraints stop being kernel latency and become transformer headroom, PV variability, WWTP must-serve load, cooling envelope, cloud-route quality, and human-reviewed operations. That is the datacenter-and-edge bridge: the customer-site layer that has to be satisfied before the GPU stack inside the rack is useful at all.</p>
+
+<h2>3.2 The operating state</h2>
+
+<p>At every 15-minute step the operator (and the dispatcher) is looking at six things: how much solar power the plant is producing, how much electricity the wastewater process is using, how much energy is left in the battery, how much power the existing service transformer is allowed to import from the grid, how much AI inference work is arriving, and how good the link is to the modeled cloud endpoint. Each one is simple on its own; the coupling is what makes the operating problem interesting. When solar is strong and the battery is charged, more inference can run locally without breaching the transformer cap. When solar drops, the battery empties, or the cloud link degrades, that cap suddenly binds. Table 2 records what each of the six signals is, what is real measured input vs. what is modeled, and where the model boundary stops.</p>
+
+<table>
+  <thead>
+    <tr><th>Signal</th><th>Source</th><th>What is real</th><th>What is modeled</th><th>Boundary</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PV</td><td>Austin Mueller EPW + pvlib HSAT bifacial</td><td>Real TMY weather; pvlib physics</td><td>Plant geometry; representative 385 W module curve</td><td>Not an interconnection or shading study</td></tr>
+    <tr><td>WWTP</td><td>QSDsan/BSM1 reference + KW_PER_KLA + 1.5×</td><td>BSM1 dynamic physics at IWA reference scale</td><td>30-MGD-equivalent energy calibration; 45 MGD scaling</td><td>Not a plant-specific process design</td></tr>
+    <tr><td>Inference arrivals</td><td>Trace-inspired presets</td><td>Public hyperscaler trace evidence</td><td>Synthetic workload generator; site demand is editorial</td><td>Not real Austin inference traffic</td></tr>
+    <tr><td>Network</td><td>Per-step API latency / packet loss</td><td>Explicit operator stress knob</td><td>Three named regimes (normal / stressed / severe)</td><td>No real fiber SLA or carrier study</td></tr>
+    <tr><td>BESS</td><td>8 MWh / 2 MW discharge / 1 MW charge</td><td>Asymmetric design from Blog 2</td><td>Rule-based dispatch with SOC bookkeeping</td><td>Not a transient UPS or inverter model</td></tr>
+    <tr><td>Grid &amp; cooling</td><td>pandapower 5-bus + first-order RC</td><td>AC powerflow with realistic cable / transformer</td><td>Simplified feeder topology; analytical thermal envelope</td><td>Not protection coordination, EMT, or CFD</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 2.</strong> Model provenance ledger. Caveats live here so they don't have to be repeated paragraph by paragraph.</p>
+
+<p>Three of the six signals — PV, WWTP, and inference arrivals — are the dynamic profiles the dispatcher consumes at every timestep. They each have a separate raw anchor, a model step that turns the raw anchor into a curve, a generated artifact, and a clearly bounded role. Table 2a records that lineage so it does not have to be reconstructed from code:</p>
+
+<table class="table-wide profile-ledger">
+  <colgroup>
+    <col style="width: 10%;">
+    <col style="width: 23%;">
+    <col style="width: 42%;">
+    <col style="width: 25%;">
+  </colgroup>
+  <thead>
+    <tr><th>Profile</th><th>Raw anchor</th><th>Model + artifact</th><th>Dispatch use + boundary</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PV</td>
+      <td>Austin Mueller TMY3 (NREL 722540) EPW weather</td>
+      <td><span class="table-kicker">pvlib HSAT bifacial</span>5.7 MWdc / 4.75 MWac; rear-side gain via <code>pvlib.bifacial.infinite_sheds</code> (bifaciality 0.70, albedo 0.20). <span class="artifact-line">Artifact: <code>pv_45mgd_austin_bifacial.csv</code> + <code>pv_profile_basis</code> tag.</span></td>
+      <td><span class="table-kicker">Role</span>Renewable supply and local-headroom contributor. <span class="artifact-line">Boundary: TMY representative year, not measured plant SCADA.</span></td>
+    </tr>
+    <tr>
+      <td>WWTP</td>
+      <td>QSDsan/BSM1 IWA reference simulation at ~4.87 MGD</td>
+      <td><span class="table-kicker">BSM1 energy-basis scaling</span><code>KW_PER_KLA = 14.6</code> maps the reference simulation to a 30-MGD-equivalent aeration basis; the profile is then scaled 1.5× to the 45 MGD Austin worked case. <span class="artifact-line">Artifact: <code>wwtp_load_45mgd_austin.csv</code> + <code>wwtp_profile_basis</code> tag.</span></td>
+      <td><span class="table-kicker">Role</span>Must-serve industrial load. <span class="artifact-line">Boundary: energy-basis dispatch profile, not a plant-specific 45 MGD process design.</span></td>
+    </tr>
+    <tr>
+      <td>Inference / DC</td>
+      <td>Public hyperscaler trace evidence</td>
+      <td><span class="table-kicker">Trace-derived synthetic arrivals</span>Aggregate trace stats → named presets → 15-minute strict / interactive / batch arrivals. <span class="artifact-line">Artifact: arrivals generated in <code>latency_tiers.py</code> from a <code>trace_calibration.py</code> preset.</span></td>
+      <td><span class="table-kicker">Role</span>Flexible compute demand. <span class="artifact-line">Boundary: synthetic representative workload, not local measured traffic.</span></td>
+    </tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 2a.</strong> Three dynamic profiles and where their provenance stops. Each artifact carries its own <code>profile_basis</code> string into the dispatch CSV so lineage is traceable downstream.</p>
+
+<div class="figure">
+<img src="_sources/blog3_fig3_operations_loop.png" alt="Operations loop diagram">
+<p class="caption"><strong>Figure 1.</strong> The Blog 3 operations loop: site signals enter the 15-minute step on the left, three deterministic passes run inside the loop, and the dispatch CSV, JSONL event log, and on-demand explanation panel come out on the right. WWTP DO-shift is an operator-set scenario input, never a dispatch action — the IT/OT boundary stays explicit.</p>
+</div>
+
+<p>Read in pseudocode, the per-timestep algorithm is:</p>
+
+<pre>state = (PV_kw, WWTP_kw, BESS_SOC, transformer_cap_kw, arrivals_kwh, network)
+
+# PASS 1 — placement (compute the second actuator)
+effective_local_capacity_kw =
+    transformer_cap_kw + PV_kw + available_BESS_discharge_kw - WWTP_kw
+for tier in (strict, interactive, batch):
+    avail = evaluate(network.api_latency_ms, network.packet_loss, tier)
+    action, reason = choose_action(tier, avail, effective_local_capacity_kw)
+    apply(action)  # local | route_to_cloud | defer | unserved
+
+# PASS 2 — BESS (compute the first actuator)
+projected_grid_import_kw = WWTP_kw + p_local_inference_kw - PV_kw
+if projected_grid_import_kw > transformer_cap_kw:
+    discharge BESS to shave the cap (within SOC and ramp limits)
+elif PV_kw &gt; WWTP_kw + p_local_inference_kw:
+    charge BESS with the surplus (no simultaneous chg+dis)
+
+# PASS 3 — clock + accounting
+for queue in tiers: queue.step_clock(dt); queue.expire_if_window_passed()
+emit row: per-tier kw, route_reason, SOC, grid import, backlog, OPEX
+write powerflow + cooling sanity rows alongside the dispatch row</pre>
+
+<p>Pass 1 and Pass 2 are the only places where the dispatcher actually <em>decides</em> something. Pass 3 is bookkeeping plus the powerflow / cooling sanity hooks that ride alongside the dispatch row.</p>
+
+<h2>3.3 Inference as tiered work</h2>
+
+<p>Treating inference as one flat 24/7 load makes the operating problem easy in the wrong way. Public traces show the real shape: bursty across the day, mixed in priority, and split into latency tiers that respond very differently when the cloud path congests. Blog 3 does not replay multi-GB hyperscaler traces; it uses them as calibration evidence for a small synthetic generator. <strong>The output is synthetic workload data, calibrated from public traces. It is not a replay of Alibaba/Azure/Google traffic and not real Austin traffic.</strong> Each 15-minute step's arrivals are produced as:</p>
+
+<pre>total_arrivals_kWh[t] =
+    facility_kw * base_utilization * inference_factor
+    * diurnal_shape[hour(t)]
+    * deterministic_lognormal_burst(seed)
+    * dt_hours
+
+tier_arrivals = total_arrivals * {strict_fraction, interactive_fraction, batch_fraction}</pre>
+
+<p>The current code is an aggregate calibration / preset model, not a trained predictive regression. The named presets fix <code>base_utilization</code>, <code>burst_factor</code>, the per-tier fractions, and the diurnal shape; the formula above turns those scalars into a deterministic per-step arrival curve from a fixed seed. Appendix C records which trace anchors which preset and what each is used (and not used) for. The three tiers carry both a deferral window and a routing-eligibility flag.</p>
+
+<table>
+  <thead>
+    <tr><th>Tier</th><th>Deferral window</th><th>Cloud routing budget</th><th>Can route?</th><th>Can defer?</th><th>Operational meaning</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>strict</td><td>none</td><td>~80 ms (normal-grade only)</td><td>Limited</td><td>No</td><td>Hard SLO; fails to unserved if no local headroom and cloud is degraded</td></tr>
+    <tr><td>interactive</td><td>5–15 min</td><td>~200 ms</td><td>Yes</td><td>Yes</td><td>User-facing but elastic</td></tr>
+    <tr><td>batch</td><td>1–6 h</td><td>~2 s</td><td>Yes</td><td>Yes</td><td>Flexible work; absorbs spillover most readily</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 3.</strong> Latency tiers and allowed actions. Numbers are operator-facing knobs that any deployment would replace with site-specific values during commissioning.</p>
+
+<h3>3.3.1 Why a 15-minute dispatch step</h3>
+
+<p>Blog 3 is a two-timescale abstraction. The <em>outer loop</em> is 15-minute energy dispatch — it decides transformer headroom, BESS charge/discharge, the local inference energy that the site serves, the inference energy that the dispatcher routes to cloud, the deferred work, and the unserved work. The <em>inner loop</em> — request routing, load balancing, queue management at second / request scale — is not simulated request-by-request. It is represented through trace-derived aggregate arrivals and the tier deferral windows in Table 3. The bridge between the two is the 15-minute bin: the inner router's request-level behavior is aggregated into each 15-minute step as strict / interactive / batch arrival energy and queue state.</p>
+
+<table class="table-wide">
+  <colgroup>
+    <col style="width: 15%;">
+    <col style="width: 12%;">
+    <col style="width: 25%;">
+    <col style="width: 25%;">
+    <col style="width: 23%;">
+  </colgroup>
+  <thead>
+    <tr><th>Layer</th><th>Typical timescale</th><th>What Blog 3 models</th><th>What Blog 3 does not model</th><th>Why 15 minutes is acceptable here</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Request router / load balancer</td>
+      <td>milliseconds to seconds</td>
+      <td>Represented only through tiered arrivals and cloud-route eligibility</td>
+      <td>Not request-by-request scheduling, not token streaming, not per-GPU batching</td>
+      <td>Blog 3's target is energy / site dispatch, not serving-kernel design</td>
+    </tr>
+    <tr>
+      <td>Queue manager</td>
+      <td>seconds to minutes</td>
+      <td>Strict / interactive / batch deferral windows and per-tier backlog</td>
+      <td>Not a full queueing simulator (no head-of-line blocking model, no preemption semantics)</td>
+      <td>Enough to show energy-flexible work vs hard-SLO work</td>
+    </tr>
+    <tr>
+      <td>Energy dispatch</td>
+      <td>5 to 15 minutes</td>
+      <td>Fully modeled: PV, WWTP, BESS, transformer, placement totals, OPEX feedback</td>
+      <td>Not sub-second power electronics or UPS transients</td>
+      <td>Matches the resolution needed for SOC, PV, demand, and transformer headroom decisions</td>
+    </tr>
+    <tr>
+      <td>Grid sanity check</td>
+      <td>Same as the dispatch timestep</td>
+      <td>pandapower 5-bus voltage / line-loading screen at every dispatch row</td>
+      <td>Not protection coordination, EMT, harmonics, or fault studies</td>
+      <td>Enough for a first-order campus-feeder plausibility check</td>
+    </tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 3a.</strong> Two-timescale layout. 15-minute dispatch would be too slow for request-level serving control; it is appropriate for the energy operations layer because request-level activity is aggregated into the 15-minute energy and queue buckets.</p>
+
+<p><em>Future inner loop, not in this batch:</em> a request-level router simulator could run at 1 s / request resolution and write summarized 15-minute bins back into the same dispatch interface used here. SQLite would only become useful for storing and querying event traces at that point; it is not the reason Blog 3 stays at 15-minute resolution today.</p>
+
+<h3>3.3.2 Where this sits in the AI infrastructure stack</h3>
+
+<p>Blog 3 is the site-level outer loop around an AI-serving cluster. It is not the cluster fabric implementation itself. Table 3b spells out which layer of the stack each piece of named technology belongs to and which layer Blog 3 actually models.</p>
+
+<table class="table-wide">
+  <colgroup>
+    <col style="width: 19%;">
+    <col style="width: 36%;">
+    <col style="width: 22%;">
+    <col style="width: 23%;">
+  </colgroup>
+  <thead>
+    <tr><th>Layer</th><th>Examples</th><th>Blog 3 status</th><th>Boundary</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>GPU serving inner loop</td>
+      <td>vLLM, Triton / TensorRT-LLM, NIM; continuous batching; KV cache</td>
+      <td>Not modeled; represented only as 15-min aggregate arrivals</td>
+      <td>Request-level serving and kernel / runtime optimization live inside the cluster</td>
+    </tr>
+    <tr>
+      <td>GPU cluster scheduler</td>
+      <td>Slurm, Kubernetes GPU Operator, topology-aware placement</td>
+      <td>Future integration point behind <code>inference_profile_service</code></td>
+      <td>Blog 3 does not schedule GPUs or pods</td>
+    </tr>
+    <tr>
+      <td>GPU fabric / network data plane</td>
+      <td>NCCL-style collectives, InfiniBand / RoCE, NVLink / NVSwitch, GPUDirect RDMA, DPU offload</td>
+      <td>Not implemented; acknowledged as the inner-cluster fabric</td>
+      <td>Blog 3 models the cloud-route SLO and site placement, not fabric performance</td>
+    </tr>
+    <tr>
+      <td>Site operations loop</td>
+      <td>PV, WWTP load, BESS, transformer cap, cooling sanity, local / cloud / defer / unserved placement</td>
+      <td>Implemented in this demo</td>
+      <td>First-order operations screen, not a final controller or interconnection study</td>
+    </tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 3b.</strong> Blog 3 is the site-level outer loop around an AI-serving cluster, not the cluster fabric implementation itself. The first three rows name standard inner-cluster technology so the boundary is explicit; the fourth row is what this prototype actually demonstrates.</p>
+
+<h2>3.4 The dispatch loop</h2>
+
+<p>The simulation runs a deterministic rule-based dispatcher on a 15-minute timestep, three passes per step. Table 4 shows what each pass decides, what it reads, what it writes, and the guardrail that prevents the most common edge cases.</p>
+
+<table>
+  <thead>
+    <tr><th>Pass</th><th>Decision</th><th>Main inputs</th><th>Output columns</th><th>Guardrail</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1. Placement</td><td>local / route / defer / unserved (per tier)</td><td>Effective local headroom; tier window; network state</td><td><code>p_local_inference_kw</code>, <code>p_cloud_routed_kw</code>, <code>p_deferred_kw</code>, <code>p_unserved_kw</code>, <code>route_reason</code></td><td>Strict tier cannot defer</td></tr>
+    <tr><td>2. BESS</td><td>charge / discharge / idle</td><td>Projected grid import after Pass 1; SOC; PV surplus</td><td><code>p_bess_charge_kw</code>, <code>p_bess_discharge_kw</code>, <code>soc_kwh</code></td><td>No simultaneous charge and discharge</td></tr>
+    <tr><td>3. Clock + accounting</td><td>Age queues; expire; record event</td><td>Per-tier queue state; deferral windows</td><td>Backlog, expired-as-unserved, <code>active_constraint</code></td><td>Expired work shows up in the same dispatch row</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 4.</strong> The three-pass loop. The output schema is wide so the explanation panel can quote actual columns instead of inferring them after the fact. The <code>route_reason</code> string draws from a closed enum of about a dozen values.</p>
+
+<p>This is not MPC and not Pyomo. The two-actuator dispatch and a closed-enum reason string are the deliberate scope; a perfect-foresight optimizer is the natural baseline for a follow-up post.</p>
+
+<h2>3.5 Three stress cases</h2>
+
+<p>Three 24-hour scenarios share the 45 MGD Austin site but stress different parts of the loop. All three use a <code>2.5×</code> demo-load multiplier on inference arrivals. With the routing-headroom calculation now including PV and available BESS, a <code>1.0×</code> load was no longer enough to saturate local capacity in any scenario; <code>2.5×</code> is the smallest demo factor that keeps the routing trade-offs visible. Real deployments would calibrate the multiplier against site-specific arrivals.</p>
+
+<table>
+  <thead>
+    <tr><th>Scenario</th><th>PV stress</th><th>WWTP stress</th><th>Network state</th><th>What binds</th><th>Headline result</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>normal_summer_day</td><td>Austin July baseline</td><td>baseline</td><td>normal</td><td>Peaks only</td><td>Mostly local; occasional routing at peak hours</td></tr>
+    <tr><td>storm_heat</td><td>pv_factor 0.55</td><td>wwtp_factor 1.18</td><td>stressed</td><td>Transformer cap + BESS</td><td>Routes and defers more; powerflow exceeds the 4.5 MW cap</td></tr>
+    <tr><td>overcast_plus_cloud_degraded</td><td>pv_factor 0.40</td><td>wwtp_factor 1.05</td><td>severe</td><td>Local headroom + tight SLOs</td><td>Strict unserved rises sharply; interactive routes more even though the network is worse</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 5.</strong> Scenario design and headline result.</p>
+
+<div class="figure">
+<img src="_sources/blog3_fig1_operation_loop.png" alt="Three-scenario operating timeline">
+<p class="caption"><strong>Figure 2.</strong> 24-hour operating timelines for the three scenarios. Left column: stacked inference placement (local / routed / newly-deferred / unserved). Right column: BESS SOC against grid import and the transformer cap, with per-step queue backlog overlaid.</p>
+</div>
+
+<p>The headline routing invariant is best read at the per-tier level. The interesting result is that under severe network on a real Austin July day, two pressures hit at once: the cloud SLO degrades and PV collapses to ~40%. Local energy headroom collapses faster than the cloud-quality gate tightens, so interactive and batch route <em>more</em> work to cloud — interactive's SLO budget is still wide enough to absorb the overflow. The strict tier cannot route in either scenario because of its tight cloud-SLO budget, so its unserved kWh rises sharply: it can neither route nor defer when both PV and the cloud path are bad.</p>
+
+<table>
+  <thead>
+    <tr><th>Tier</th><th>Normal routed (kWh)</th><th>Overcast routed (kWh)</th><th>Normal unserved (kWh)</th><th>Overcast unserved (kWh)</th><th>Interpretation</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>strict</td><td>0</td><td>0</td><td>~20</td><td>~1,472</td><td>Cannot route or defer; PV collapse → unserved</td></tr>
+    <tr><td>interactive</td><td>~300</td><td>~1,115</td><td>~9</td><td>~1,045</td><td>PV headroom collapses faster than the cloud gate tightens</td></tr>
+    <tr><td>batch</td><td>~223</td><td>~810</td><td>~0</td><td>~0</td><td>Wide SLO absorbs spillover</td></tr>
+    <tr><td>total</td><td>~523</td><td>~1,925</td><td>~28</td><td>~2,517</td><td>Routing is not monotonic in network quality</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 6.</strong> Per-tier 24-hour outcome, normal vs overcast+cloud-degraded. The test suite asserts these directions (rises and zeros), not exact magnitudes.</p>
+
+<div class="figure">
+<img src="_sources/blog3_fig2_routing_pressure.png" alt="Routing pressure comparison">
+<p class="caption"><strong>Figure 3.</strong> Per-tier 24-hour totals for local / routed / newly-deferred / unserved across the three scenarios. The shifts that Table 6 records appear here as visible band changes; energy headroom and network quality pull the dispatcher in opposite directions, and the figure makes that legible.</p>
+</div>
+
+<h2>3.6 Grid and cooling checks</h2>
+
+<p>Routing decisions and dispatch energy totals only land if the underlying physical infrastructure can carry them. Three sanity checks ride alongside the dispatch results: a pinned design basis, a 5-bus 10 kV pandapower powerflow tied to the dispatch CSVs, and a first-order cooling envelope. None of them is a substitute for utility interconnection, protection coordination, EMT, or CFD work.</p>
+
+<table>
+  <thead>
+    <tr><th>Component</th><th>Basis</th><th>Value</th><th>Why it matters</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>IT load</td><td>16 racks × 125 kW</td><td>2.0 MW IT</td><td>Local inference ceiling</td></tr>
+    <tr><td>Facility load</td><td>PUE 1.25</td><td>2.5 MW</td><td>Grid + cooling basis</td></tr>
+    <tr><td>PV</td><td>HSAT bifacial via <code>infinite_sheds</code></td><td>5.7 MWdc / 4.75 MWac · 9,378 MWh/yr · peak 4,750 kW</td><td>Offsets local serve; AC-cap-bound</td></tr>
+    <tr><td>WWTP</td><td>BSM1 energy-basis × 1.5</td><td>Mean ~3.79 MW</td><td>Must-serve host load</td></tr>
+    <tr><td>BESS</td><td>Asymmetric</td><td>8 MWh / 2 MW discharge / 1 MW charge</td><td>Cap support and PV capture</td></tr>
+    <tr><td>Transformer cap</td><td>Dispatch assumption</td><td>4.5 MW import</td><td>Operating boundary</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 7.</strong> Pinned design basis.</p>
+
+<p>The pandapower model places PV, BESS, WWTP, and the data-center IT load on four MV buses connected to a slack grid bus through 0.1–0.5 km <code>NA2XS2Y 1×240 RM/25 6/10 kV</code> cables and a 5 MVA 20→10 kV transformer. Only <code>p_local_inference_kw</code> shows up as load on the DC bus — cloud-routed, deferred, and unserved work runs somewhere else, so it is not a local electrical load. BESS charge is a load and discharge is generation, with the dispatch invariant preventing both at once. The headline transformer metric here is import against the 4.5 MW dispatch cap, not the 5 MVA pandapower nameplate.</p>
+
+<table>
+  <thead>
+    <tr><th>Scenario</th><th>Min bus voltage (pu)</th><th>Max line loading</th><th>Max cap loading (4.5 MW)</th><th>Max nameplate loading (5 MVA)</th><th>Reading</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>normal_summer_day</td><td>0.9913</td><td>60.6%</td><td>100.8%</td><td>91.8%</td><td>Touches the cap after line losses</td></tr>
+    <tr><td>storm_heat</td><td>0.9898</td><td>71.8%</td><td>112.8%</td><td>102.8%</td><td>Stress-case cap exceedance</td></tr>
+    <tr><td>overcast_plus_cloud_degraded</td><td>0.9911</td><td>63.8%</td><td>100.8%</td><td>91.8%</td><td>Cap touch + PV-headroom loss</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 8.</strong> Powerflow sanity metrics. Storm+heat exceeds the dispatch cap by design; the screen is meant to surface where BESS, routing, deferral, and interconnection headroom become binding.</p>
+
+<p>For cooling, 2.0 MW IT corresponds to ~568 refrigeration tons (1 RT = 3.517 kW); the 2.5 MW facility-equivalent envelope is ~711 RT. A first-order analytical sanity check confirms that a typical 10% capacity headroom holds the chip-side derating factor at 1.0. The 3-node RC thermal model in <code>dc_thermal.py</code> stays available for transient checks but doesn't drive the headline number.</p>
+
+<div class="figure">
+<img src="_sources/blog3_fig5_grid_powerflow.png" alt="Grid powerflow 5-bus screen">
+<p class="caption"><strong>Figure 4.</strong> 5-bus 10 kV campus feeder screen. Panel A: one-line schematic. Panel B: minimum bus voltage by scenario. Panel C: max line loading distribution. Panel D: transformer import vs the 4.5 MW dispatch cap; storm+heat crosses the cap, which is the intended stress signal.</p>
+</div>
+
+<div class="figure">
+<img src="_sources/blog3_fig6_cooling_design_basis.png" alt="Cooling and design basis">
+<p class="caption"><strong>Figure 5.</strong> Pinned design basis (16 racks × 125 kW = 2.0 MW IT, PUE 1.25, 2.5 MW facility), cooling-equivalent tons (568 RT IT, 711 RT facility-equivalent at 3.517 kW/ton), and the first-order thermal sanity check.</p>
+</div>
+
+<h3>3.6.1 Curtailment check</h3>
+
+<p>A natural follow-up question: does the model ever hit the classic condition where PV is high, the BESS is full, the local load is not enough, and PV is curtailed? In all three shipped Austin scenarios the answer is no — the 45 MGD WWTP must-serve load plus the inference demand absorb the available PV, and the default 8 MWh BESS spends most of the day discharging rather than charging. A small deterministic sweep over <code>pv_factor ∈ {1.0, 1.5, 2.0, 3.0}</code> × <code>inference_factor ∈ {1.0, 2.5}</code> × <code>bess_kwh ∈ {8000, 16000}</code> against the <code>normal_summer_day</code> basis (<code>blog3_curtailment_sensitivity.csv</code>) shows where the boundary actually sits.</p>
+
+<table class="table-wide">
+  <colgroup>
+    <col style="width: 11%;">
+    <col style="width: 12%;">
+    <col style="width: 9%;">
+    <col style="width: 11%;">
+    <col style="width: 12%;">
+    <col style="width: 11%;">
+    <col style="width: 11%;">
+    <col style="width: 23%;">
+  </colgroup>
+  <thead>
+    <tr><th>pv_factor</th><th>inference_factor</th><th>BESS (kWh)</th><th>PV avail (kWh)</th><th>PV curtailed (kWh)</th><th>Curtailment %</th><th>BESS charge (kWh)</th><th>Reading</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1.0 (shipped)</td><td>1.0</td><td>8,000</td><td>38,997</td><td>0</td><td>0.0%</td><td>0</td><td>WWTP+inference absorb all PV</td></tr>
+    <tr><td>1.0 (shipped)</td><td>2.5 (demo)</td><td>8,000</td><td>38,997</td><td>0</td><td>0.0%</td><td>0</td><td>Heavy load; BESS only discharges</td></tr>
+    <tr><td>1.5</td><td>1.0</td><td>8,000</td><td>58,496</td><td>95</td><td>0.2%</td><td>1,654</td><td>Marginal — BESS now starts charging</td></tr>
+    <tr><td>2.0</td><td>1.0</td><td>8,000</td><td>77,994</td><td>11,176</td><td>14.3%</td><td>3,257</td><td>BESS-full / load-low becomes material</td></tr>
+    <tr><td>2.0</td><td>1.0</td><td>16,000</td><td>77,994</td><td>8,303</td><td>10.6%</td><td>6,130</td><td>2× BESS reduces but does not eliminate curtailment</td></tr>
+    <tr><td>2.0</td><td>2.5 (demo)</td><td>8,000</td><td>77,994</td><td>621</td><td>0.8%</td><td>2,130</td><td>Heavy load absorbs most of the surplus</td></tr>
+    <tr><td>3.0</td><td>1.0</td><td>8,000</td><td>116,992</td><td>46,632</td><td>39.9%</td><td>3,257</td><td>Strong oversize; routing/storage cannot keep up</td></tr>
+    <tr><td>3.0</td><td>2.5 (demo)</td><td>16,000</td><td>116,992</td><td>17,253</td><td>14.7%</td><td>8,305</td><td>Curtailment persists even with 2× BESS and heavy load</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 8a.</strong> Curtailment / BESS-full sensitivity. Selected rows from <code>blog3_curtailment_sensitivity.csv</code>; the full sweep (pv ∈ {1.0, 1.5, 2.0, 3.0} × inf ∈ {1.0, 2.5} × BESS ∈ {8, 16} MWh) is regenerated by <code>python -m stage1_5_wwtp_dc.operations.curtailment_sensitivity</code>.</p>
+
+<p>Reading: in the shipped Austin 45 MGD scenarios, PV curtailment is not the dominant waste mode — the WWTP must-serve load and inference demand absorb the available PV, and the BESS spends the day mostly discharging. Curtailment becomes a design question under PV oversizing (≥1.5×), low local workload, or larger BESS-full conditions; that is where a future Pyomo/MILP or MPC sizing pass belongs. Doubling BESS capacity from 8 to 16 MWh helps modestly at 2.0× PV (14.3% → 10.6%) but does not eliminate the loss; the binding constraint becomes how fast surplus can be absorbed inside the day.</p>
+
+<h2>3.7 The agent boundary: orchestration for explanation, not control</h2>
+
+<p>The "agent" in Blog 3 is not the dispatcher. The dispatcher is the deterministic three-pass loop in §3.4 and only it controls compute placement and BESS. The agent layer sits beside the dispatch CSV and runs an explanatory orchestration loop: <em>observe</em> a selected dispatch row → <em>detect</em> events → <em>retrieve</em> sources → <em>compose</em> a deterministic explanation → <em>optional LLM review</em> (off by default; reviewer addendum only) → <em>operator-facing bundle</em> handed off to a human decision. The LLM never writes control actions. Human approval is always required.</p>
+
+<table>
+  <thead>
+    <tr><th>Step</th><th>Tool / module</th><th>Input</th><th>Output</th><th>Can affect dispatch?</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>1. Observe row</td><td><code>agent_orchestration.orchestrate_explanation</code></td><td>Dispatch DataFrame + step index + scenario_id</td><td>Selected row + timestamp</td><td>No</td></tr>
+    <tr><td>2. Detect events</td><td><code>event_memory.build_events</code></td><td>Dispatch DataFrame</td><td>Transformer / queue / cloud / curtailment events filtered to this timestamp</td><td>No</td></tr>
+    <tr><td>3. Retrieve context</td><td><code>explain_dispatch</code> / <code>VaultRetriever</code></td><td>Row + scenario_id</td><td>Source notes with authority labels</td><td>No</td></tr>
+    <tr><td>4. Compose deterministic explanation</td><td><code>explain_dispatch.explain_step(llm=None)</code></td><td>Row + sources + active constraints</td><td>Summary, likely causes, implications, durable caveats</td><td>No</td></tr>
+    <tr><td>5. Optional LLM review</td><td>provided <code>llm</code> callable, off by default</td><td>Deterministic prompt built from steps 1–4 only</td><td>Reviewer addendum (string), recorded as <code>llm_review</code></td><td>No</td></tr>
+    <tr><td>6. Human decision</td><td>Operator workflow</td><td>Operator-facing bundle</td><td>Approved next action — only outside this prototype, after review</td><td>Only outside Blog 3, after approval</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 9.</strong> Agent orchestration steps. The orchestration result returned by <code>orchestrate_explanation</code> always carries <code>human_approval_required = True</code> and <code>control_actions_allowed = ()</code>. A regression test (<code>test_blog3_agent_orchestration.py</code>) asserts that the LLM addendum cannot alter the deterministic explanation, event IDs, or caveats; the addendum is recorded only in <code>llm_review</code>.</p>
+
+<div class="figure">
+<img src="_sources/blog3_fig7_agent_orchestration.png" alt="Explanatory agent orchestration boundary">
+<p class="caption"><strong>Figure 6.</strong> Explanatory agent orchestration boundary. The deterministic loop (event detector → constraint parser + vault retriever → explanation composer → operator-facing bundle) is contained inside the inner box. The optional LLM reviewer hangs off via dashed lines and contributes a reviewer addendum only. The dashed bottom band states the invariant: the LLM never controls dispatcher / BESS / routing / WWTP / SCADA / DCS / PLC / valves / pumps.</p>
+</div>
+
+<p>If the boxes in Figure 6 are unfamiliar, Table 10 reads them as a short step ledger instead of a six-column code table. Each step shows what the box does, what code it maps to, and the safety boundary that keeps the agent beside the dispatcher rather than inside the control loop.</p>
+
+<div class="reader-guide">
+  <div class="reader-step">
+    <h4>1. Dispatch CSV row</h4>
+    <p>One already-computed timestep from the deterministic dispatcher. Nothing is decided here; the row is the agent layer's input.</p>
+    <div class="reader-meta">
+      <div><strong>Code</strong><code>scenario_runner</code> output CSV</div>
+      <div><strong>Reads / outputs</strong>Reads PV, WWTP, arrivals, network, SOC. Outputs one row with local / routed / deferred / unserved, BESS, grid, route reason, and active constraint.</div>
+      <div><strong>Safety boundary</strong>Read-only input to the agent layer.</div>
+    </div>
+  </div>
+
+  <div class="reader-step">
+    <h4>2. Event detector</h4>
+    <p>Looks at the dispatch row and flags facts such as transformer hits, strict-tier unserved work, cloud-degraded windows, curtailment moments, or backlog peaks.</p>
+    <div class="reader-meta">
+      <div><strong>Code</strong><code>event_memory.build_events()</code></div>
+      <div><strong>Reads / outputs</strong>Reads the dispatch DataFrame. Outputs typed events with deterministic IDs.</div>
+      <div><strong>Safety boundary</strong>Detects facts only; it does not control anything.</div>
+    </div>
+  </div>
+
+  <div class="reader-step">
+    <h4>3. Constraint parser + vault retriever</h4>
+    <p>Reads <code>active_constraint</code> and <code>route_reason</code>, then retrieves the source notes that explain the relevant operator-facing context.</p>
+    <div class="reader-meta">
+      <div><strong>Code</strong><code>explain_dispatch.explain_step()</code> + <code>VaultRetriever</code></div>
+      <div><strong>Reads / outputs</strong>Reads row fields and the source vault. Outputs active constraints plus source notes with authority labels.</div>
+      <div><strong>Safety boundary</strong>Retrieval only; no action taken.</div>
+    </div>
+  </div>
+
+  <div class="reader-step">
+    <h4>4. Deterministic explanation composer</h4>
+    <p>Assembles the operator summary, likely causes, operational implications, and durable Blog 3 caveats from the row, events, and retrieved notes.</p>
+    <div class="reader-meta">
+      <div><strong>Code</strong><code>explain_dispatch.explain_step()</code></div>
+      <div><strong>Reads / outputs</strong>Reads row values, events, and retrieved notes. Outputs summary, likely causes, implications, and caveats.</div>
+      <div><strong>Safety boundary</strong>Deterministic and auditable: same row + same vault gives the same output.</div>
+    </div>
+  </div>
+
+  <div class="reader-step">
+    <h4>5. Optional LLM review</h4>
+    <p>If a reviewer LLM callable is provided, it sees only the deterministic prompt from the earlier steps and returns short reviewer notes. It is off by default; tests use fakes only.</p>
+    <div class="reader-meta">
+      <div><strong>Code</strong><code>llm</code> callable passed into <code>orchestrate_explanation()</code></div>
+      <div><strong>Reads / outputs</strong>Reads the deterministic explanation prompt. Outputs a reviewer addendum recorded in <code>llm_review</code>.</div>
+      <div><strong>Safety boundary</strong>Cannot change dispatch, events, or caveats.</div>
+    </div>
+  </div>
+
+  <div class="reader-step">
+    <h4>6. Operator-facing bundle + human decision</h4>
+    <p>The operator sees the tool trace, events, deterministic explanation, optional LLM addendum, and the explicit human-approval flag. Blog 3 stops here.</p>
+    <div class="reader-meta">
+      <div><strong>Code</strong><code>agent_orchestration.render_operator_bundle()</code>; human workflow outside prototype</div>
+      <div><strong>Reads / outputs</strong>Reads <code>AgentOrchestrationResult</code>. Outputs the explanation bundle; any approved next action is outside Blog 3.</div>
+      <div><strong>Safety boundary</strong><code>control_actions_allowed = ()</code>; no automatic control loop.</div>
+    </div>
+  </div>
+</div>
+<p class="caption"><strong>Table 10.</strong> Reader's guide to Figure 6. The six-column table was replaced by step cards because this material is a sequence, not a spreadsheet.</p>
+
+<h3>3.7.1 Explanation panel and event memory</h3>
+
+<p>The deterministic explanation in step 4 is what the operator sees in the prototype's Streamlit panel: a one-paragraph summary of placement and energy state, the active constraints parsed from the dispatch row, likely causes built directly from the row's columns and <code>route_reason</code> strings, a short list of operational implications, two or three vault sources with their authority labels preserved, and the durable Blog 3 caveats appended verbatim.</p>
+
+<p>The explanation runs offline. There is an optional LLM hook for incident review, but it is off by default; tests use only fakes, and the app render path never calls a real LLM API. Every claim the panel makes can be traced to a specific column on the dispatch row or a specific vault page. Alongside the panel, the prototype writes JSONL event records — <code>build_events</code> walks the dispatch DataFrame and emits a <code>DispatchEvent</code> for each meaningful occurrence (transformer violations, per-tier unserved or newly-deferred work, cloud-unavailable or cloud-degraded windows, PV curtailment, queue-backlog peaks). Event IDs are deterministic from <code>(scenario_id, timestamp, event_type)</code>, so the log is stable across reruns. Operator notes go to a local export-excluded event log, not to any public artifact.</p>
+
+<div class="figure">
+<img src="_sources/blog3_fig4_explanation_panel.png" alt="Explanation panel artifact">
+<p class="caption"><strong>Figure 7.</strong> Reproducible artifact of the explanation panel for one row of the overcast+cloud-degraded scenario. Vault sources carry their authority labels (<code>authoritative</code>, <code>reviewed</code>, <code>candidate</code>, <code>legacy</code>); the durable Blog 3 caveats are always appended.</p>
+</div>
+
+<h2>3.8 What this proves and what it does not</h2>
+
+<p>What this proves: the 45 MGD Austin worked case can be operated as a routing-centric two-actuator dispatch, the operating boundary is visible at the timestep level, and the explanation/event-memory layer stays tied to row-level evidence. The operating loop should generalize to other industrial host classes, but Blog 3 only walks one. Table 11 maps each part of the screen to what a real deployment would still owe.</p>
+
+<table>
+  <thead>
+    <tr><th>Area</th><th>Blog 3 does</th><th>Real deployment still needs</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>WWTP process</td><td>BSM1-informed energy-basis profile, 1.5×-scaled to 45 MGD</td><td>BioWin / GPS-X / SUMO or a calibrated plant-specific QSDsan model</td></tr>
+    <tr><td>Network</td><td>Three named latency / loss regimes</td><td>Real fiber route, SLA contract, H<sub>2</sub>S- and air-quality-aware siting</td></tr>
+    <tr><td>Grid</td><td>5-bus pandapower sanity feeder</td><td>Utility interconnection, protection coordination, arc-flash, EMT / transient analysis</td></tr>
+    <tr><td>Power electronics</td><td>15-minute BESS dispatch (energy / demand)</td><td>UPS sizing and rack-level transient validation</td></tr>
+    <tr><td>IT/OT</td><td>Compute placement + BESS dispatch only</td><td>Explicit cyber boundary; never WWTP SCADA / DCS / PLC / valves / pumps</td></tr>
+    <tr><td>Cooling</td><td>First-order RT envelope and RC thermal model</td><td>Mechanical design, airflow / liquid-cooling layout, redundancy</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table 11.</strong> Deployment boundary. Blog 3 is a screen, not a final design; the right column is what a project budget and schedule would still cover.</p>
+
+<p>The deployment-grade endpoint choice for any GenAI explanation layer is the same as in Blog 2: NVIDIA NIM, an enterprise endpoint, or a local LLM behind the firewall, depending on security requirements. The default in the prototype is no LLM at all.</p>
+
+<h2>Appendix A: dispatch math, routing rules, and constraints</h2>
+
+<h3>A.1 Effective local capacity</h3>
+
+<p>At each 15-minute step the dispatcher computes the local site's effective inference capacity in kW as:</p>
+
+<pre>available_bess_discharge_kw = min(
+    bess.p_max_discharge_kw,
+    max(0, soc_kwh - soc_min_kwh) * eta_one_way / dt_h
+)
+effective_local_capacity_kw = max(0,
+    transformer.grid_import_cap_kw
+    + p_pv_kw
+    + available_bess_discharge_kw
+    - p_wwtp_kw
+)</pre>
+
+<p>An earlier version used only <code>transformer_cap - p_wwtp</code>, which made routing too conservative and zeroed-out routing in every scenario. With PV and available BESS in the headroom, the dispatcher correctly serves more locally during sunny hours and during high-SOC hours.</p>
+
+<h3>A.2 Routing decision per tier</h3>
+
+<p>For each tier, the policy first asks whether the cloud route is currently <em>available</em>, <em>degraded</em>, or <em>unavailable</em>:</p>
+
+<pre>def evaluate(api_latency_ms, packet_loss, tier_config, routing_config):
+    if packet_loss &gt; routing_config.packet_loss_route_block:
+        return UNAVAILABLE
+    if api_latency_ms &gt; tier_config.cloud_latency_budget_ms:
+        return UNAVAILABLE
+    if api_latency_ms &gt; routing_config.cloud_normal_max_ms:
+        return DEGRADED
+    return AVAILABLE</pre>
+
+<p>For each unit of arriving (or already-queued) work, the dispatcher then picks an action and emits a <code>route_reason</code> string drawn from a closed enum. Strict tier never defers; interactive and batch tiers also consider deferral within their windows.</p>
+
+<h3>A.3 Hard invariants</h3>
+
+<ul>
+<li>Energy balance closes at every timestep within 10<sup>-3</sup> kW.</li>
+<li>BESS SOC stays in <code>[soc_min, soc_max]</code>.</li>
+<li>No simultaneous BESS charge and discharge.</li>
+<li>Strict tier never appears in a deferred column.</li>
+<li>Routing eligibility honors network state — under severe network, strict and interactive must not route to a degraded cloud.</li>
+<li>Per-step <code>route_reason</code> values are drawn from a closed enum and are deterministic from a fixed scenario seed.</li>
+<li>The headline scenario (overcast + cloud-degraded) must produce a visibly different dispatch trajectory from normal at the per-tier level — otherwise routing is inert and a regression test fails.</li>
+</ul>
+
+<h2>Appendix B: code architecture and data flow</h2>
+
+<p>Blog 3 ships under <code>stage1_5_wwtp_dc/operations/</code> with a thin Streamlit app under <code>stage1_5_wwtp_dc/apps/blog3_ops_app.py</code>. Each module has a narrow responsibility:</p>
+
+<table>
+  <thead>
+    <tr><th>Module</th><th>Responsibility</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>blog3_config.py</code></td><td>Typed dataclasses (Site, BESS, Transformer, LatencyTier, Routing, Scenario, OPEX). Default site is 45 MGD Austin.</td></tr>
+    <tr><td><code>trace_calibration.py</code></td><td>Six named presets that turn public-trace evidence into per-tier fractions, burst factors, and diurnal shape. Live calibration reads extracted v2026-GenAI CSVs only after a safety check.</td></tr>
+    <tr><td><code>latency_tiers.py</code></td><td>Per-tier work queues with deferral window, queue age, served / routed / deferred / expired bookkeeping.</td></tr>
+    <tr><td><code>routing_policy.py</code></td><td>The placement decision: <code>evaluate()</code> returns availability per tier; <code>choose_action()</code> returns <code>local | route_to_cloud | defer | unserved</code> plus a <code>route_reason</code> from a closed enum.</td></tr>
+    <tr><td><code>dispatch_interface.py</code></td><td>Lightweight <code>Dispatcher</code> protocol so a future LP / MILP / MPC dispatcher can slot in without rewriting the scenario runner.</td></tr>
+    <tr><td><code>dispatch_rules.py</code></td><td>The <code>RuleBasedDispatcher</code>. Three-pass loop: routing placement → BESS dispatch → step_clock + accounting.</td></tr>
+    <tr><td><code>site_timeseries.py</code></td><td>Builds the per-step DataFrame from cached PV + WWTP profiles and the network-scenario series.</td></tr>
+    <tr><td><code>scenario_runner.py</code></td><td>Runs a named scenario end-to-end; uses cached CSV when overrides are empty; reruns under live v2026 calibration otherwise.</td></tr>
+    <tr><td><code>build_phase1_profiles.py</code></td><td>Source-controlled regeneration of the three 45 MGD Austin profile CSVs.</td></tr>
+    <tr><td><code>grid_powerflow.py</code></td><td>5-bus 10 kV pandapower screen tied to the dispatch CSVs; per-timestep voltage / line loading / cap / nameplate metrics.</td></tr>
+    <tr><td><code>cooling_design_basis.py</code></td><td>Pinned design basis (16 racks × 125 kW, PUE 1.25, 568 RT cooling) and first-order thermal sanity check.</td></tr>
+    <tr><td><code>figures.py</code></td><td>Source-controlled regeneration of the six internal-draft figures and a top-level helper that runs profiles → scenarios → powerflow → figures end-to-end.</td></tr>
+    <tr><td><code>event_memory.py</code></td><td><code>DispatchEvent</code> with deterministic IDs; <code>build_events(df)</code> filters meaningful events; JSONL round-trip.</td></tr>
+    <tr><td><code>explain_dispatch.py</code></td><td><code>explain_step()</code> returns a structured <code>DispatchExplanation</code>; deterministic offline by default; optional LLM hook off by default; vault retrieval through <code>VaultRetriever</code> with authority labels preserved.</td></tr>
+    <tr><td><code>agent_orchestration.py</code></td><td>Coordinates event detection, deterministic explanation composition, and the optional LLM reviewer hook. Returns an <code>AgentOrchestrationResult</code> with a deterministic tool trace, the row's events, the explanation, and the explicit <code>human_approval_required = True</code> / <code>control_actions_allowed = ()</code> invariants. Does not control dispatch.</td></tr>
+    <tr><td><code>app_data.py</code></td><td>Pure-data helpers for the Streamlit module: scenario-aware override diffing, summary metrics, profile-basis warnings, comparison tables, live-calibration availability.</td></tr>
+    <tr><td><code>curtailment_sensitivity.py</code></td><td>Deterministic <code>pv_factor × inference_factor × bess_capacity</code> sweep against the <code>normal_summer_day</code> basis; writes <code>blog3_curtailment_sensitivity.csv</code>. Driver for §3.6.1.</td></tr>
+    <tr><td><code>profile_services/</code></td><td>Thin documentary facades (<code>pv_profile_service</code>, <code>wwtp_profile_service</code>, <code>inference_profile_service</code>) that point at the working code and expose the weighted-ensemble interface. Not load-bearing yet; see §B.1.</td></tr>
+    <tr><td><code>apps/blog3_ops_app.py</code></td><td>Internal Streamlit operator screen.</td></tr>
+  </tbody>
+</table>
+
+<p>Generated CSVs and figures are gitignored derived artifacts; the durable source is the regen helper code. <code>python -m stage1_5_wwtp_dc.operations.figures</code> regenerates everything end-to-end.</p>
+
+<p><em>Why <code>stage1_5_wwtp_dc/</code>?</em> The package name is historical project naming from Blog 2 / Stage 1.5. Blog 3 currently lives there because it reuses the WWTP / PV / DC sizing code, data paths, tests, and app conventions that were already in place. For an open-source cleanup, the <code>profile_services/</code> scaffold (§B.1) already separates PV, WWTP, and inference profile boundaries; a future repo cleanup can promote Blog 3 code to a clearer package name such as <code>energyflux_ops/</code> or <code>blog3_ops/</code>, but moving now would be noisy churn and is not needed for the article candidate.</p>
+
+<h3>B.1 Service boundary for a future open-source split</h3>
+
+<p>Blog 3 ships as one Python package today; a future open-source / microservice split would carve the package along three profile services plus a dispatch engine and two sanity services. The mapping is documented in a thin facade layer at <code>stage1_5_wwtp_dc/operations/profile_services/</code> (<code>pv_profile_service.py</code>, <code>wwtp_profile_service.py</code>, <code>inference_profile_service.py</code>) — the dispatch loop and tests still import the underlying modules directly, so the facade is additive, not load-bearing yet:</p>
+
+<table>
+  <thead>
+    <tr><th>Service</th><th>Current code home</th><th>Facade module</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PV profile service</td><td><code>models/pv_generator.py</code> + <code>operations/site_timeseries.py</code> + <code>operations/build_phase1_profiles.py</code></td><td><code>profile_services/pv_profile_service.py</code></td></tr>
+    <tr><td>WWTP profile service</td><td><code>models/wwtp_load_generator.py</code> + <code>data/wwtp_load_*.csv</code></td><td><code>profile_services/wwtp_profile_service.py</code></td></tr>
+    <tr><td>Inference profile service</td><td><code>operations/trace_calibration.py</code> + <code>operations/latency_tiers.py</code></td><td><code>profile_services/inference_profile_service.py</code> (also exposes the weighted-ensemble interface)</td></tr>
+    <tr><td>Dispatch engine</td><td><code>operations/dispatch_rules.py</code> + <code>operations/routing_policy.py</code> + <code>operations/dispatch_interface.py</code></td><td>Direct imports (no facade — this is the load-bearing core)</td></tr>
+    <tr><td>Grid sanity service</td><td><code>operations/grid_powerflow.py</code></td><td>Direct (sanity-side, no facade needed)</td></tr>
+    <tr><td>Thermal sanity service</td><td><code>operations/cooling_design_basis.py</code> + <code>models/dc_thermal.py</code></td><td>Direct</td></tr>
+    <tr><td>Explanation / event service</td><td><code>operations/explain_dispatch.py</code> + <code>operations/event_memory.py</code></td><td>Direct</td></tr>
+  </tbody>
+</table>
+<p class="caption"><strong>Table B.1.</strong> Where each part of Blog 3 lives today and which clean seam an open-source pass would split along. Files are not moved in this pass; the seam is documentary.</p>
+
+<p>The <strong>inference profile service</strong> row is also the natural seam where a future production GPU serving stack would plug in: a Slurm or Kubernetes GPU-operator scheduler, topology-aware placement, and a runtime such as vLLM, Triton / TensorRT-LLM, or NIM. In Blog 3 this seam receives only trace-derived 15-minute arrivals; it does not run a GPU scheduler and does not model NCCL / InfiniBand / RDMA behavior. The reason the boundary is named here is that an industrial host project usually fails between this seam and the rest of the site (utility, process, cooling, IT/OT) — naming the seam is what lets the two sides be designed against each other instead of being pretended away.</p>
+
+<h2>Appendix C: trace and site provenance</h2>
+
+<p>Blog 3 uses public hyperscaler cluster traces as <em>calibration evidence</em>, not as a claim that hyperscaler traffic is WWTP traffic. <strong>The output is synthetic workload data, calibrated from public traces. It is not a replay of Alibaba/Azure/Google traffic and not real Austin traffic.</strong> Table C.1 records which file anchors which preset, which statistic is consumed, what dispatch field it feeds, and what each is and is not used for.</p>
+
+<div class="ledger">
+
+  <div class="ledger-card">
+    <h4>Alibaba v2026 GenAI — <code>qps.tar.gz</code> / <code>qps.csv</code></h4>
+    <p><strong>Observed signal:</strong> serving QPS shape. <strong>Statistic used:</strong> mean, p95/mean burst, normalized daily shape (when live extraction is enabled).</p>
+    <div class="ledger-meta">
+      <div><strong>Preset field</strong><code>burst_factor</code>, <code>diurnal_shape</code></div>
+      <div><strong>How dispatch consumes it</strong>Total arrivals by 15-min step</div>
+    </div>
+    <p style="margin: 8px 0 0; font-size: 12.7px; color: var(--muted);"><em>Boundary:</em> not replayed request-by-request.</p>
+  </div>
+
+  <div class="ledger-card">
+    <h4>Alibaba v2026 — <code>queue_size_raw_anon.tar.gz</code> + <code>queue_rt_raw_anon.tar.gz</code></h4>
+    <p><strong>Observed signal:</strong> queue depth and queue response time. <strong>Statistic used:</strong> p50 / p95 response-time anchor.</p>
+    <div class="ledger-meta">
+      <div><strong>Preset field</strong>interactive deferral basis (notes)</div>
+      <div><strong>How dispatch consumes it</strong>Justification for the interactive queue window</div>
+    </div>
+    <p style="margin: 8px 0 0; font-size: 12.7px; color: var(--muted);"><em>Boundary:</em> article uses fixed tier config, not a full queueing-model fit.</p>
+  </div>
+
+  <div class="ledger-card">
+    <h4>Alibaba v2026 — <code>pipeline_inference_data_anon.tar.gz</code></h4>
+    <p><strong>Observed signal:</strong> serving / pipeline latency. <strong>Statistic used:</strong> p50 / p95 latency anchor.</p>
+    <div class="ledger-meta">
+      <div><strong>Preset field</strong>strict latency floor (notes)</div>
+      <div><strong>How dispatch consumes it</strong>Strict cloud-routing budget reasoning</div>
+    </div>
+    <p style="margin: 8px 0 0; font-size: 12.7px; color: var(--muted);"><em>Boundary:</em> not mapped to a specific model endpoint.</p>
+  </div>
+
+  <div class="ledger-card">
+    <h4>Alibaba v2026 — <code>pod_gpu_duty_cycle_anon.tar.gz</code></h4>
+    <p><strong>Observed signal:</strong> GPU duty / utilization. <strong>Statistic used:</strong> mean / p95 duty cycle.</p>
+    <div class="ledger-meta">
+      <div><strong>Preset field</strong><code>base_utilization</code> (notes)</div>
+      <div><strong>How dispatch consumes it</strong>Supports the over-provisioning / headroom claim</div>
+    </div>
+    <p style="margin: 8px 0 0; font-size: 12.7px; color: var(--muted);"><em>Boundary:</em> not a local GPU utilization guarantee.</p>
+  </div>
+
+  <div class="ledger-card">
+    <h4>Alibaba v2025 DLRM — <code>disaggregated_DLRM_trace.csv</code></h4>
+    <p><strong>Observed signal:</strong> latency-sensitive serving instances. <strong>Statistic used:</strong> instance counts; serving-anchor evidence.</p>
+    <div class="ledger-meta">
+      <div><strong>Preset field</strong><code>alibaba_serving_inspired</code> notes + tier mix</div>
+      <div><strong>How dispatch consumes it</strong>Inference-serving anchor for strict / interactive tiers</div>
+    </div>
+    <p style="margin: 8px 0 0; font-size: 12.7px; color: var(--muted);"><em>Boundary:</em> DLRM serving is not GenAI image/text serving.</p>
+  </div>
+
+  <div class="ledger-card">
+    <h4>Microsoft Philly / Google Borg / Azure Public</h4>
+    <p><strong>Observed signal:</strong> training, warehouse-scale burstiness, cloud-serving contrast. <strong>Statistic used:</strong> qualitative or preset-level anchor.</p>
+    <div class="ledger-meta">
+      <div><strong>Preset field</strong><code>philly_training_cluster_reference</code>, <code>google_borg_general_cluster_reference</code>, <code>azure_llm_inference_inspired</code></div>
+      <div><strong>How dispatch consumes it</strong>Alternate presets / Appendix evidence</div>
+    </div>
+    <p style="margin: 8px 0 0; font-size: 12.7px; color: var(--muted);"><em>Boundary:</em> not the default Austin run unless selected.</p>
+  </div>
+
+</div>
+<p class="caption"><strong>Table C.1.</strong> Trace calibration ledger. The Aegaeon paper is cited as scheduler-concept evidence that production GPU serving over-provisions, not as an input dataset. The v2026-GenAI files are gzipped tarballs whose CSV members are extracted into a gitignored directory before the calibration code reads them; runtime checks confirm the directory is both present and ignored.</p>
+
+<h3>C.1 External workload-generator audit</h3>
+
+<p>A fair question: if other researchers already use Alibaba / Google / Philly traces to generate synthetic workloads, why not directly call their open-source code? Short answer: the available open-source artifacts are useful as methodological evidence, but none of them produces the per-timestep <em>inference-energy arrival curve</em> that Blog 3 needs as a dispatch input. Table C.2 records that audit so the choice is explicit rather than implicit.</p>
+
+<div class="ledger">
+
+  <div class="ledger-card">
+    <h4>Alibaba official clusterdata GitHub</h4>
+    <p><strong>Open-source status:</strong> public trace data + schemas + processing / visualization scripts.</p>
+    <p><strong>What it generates:</strong> trace records and aggregate stats — not a per-timestep inference-arrival generator.</p>
+    <p><strong>Why not directly adopted:</strong> repo is data + viewers, not a plug-and-play inference-arrival generator for behind-the-meter dispatch.</p>
+    <div class="ledger-meta">
+      <div><strong>What Blog 3 borrows</strong>Aggregate stats baked into named presets</div>
+      <div><strong>Ensemble role</strong>Methodological reference only</div>
+    </div>
+  </div>
+
+  <div class="ledger-card">
+    <h4>STWGEN — "An approach to workload generation for modern data centers: A view from Alibaba trace"</h4>
+    <p><strong>Open-source status:</strong> published method; reference C / Python building blocks.</p>
+    <p><strong>What it generates:</strong> Alibaba batch-task CPU/memory workloads reconstructed via heuristic block assembly.</p>
+    <p><strong>Why not directly adopted:</strong> targets batch CPU/memory, not 15-min inference-energy arrivals; running its C blocks inside Blog 3 tests is too heavy for this pass.</p>
+    <div class="ledger-meta">
+      <div><strong>What Blog 3 borrows</strong>"Small building blocks + heuristics" concept informs the preset / formula structure</div>
+      <div><strong>Ensemble role</strong>Methodological reference only</div>
+    </div>
+  </div>
+
+  <div class="ledger-card">
+    <h4>Microsoft Philly trace / Project Fiddle materials</h4>
+    <p><strong>Open-source status:</strong> public trace data + analysis.</p>
+    <p><strong>What it generates:</strong> DNN-training trace; useful for GPU cluster scheduling and batch-deferral evidence.</p>
+    <p><strong>Why not directly adopted:</strong> training trace, not an inference-traffic generator; embedded as the batch-tier deferral anchor only.</p>
+    <div class="ledger-meta">
+      <div><strong>What Blog 3 borrows</strong>Batch-tier deferral basis (see trace ledger above)</div>
+      <div><strong>Ensemble role</strong>Methodological reference only</div>
+    </div>
+  </div>
+
+  <div class="ledger-card">
+    <h4>Google Borg traces / scheduler simulators (e.g. CloudSimPy class)</h4>
+    <p><strong>Open-source status:</strong> public trace + research simulators.</p>
+    <p><strong>What it generates:</strong> cluster scheduling / resource-allocation studies.</p>
+    <p><strong>Why not directly adopted:</strong> scheduler / resource simulator, not a per-timestep power-dispatch interface.</p>
+    <div class="ledger-meta">
+      <div><strong>What Blog 3 borrows</strong>Warehouse-scale burstiness reference</div>
+      <div><strong>Ensemble role</strong>Methodological reference only</div>
+    </div>
+  </div>
+
+  <div class="ledger-card">
+    <h4>Azure Public Dataset</h4>
+    <p><strong>Open-source status:</strong> public dataset + research papers.</p>
+    <p><strong>What it generates:</strong> cloud-serving traffic shape evidence (LLM / MM).</p>
+    <p><strong>Why not directly adopted:</strong> inspires the <code>azure_llm_inference_inspired</code> preset; no installable adapter produces a per-timestep arrival curve for behind-the-meter dispatch.</p>
+    <div class="ledger-meta">
+      <div><strong>What Blog 3 borrows</strong>Aggregate counter-example preset</div>
+      <div><strong>Ensemble role</strong>Methodological reference only</div>
+    </div>
+  </div>
+
+</div>
+<p class="caption"><strong>Table C.2.</strong> External workload-generator audit. None of these candidates is currently a direct adapter; all are methodological references behind the in-repo presets. If a future package becomes a plug-and-play per-timestep inference-arrival generator for behind-the-meter use, it slots in through the weighted-ensemble interface in C.2 below.</p>
+
+<h3>C.2 Weighted-ensemble design</h3>
+
+<p>The right design here is not "ours vs external" but a weighted ensemble: the dispatch loop reads an arrival curve that may be a single in-repo preset (today's default) or a weighted sum of normalized contributions. The interface is exposed at <code>stage1_5_wwtp_dc/operations/profile_services/inference_profile_service.py</code>:</p>
+
+<pre>arrival_curve = w_in      * preset_in_curve
+              + w_external_1    * external_generator_curve_1
+              + w_external_2    * external_generator_curve_2
+
+@dataclass(frozen=True)
+class WorkloadCurveSource:
+    name: str
+    source_type: Literal["internal_preset", "external_adapter"]
+    weight: float                # weights sum to 1.0 across sources
+    provenance: str              # license / source / version
+    preset_name: TraceCalibrationName | None = None
+    adapter: Callable | None     = None
+
+def generate_weighted_arrivals(
+    sources: Sequence[WorkloadCurveSource],
+    *,
+    total_dc_kw: float, hours: int, dt_minutes: int,
+    seed: int, inference_factor: float,
+) -> dict[TierName, np.ndarray]: ...</pre>
+
+<p>Design rules baked into the interface: external adapters must declare license / source / provenance; each adapter must return strict / interactive / batch arrivals or a total arrival curve plus a documented tier-split mapping; curves are normalized to the same total 24-hour inference energy <em>before</em> weighting so one source does not dominate just because of scale; weights are user-facing scenario knobs, not hidden constants; the default Blog 3 sources list is a single-source ensemble with <code>preset_in = 1.0</code> until an external adapter is verified and tests pass.</p>
+
+<p>Concretely, the default sources list is:</p>
+
+<pre>sources = [
+  WorkloadCurveSource(
+    name="alibaba_serving_inspired",
+    source_type="internal_preset",
+    weight=1.0,
+    provenance="trace_calibration.py aggregate preset",
+    preset_name="alibaba_serving_inspired",
+  ),
+]</pre>
+
+<p>The single-source path in <code>generate_weighted_arrivals</code> is byte-equivalent to the legacy <code>latency_tiers.generate_tier_arrivals</code> call; a regression test asserts that. External adapters can be added behind a guarded import + a skipped test when their package or data is unavailable, without touching the dispatch loop. No external adapter is wired up in this batch.</p>
+
+<h3>Site consistency record</h3>
+
+<p>Blog 2 prose used a 45 MGD WWTP outside Austin TX. The Blog 2 demo code was anchored on a 30 MGD QSDsan-BSM1-informed WWTP profile and a Fremont CA pvlib PV profile. Blog 3 closes that gap: PV is now generated from real Austin TX TMY3 weather (NREL station 722540 Austin Mueller Municipal Airport, EnergyPlus EPW format) on the same 5.7 MWdc / 4.75 MWac HSAT basis used in Blog 1 and Blog 2, with rear-side bifacial gain modeled through <code>pvlib.bifacial.infinite_sheds</code>; WWTP is derived from the BSM1 reference dynamic simulation, mapped through a 30-MGD-equivalent aeration-energy calibration, then scaled 1.5× to the 45 MGD Austin worked case (mean ≈ 3,790 kW, matching the Blog 2 prose "3,750 kW WWTP baseline" within ~1%) plus a same-shape DO-shifted variant for the operator-partnership scenario. Every dispatch CSV row carries <code>pv_profile_basis</code> (<code>austin_tx_tmy3_pvlib_5700kwp_hsat_bifacial_infinite_sheds_bifaciality70_albedo20</code>), <code>wwtp_profile_basis</code> (<code>30mgd_qsdsan_bsm1_x1.5</code>), and <code>trace_preset</code> so the lineage is traceable.</p>
+
+<h3>WWTP profile derivation, more precisely</h3>
+
+<p>The dispatch profile is built from the QSDsan/BSM1 dynamic reference simulation at its native ~4.87 MGD reference flow (the IWA Benchmark Simulation Model No. 1 — 18,446 m³/d influent, canonical 1,000 / 1,333 m³ reactor volumes), with a per-unit aeration-energy constant <code>KW_PER_KLA = 14.6</code> calibrated so blower power lands at a ~1,750 kW baseline that represents a 30-MGD-equivalent activated-sludge plant. The hourly profile is then linearly scaled 1.5× to the 45 MGD Austin worked case. The "30 MGD" label is a calibration choice on top of the BSM1 reference simulation; the simulator is not run at 30 MGD scale directly. This boundary is explicitly accepted as a dispatch-demo basis (2026-05-04); a plant-specific 45 MGD deployment would still require recalibration or a third-party process model.</p>
+
+<h3>Why a 2.5× demo-load multiplier</h3>
+
+<p>The <code>inference_factor=2.5</code> demo multiplier is recorded here because it is the kind of editorial choice that should not be silent. After the routing policy began computing <code>effective_local_capacity = transformer + PV + available_BESS - WWTP</code> (replacing a too-conservative earlier formulation), a <code>1.0×</code> load no longer saturated any of the three default scenarios — routing dropped to zero, deferral dropped to zero, and the headline scenario stopped differing from normal. <code>2.5×</code> is the smallest demo multiplier that keeps the routing trade-offs visible. A real deployment would calibrate the multiplier against site-specific arrival rates rather than carry this demo number.</p>
+
+<h2>Closing</h2>
+
+<p>Blog 2 stopped at "the screen says the site is plausible." Blog 3 walks the next step: the operating boundary moves with PV, BESS, network state, and tier mix, and the most useful job for a GenAI layer here is to explain that boundary in terms the operator can audit. The article and the prototype both stop short of a controller.</p>
+
+<p>The wedge this demo is meant to illustrate is not low-level GPU networking. It is the adjacent skill an industrial AI infrastructure project actually needs: turning a GPU-served GenAI workload into the site constraints that utility, facilities, process, IT, and AI teams can all inspect together. That translation is where most behind-the-meter inference projects get stuck, and it is the layer this prototype lives at.</p>
+
+<div class="footer">
+Working draft — still being revised. Published early for portfolio and interview context.
+PV is real Austin TX TMY3 (NREL 722540 Austin Mueller, EPW) through pvlib HSAT bifacial via
+<code>infinite_sheds</code> (9,378 MWh/yr, 4,750 kW peak, +6.7% over the monofacial reference);
+WWTP is BSM1-reference-derived with a 30-MGD-equivalent aeration-energy calibration and 1.5× scale to 45 MGD; trace presets are editorial;
+<code>inference_factor=2.5</code> is a demo multiplier. Supporting prototype code, generated CSVs,
+figures, and tests are being prepared for later public packaging; this article is published first
+as a working draft.
+</div>
+
+</body>
+</html>
